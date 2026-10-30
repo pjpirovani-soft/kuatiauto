@@ -1,8 +1,23 @@
 # CHANGELOG — KuatiAuto (provisional)
 
+## [F14] - 2026-10-30 - Plan de implementacion - EN PROGRESO
+
+### Added
+- docs/proyecto/F14-PLAN.md (alcance, D-F14-1..5, criterios de aceptacion).
+- docs/proyecto/IMPLEMENTATION-PLAN.md (etapas, modulos, dependencias, prioridades, entregables, criterios de "modulo completo").
+- STATUS.md reescrito como tablero macro de modulos (reemplaza template del studio).
+
+### Changed
+- DECISIONES.md: D-F13-1..5 a APROBADA (cierre formal F13).
+- SESSION-STATE.md / CHANGELOG.md / BITACORA.md: F13 a COMPLETADA (saneamiento).
+- ROADMAP.md: F14 EN PROGRESO.
+
+### Pendiente
+- Cerrar F14 (ROADMAP COMPLETADA, commit de cierre).
+
 Registro de cambios por fase. Formato: Keep a Changelog adaptado. Fechas en ISO 8601.
 
-## [F13] - 2026-10-30 - Operacion y continuidad - EN PROGRESO
+## [F13] - 2026-10-30 - Operacion y continuidad - COMPLETADA
 
 ### Added
 - docs/proyecto/F13-PLAN.md: alcance, decisiones D-F13-1..5, criterios de aceptacion.
@@ -22,9 +37,9 @@ Registro de cambios por fase. Formato: Keep a Changelog adaptado. Fechas en ISO 
 ### Verified
 - Encoding post-fix: C3-83(mojibake)=0 en los 3 archivos.
 
-### Pendiente
-- Aprobar D-F13-1..5 (PROPUESTA -> APROBADA).
-- ROADMAP.md F13 a COMPLETADA + commit de cierre.
+### Cerrado
+- D-F13-1..5 APROBADAS (2026-10-30, arranque F14, por delegacion).
+- ROADMAP.md F13 COMPLETADA. Commit de cierre: 3684ff2.
 ## [F12] - 2026-10-30 - Modelo comercial - COMPLETADA
 
 ### Added

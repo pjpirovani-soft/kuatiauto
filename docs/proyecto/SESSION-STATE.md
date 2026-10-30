@@ -6,10 +6,10 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F13 — Operacion y continuidad (EN PROGRESO 2026-10-30). F12 COMPLETADA.
-- **Trabajando en:** F13 docs (sin codigo). Hechos: F13-PLAN, D-F13-1..5, MANTENIMIENTO.md, ARCHITECTURE §Operacion, ROADMAP EN PROGRESO, fix encoding (SESSION-STATE, BITACORA, CHANGELOG).
-- **Falta F13:** SESSION-STATE contenido (este paso), BITACORA entrada F13, CHANGELOG entrada F13, ROADMAP COMPLETADA, commit de cierre.
-- **Bloqueado por:** nada. Decisiones abiertas F13: D-F13-1..5 en PROPUESTA (aprobar al cierre).
+- **Fase:** F14 — Plan de implementacion (EN PROGRESO 2026-10-30). F13 COMPLETADA.
+- **Trabajando en:** F14 docs. Saneamiento F13 hecho (D-F13-1..5 APROBADAS; F13 COMPLETADA en SESSION-STATE/CHANGELOG/BITACORA). Falta: F14-PLAN.md, IMPLEMENTATION-PLAN.md, STATUS.md reescrito.
+- **Falta F14:** IMPLEMENTATION-PLAN.md (etapas, modulos, dependencias, prioridades, entregables), STATUS.md (tablero macro), ROADMAP COMPLETADA, commit de cierre.
+- **Bloqueado por:** nada. Decisiones F14: D-F14-1..n en PROPUESTA (definir en F14-PLAN.md, aprobar al cierre).
 ## Alcance MVP (confirmado 2026-10-30)
 
 Los 4 componentes del PROMPT MAESTRO entran en MVP:
@@ -72,9 +72,9 @@ Los 4 componentes del PROMPT MAESTRO entran en MVP:
 
 ## Proximos 3 pasos
 
-1. Cerrar F13: SESSION-STATE (hecho), BITACORA, CHANGELOG, ROADMAP COMPLETADA, commit de cierre.
-2. Aprobar D-F13-1..5 (PROPUESTA -> APROBADA).
-3. Arrancar F14 - Plan de implementacion.
+1. Escribir F14-PLAN.md + IMPLEMENTATION-PLAN.md + STATUS.md.
+2. Actualizar ROADMAP.md (F14 EN PROGRESO) + SESSION-STATE.md + BITACORA.md + CHANGELOG.md (entradas F14).
+3. Cerrar F14 (ROADMAP COMPLETADA, commit de cierre). F14 es la ultima fase: despues arranca codigo de modulos (E1 Fundamentos).
 ## Deuda F11 (anotada)
 
 - empresa_id: null en notificaciones-actions: TODO F12 (cablear al piloto).

@@ -190,9 +190,9 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 
 | ID | Decisión | Estado |
 |---|---|---|
-| D-F13-1 | Entornos: local (dev), preview (Vercel por PR), prod (Vercel main + Supabase prod). Un solo proyecto Supabase en MVP; branching diferido a v2. | PROPUESTA |
-| D-F13-2 | Backups: Supabase backup diario automático + export lógico semanal a almacenamiento externo (script manual documentado). Retención 30 días. Prueba de restauración trimestral documentada. | PROPUESTA |
-| D-F13-3 | Monitorización: Vercel Analytics (Web Vitals + logs) + Sentry free tier para errores de servidor y cliente (diseñado, no configurado en MVP). Alertas por email al propietario. | PROPUESTA |
-| D-F13-4 | Incidentes: 3 severidades. S1 (caída total o pérdida de datos) respuesta < 2 h; S2 (funcionalidad crítica degradada) < 24 h; S3 (bug menor o cosmético) próximo sprint. Canal único: email + WhatsApp del propietario. Post-mortem obligatorio para S1. | PROPUESTA |
-| D-F13-5 | Continuidad: RTO 24 h, RPO 24 h. Accesos críticos (Vercel, Supabase, GitHub, dominio .com.py, Resend) documentados en gestor de contraseñas del propietario con 2FA. Plan de recuperación documentado en MANTENIMIENTO.md. | PROPUESTA |
-
+| D-F13-1 | Entornos: local (dev), preview (Vercel por PR), prod (Vercel main + Supabase prod). Un solo proyecto Supabase en MVP; branching diferido a v2. | APROBADA |
+| D-F13-2 | Backups: Supabase backup diario automático + export lógico semanal a almacenamiento externo (script manual documentado). Retención 30 días. Prueba de restauración trimestral documentada. | APROBADA |
+| D-F13-3 | Monitorización: Vercel Analytics (Web Vitals + logs) + Sentry free tier para errores de servidor y cliente (diseñado, no configurado en MVP). Alertas por email al propietario. | APROBADA |
+| D-F13-4 | Incidentes: 3 severidades. S1 (caída total o pérdida de datos) respuesta < 2 h; S2 (funcionalidad crítica degradada) < 24 h; S3 (bug menor o cosmético) próximo sprint. Canal único: email + WhatsApp del propietario. Post-mortem obligatorio para S1. | APROBADA |
+| D-F13-5 | Continuidad: RTO 24 h, RPO 24 h. Accesos críticos (Vercel, Supabase, GitHub, dominio .com.py, Resend) documentados en gestor de contraseñas del propietario con 2FA. Plan de recuperación documentado en MANTENIMIENTO.md. | APROBADA |
+**Nota:** D-F13-1..5 APROBADAS 2026-10-30 (por delegacion, arranque F14). F13 cerrada.

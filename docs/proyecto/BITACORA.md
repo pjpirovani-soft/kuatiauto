@@ -228,7 +228,7 @@
 
 **Pendiente:** cierre de F12 (aprobacion D-F12, CHANGELOG, commit final).
 
-## 2026-10-30 - F13 en progreso: operacion y continuidad
+## 2026-10-30 - Cierre de F13: operacion y continuidad
 
 **Docs:**
 - F13-PLAN.md (alcance, decisiones D-F13-1..5, criterios).
@@ -246,7 +246,23 @@
 
 **Commits:** 4878559 (plan, decisiones, runbook) + pendientes de esta sesion.
 
-**Pendiente:** aprobar D-F13-1..5, CHANGELOG F13, ROADMAP COMPLETADA, commit de cierre.
+**Cierre:** D-F13-1..5 APROBADAS (2026-10-30, por delegacion). ROADMAP COMPLETADA. Commit de cierre: 3684ff2. Saneamiento de estado aplicado al arrancar F14.
+## 2026-10-30 - F14 arranque: plan de implementacion + saneamiento F13
+
+**Saneamiento F13 (por delegacion, al arrancar F14):**
+- D-F13-1..5 aprobadas (PROPUESTA -> APROBADA).
+- SESSION-STATE, CHANGELOG, BITACORA: F13 a COMPLETADA (ROADMAP ya lo estaba desde 3684ff2).
+- Sin cambios de codigo.
+
+**F14 (en progreso):**
+- F14-PLAN.md (alcance, D-F14-1..5, criterios de aceptacion).
+- IMPLEMENTATION-PLAN.md (etapas, modulos, dependencias, prioridades, entregables, gate de seguridad).
+- STATUS.md reescrito (tablero macro de modulos).
+- ROADMAP.md F14 EN PROGRESO.
+
+**Decisiones:** D-F14-1..5 (PROPUESTA, aprobar al cierre de F14).
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).
