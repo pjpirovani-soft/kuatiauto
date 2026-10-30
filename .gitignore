@@ -11,3 +11,8 @@ dist/
 next-env.d.ts
 # TypeScript build info
 tsconfig.tsbuildinfo
+
+# Backups locales y dumps (no commitear)
+*.bak
+*.bak-template
+docs/_dump-continuacion.txt

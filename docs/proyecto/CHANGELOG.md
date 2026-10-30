@@ -1,5 +1,31 @@
 # CHANGELOG — KuatiAuto (provisional)
 
+## [E1] - 2026-10-30 - Fundamentos (wip)
+
+### Added
+- lib/rate-limit.ts: helper checkRateLimit + buildClave. Fail-open en dev.
+- lib/audit.ts: helper auditLog con service_role. No-op sin key.
+- lib/empresa-actions.ts: server action crearEmpresa via crear_empresa_con_establecimiento.
+
+### Changed
+- lib/auth-actions.ts: tildes corregidas, resetPassword agregado, rate limit en login/register/resetPassword.
+- lib/notificaciones-actions.ts: empresa_id cableado en 2 de 3 actions (enviarBienvenida deja null).
+- app/layout.tsx: metadata KuatiAuto.
+- app/dashboard/ movido a app/(dashboard)/ (route group).
+- .env.example: NEXT_PUBLIC_APP_URL, SENTRY_DSN, RATE_LIMIT_FAIL_MODE.
+- .gitignore: *.bak, *.bak-template, docs/_dump-continuacion.txt.
+- docs/proyecto/STATUS.md: E1 a wip con nota de cierre.
+
+### Verified
+- tsc --noEmit: 0 errores.
+- npm run test: 28/28.
+- Encoding: 0 mojibake, 0 BOM.
+
+### Pendiente
+- Tests de rate-limit y empresa-actions (E2).
+- Prueba cruzada A/B (requiere Supabase real).
+- Cerrar E1 (commit de cierre).
+
 ## [F14] - 2026-10-30 - Plan de implementacion - EN PROGRESO
 
 ### Added

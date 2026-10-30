@@ -263,6 +263,30 @@
 **Decisiones:** D-F14-1..5 (PROPUESTA, aprobar al cierre de F14).
 
 **Commits:** (pendiente).
+
+## 2026-10-30 - E1 Fundamentos (wip)
+
+**Código:**
+- Auth completo: login, register, resetPassword, logout, tildes corregidas (lib/auth-actions.ts).
+- Rate limiting: lib/rate-limit.ts (helper con check_rate_limit de F5c) + integrado en login (5/min), register (3/min), resetPassword (3/min).
+- Multiempresa: lib/empresa-actions.ts (crearEmpresa via crear_empresa_con_establecimiento).
+- Audit hooks: lib/audit.ts (auditLog helper con service_role, no-op sin key).
+- Cableado empresa_id en notificaciones-actions.ts (enviarRecordatorioMantenimiento, enviarHistorialCompartido). enviarBienvenida deja null (se llama antes de tener empresa).
+- Layout: metadata KuatiAuto, route group (dashboard).
+- .env.example: NEXT_PUBLIC_APP_URL, SENTRY_DSN, RATE_LIMIT_FAIL_MODE.
+- .gitignore: *.bak, *.bak-template, docs/_dump-continuacion.txt.
+
+**Verificación:**
+- tsc --noEmit: 0 errores.
+- npm run test: 28/28.
+- Encoding: 0 mojibake, 0 BOM en archivos nuevos.
+
+**Pendiente (deuda E1, a E2):**
+- Tests de rate-limit y empresa-actions (mock pesado, sin Supabase real).
+- Prueba cruzada A/B (requiere Supabase real, keys al final).
+- Gate de seguridad de 10 puntos: parcial (1-7 ok, 8-10 pendientes).
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).

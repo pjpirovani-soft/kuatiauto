@@ -15,12 +15,12 @@
 
 | Etapa | Módulo | Estado | Bloqueantes | Hallazgos |
 |---|---|---|---|---|
-| E1 | auth completo (registro/login/reset/confirmación) | pendiente | — | — |
-| E1 | multiempresa (crear empresa + establecimiento) | pendiente | — | — |
-| E1 | shell + route groups + layout base | pendiente | — | — |
-| E1 | middleware rate limiting | pendiente | — | — |
-| E1 | hooks audit_log | pendiente | — | — |
-| E1 | cablear `empresa_id` en notificaciones-actions (deuda F11) | pendiente | — | — |
+| E1 | auth completo (registro/login/reset/confirmación) | wip | — | — |
+| E1 | multiempresa (crear empresa + establecimiento) | wip | — | — |
+| E1 | shell + route groups + layout base | wip | — | — |
+| E1 | middleware rate limiting | wip | — | — |
+| E1 | hooks audit_log | wip | — | — |
+| E1 | cablear `empresa_id` en notificaciones-actions (deuda F11) | wip | — | — |
 | E2 | clientes CRUD | pendiente | E1 | — |
 | E2 | vehículos CRUD + `vehiculo_identidad` | pendiente | E1 | — |
 | E2 | órdenes (CRUD + líneas) | pendiente | E1, E2-clientes, E2-vehículos | — |
@@ -62,3 +62,7 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 - Un módulo con hallazgos críticos/altos abiertos NO se commitea como `completo`. Se commitea como `wip` con nota acá.
 - Al cierre de cada etapa se actualiza este tablero + SESSION-STATE + BITACORA + CHANGELOG.
 - El template original del studio se preservó como `STATUS.md.bak-template` (no se commitea).
+
+## Nota de cierre E1 (2026-10-30)
+
+E1 **wip**: código completo (auth, rate limiting, multiempresa, audit hooks, cableado `empresa_id` en notificaciones). Tests de rate-limit y empresa-actions pendientes (E2). Prueba cruzada A/B pendiente (requiere Supabase real, keys al final). Gate de seguridad de 10 puntos: parcial (puntos 1-7 cubiertos, 8-10 pendientes por falta de Supabase real).

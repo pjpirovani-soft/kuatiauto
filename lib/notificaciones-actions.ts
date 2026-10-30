@@ -81,6 +81,19 @@ async function checkRate(clave: string, max: number, ventanaSegundos: number): P
   }
 }
 
+async function getEmpresaIdFromUser(): Promise<string | null> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+    const { data, error } = await supabase.from('usuario').select('empresa_id').eq('id', user.id).maybeSingle();
+    if (error || !data) return null;
+    return data.empresa_id ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function enviarRecordatorioMantenimiento(input: unknown): Promise<Result> {
   const parsed = enviarRecordatorioMantenimientoSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Datos invalidos" };
@@ -106,8 +119,9 @@ export async function enviarRecordatorioMantenimiento(input: unknown): Promise<R
     idempotencyKey: idem,
   });
 
+  const empresaId = await getEmpresaIdFromUser();
   const persistido = await registrarEnvio({
-    empresaId: null,
+    empresaId,
     destinatarioEmail: parsed.data.cliente_email,
     tipo: "recordatorio_mantenimiento",
     eventoRef: parsed.data.vehiculo_id,
@@ -176,8 +190,9 @@ export async function enviarHistorialCompartido(input: unknown): Promise<Result>
     idempotencyKey: idem,
   });
 
+  const empresaId = await getEmpresaIdFromUser();
   const persistido = await registrarEnvio({
-    empresaId: null,
+    empresaId,
     destinatarioEmail: parsed.data.email,
     tipo: "historial_compartido",
     eventoRef: parsed.data.conductor_id,
