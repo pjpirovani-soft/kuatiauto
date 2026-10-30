@@ -537,6 +537,55 @@ Contacto de seguridad:
 - D-F4-5: recuperación = backups diarios Supabase (7 días free), rotación de secretos 90 días, plan de respuesta documentado, notificación de incidentes críticos en 72h.
 
 
+
+## Directorio y geolocalización (F10 — 2026-10-30)
+
+### Búsqueda por distancia
+
+- Función SQL `buscar_establecimientos(lat, lng, radio_km, ciudad, servicio, texto)`, SECURITY DEFINER.
+- Usa `earthdistance` + `cube` (extensiones nativas de PostgreSQL, gratis).
+- Devuelve establecimientos dentro del radio, ordenados por distancia.
+- Límite 100 resultados, rate limiting en F4 (100/min por IP).
+
+### Geocodificación
+
+- Nominatim (OpenStreetMap) para convertir dirección a coordenadas. Free, 1 req/segundo.
+- El propietario carga la dirección, el sistema geocodifica y guarda lat/lng aproximadas (5 decimales, ~1 km de precisión).
+- Si Nominatim falla, el propietario puede ajustar manualmente en un mapa Leaflet.
+
+### Publicación
+
+- El propietario publica/despublica su establecimiento (`publicado = true/false`).
+- Admin_general puede moderar (despublicar si hay abuso).
+- Función `publicar_establecimiento(id, publicado)`, SECURITY DEFINER, con verificación de autorización.
+
+### Filtros
+
+- Por ciudad, departamento, servicios ofrecidos (jsonb), texto libre (nombre).
+- Búsqueda combinada: `ciudad = X AND servicios @> '["cambio de aceite"]'`.
+
+### Mapa (frontend)
+
+- Leaflet + OpenStreetMap. Sin API key.
+- Componente `MapaDirectorio` con marcadores de establecimientos.
+- Click en marcador → popup con nombre, dirección aproximada, teléfono.
+- Geolocalización del visitante (opcional, con permiso del navegador).
+
+### Protección frente a abuso (R10)
+
+- Coordenadas aproximadas (5 decimales = ~1 km de precisión). No exactas.
+- Rate limiting en búsquedas (100/min por IP, F4).
+- No exponer email del establecimiento, solo teléfono.
+- No permitir scraping masivo (rate limit + paginación).
+
+### Decisiones de F10 (por delegación)
+
+- D-F10-1: búsqueda por distancia con earthdistance + cube. Función SECURITY DEFINER.
+- D-F10-2: geocodificación con Nominatim (OSM). 1 req/segundo. Fallback manual en mapa.
+- D-F10-3: publicación/despublicación por propietario, moderación por admin_general. Función SECURITY DEFINER.
+- D-F10-4: filtros por ciudad, departamento, servicios (jsonb), texto libre.
+- D-F10-5: mapa con Leaflet + OpenStreetMap. Sin API key. Popup con nombre, dirección, teléfono.
+- D-F10-6: coordenadas aproximadas (R10). Rate limiting (F4). No email, solo teléfono. Paginación.
 ## Privacidad y protección de datos (F9 — 2026-10-30)
 
 Cumplimiento de la Ley 6534/2020 de Paraguay (Protección de Datos Personales).

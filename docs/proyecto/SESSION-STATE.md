@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F9 — Privacidad y protección de datos (completada).
-- **Trabajando en:** F10 — Directorio y geolocalización.
+- **Fase:** F10 — Directorio y geolocalización (completada).
+- **Trabajando en:** F11 — Notificaciones y automatizaciones.
 - **Bloqueado por:** nada. Decisiones pendientes: verificar redes/DINAPI de KuatiAuto, confirmar datos del piloto.
 
 ## Alcance MVP (confirmado 2026-10-30)
@@ -63,9 +63,9 @@ Los 4 componentes del PROMPT MAESTRO entran en MVP:
 
 ## Próximos 3 pasos
 
-1. F10: directorio y geolocalización (Leaflet + OSM, búsqueda por distancia).
-2. F11: notificaciones y automatizaciones (email, recordatorios).
-3. F12: modelo comercial (suscripciones, planes, estrategia).
+1. F11: notificaciones y automatizaciones (email, recordatorios).
+2. F12: modelo comercial (suscripciones, planes, estrategia).
+3. F13: operación y continuidad (runbook, backups, incidentes).
 
 ## Nota metodológica
 

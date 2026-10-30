@@ -145,6 +145,17 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F9-2 | Retención: mientras cuenta/vehículo activo. audit_log 1 año. Eliminación: soft delete + anonimización en 30 días. | APROBADA por delegación |
 | D-F9-3 | Derechos: acceso, rectificación, eliminación, oposición, portabilidad (v2). | APROBADA por delegación |
 | D-F9-4 | Consentimiento en registro (términos + privacidad) y en conductor (historial compartido). Sin cookies de tracking en MVP. | APROBADA por delegación |
+
+## Decisiones de F10 (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F10-1 | Búsqueda por distancia con earthdistance + cube. Función SECURITY DEFINER. | APROBADA por delegación |
+| D-F10-2 | Geocodificación con Nominatim (OSM). 1 req/segundo. Fallback manual. | APROBADA por delegación |
+| D-F10-3 | Publicación por propietario, moderación por admin_general. Función SECURITY DEFINER. | APROBADA por delegación |
+| D-F10-4 | Filtros: ciudad, departamento, servicios (jsonb), texto libre. | APROBADA por delegación |
+| D-F10-5 | Mapa: Leaflet + OpenStreetMap. Sin API key. Popup con nombre, dirección, teléfono. | APROBADA por delegación |
+| D-F10-6 | Coordenadas aproximadas (R10). Rate limiting (F4). No email, solo teléfono. Paginación. | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |

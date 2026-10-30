@@ -2,6 +2,16 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.14] - 2026-10-30
+
+### Added
+- Fase 10: directorio y geolocalización.
+- Migración 012: earthdistance + cube, buscar_establecimientos, publicar_establecimiento.
+- Frontend: directorioSchema.ts, directorio-actions.ts, MapaDirectorio.tsx (Leaflet + OSM), app/(directorio)/page.tsx.
+- DECISIONES.md: D-F10-1 a D-F10-6.
+
+### Closed
+- F10 — Directorio y geolocalización.
 ## [0.0.13] - 2026-10-30
 
 ### Added

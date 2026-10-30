@@ -170,6 +170,17 @@
 - **Decisiones:** D-F9-1 a D-F9-4 en DECISIONES.md.
 
 **Commits:** (pendiente).
+
+## 2026-10-30 — Fase 10: directorio y geolocalización
+
+- **Contexto:** se implementa la búsqueda por distancia y el mapa del directorio. Primera fase con código de frontend.
+- **Migración 012:** earthdistance + cube. Función buscar_establecimientos (SECURITY DEFINER), publicar_establecimiento (SECURITY DEFINER).
+- **Frontend:** lib/schemas/directorioSchema.ts, lib/directorio-actions.ts, components/directorio/MapaDirectorio.tsx (Leaflet + OSM), app/(directorio)/page.tsx.
+- **Dependencia nueva:** leaflet (npm install leaflet + @types/leaflet).
+- **Protección:** coordenadas aproximadas (R10), rate limiting (F4), no email, solo teléfono, paginación.
+- **Decisiones:** D-F10-1 a D-F10-6 en DECISIONES.md.
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).
