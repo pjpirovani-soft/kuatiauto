@@ -642,6 +642,57 @@ Si hay fuga de datos personales, notificar a los afectados en 72h (Ley 6534/2020
 - D-F9-2: retención = mientras la cuenta/vehículo esté activo. audit_log 1 año. Eliminación: soft delete + anonimización en 30 días.
 - D-F9-3: derechos del titular = acceso, rectificación, eliminación, oposición, portabilidad (v2).
 - D-F9-4: consentimiento en registro (términos + privacidad) y en conductor (historial compartido). Sin cookies de tracking en MVP.
+## Notificaciones (F11 — 2026-10-30)
+
+**Alcance aprobado:** F11a (stub + mocks). Sin cuenta de Resend. El código funciona sin RESEND_API_KEY (modo mock) y con ella (envío real). La cuenta se crea cuando el piloto esté listo.
+
+### Arquitectura
+
+- **Cliente de email:** lib/email/resend.ts. Interfaz estable sendEmail({ to, subject, html, text?, idempotencyKey }). Si RESEND_API_KEY existe, envía real. Si no, log estructurado + retorno simulado. Los tests usan el modo mock.
+- **Templates:** lib/email/templates/ (recordatorio-mantenimiento, bienvenida, historial-compartido). HTML mínimo, texto plano, sin dependencias nuevas.
+- **Persistencia:** tabla notificacion_log (migración 013_notificaciones.sql). Registra cada envío con estado (pendiente|enviado|fallido|reintentando), intentos, ultimo_error, enviado_at.
+- **Server actions:** lib/notificaciones-actions.ts. Tres acciones: enviarRecordatorioMantenimiento, enviarBienvenida, enviarHistorialCompartido. Validación Zod, rate limiting, audit_log, escritura en notificacion_log.
+- **Envío programado:** cron diario (Vercel Cron o Supabase Edge Function). Lee vehículos con próximo mantenimiento vencido y encola recordatorios. Solo diseño en F11, sin despliegue.
+
+### Idempotencia
+
+- Columna idempotency_key UNIQUE en notificacion_log.
+- Formato: tipo:refId:YYYY-MM-DD.
+- Si la fila existe, no se reenvía. Evita duplicados en reintentos y en ejecuciones concurrentes del cron.
+
+### Rate limiting
+
+- Reutiliza check_rate_limit de F5c.
+- Límites: 20 emails/día por empresa, 100/día global.
+- Exceso → error controlado, no crash.
+
+### Reintentos
+
+- Máximo 3 intentos, backoff exponencial (1m, 5m, 30m).
+- Tras 3 fallos, estado fallido y queda para revisión manual.
+- Cada intento actualiza intentos y ultimo_error.
+
+### Trazabilidad
+
+- Cada envío escribe en notificacion_log (siempre).
+- Envíos manuales (disparados por usuario) también escriben en audit_log.
+- Envíos automáticos (cron) NO escriben en audit_log (ruido innecesario).
+
+### RLS
+
+- SELECT por empresa_id.
+- INSERT/UPDATE solo server-side (service_role o SECURITY DEFINER).
+- La tabla no es accesible desde otra empresa.
+
+### Criterios de aceptación
+
+- npm run test verde con los nuevos tests.
+- npm run build verde.
+- tsc --noEmit sin errores.
+- Sin RESEND_API_KEY: sendEmail no falla, loguea mock, escribe en notificacion_log con estado enviado (mock).
+- Idempotencia probada: mismo key no duplica fila ni email.
+- Rate limit probado: excede → error controlado, no crash.
+- RLS: notificacion_log no accesible desde otra empresa.
 ## Migraciones SQL (F5 completa — 2026-10-30)
 
 | # | Archivo | Contenido |

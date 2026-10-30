@@ -166,3 +166,12 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | P-Alcance-MVP | Directorio y portal son MVP (resuelto 2026-10-30). | APROBADA |
 | P-Catálogo | Catálogo completo desde MVP: fabricantes, marcas, modelos, motores, especificaciones, fuentes (resuelto 2026-10-30). | APROBADA |
 | P-Inventario | Inventario y movimientos de stock en MVP (resuelto 2026-10-30). | APROBADA |
+## Decisiones de F11 (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F11-1 | Mecanismo de envío programado = Vercel Cron (alternativa Edge Function documentada). | PROPUESTA |
+| D-F11-2 | Idempotencia = idempotency_key UNIQUE en notificacion_log, formato tipo:refId:YYYY-MM-DD. | PROPUESTA |
+| D-F11-3 | Rate limiting de envíos = reutiliza check_rate_limit de F5c. 20/día por empresa, 100/día global. | PROPUESTA |
+| D-F11-4 | Reintentos = máximo 3, backoff exponencial (1m, 5m, 30m), luego fallido para revisión manual. | PROPUESTA |
+| D-F11-5 | Trazabilidad = notificacion_log (siempre) + audit_log (solo envíos manuales). | PROPUESTA |
