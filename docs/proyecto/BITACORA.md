@@ -181,6 +181,20 @@
 - **Decisiones:** D-F10-1 a D-F10-6 en DECISIONES.md.
 
 **Commits:** (pendiente).
+## 2026-10-30 — Fase 11: notificaciones (docs)
+
+**Docs:**
+- `ARCHITECTURE.md` §Notificaciones (alcance F11a: stub + mocks, tabla `notificacion_log`, server actions, cron solo diseño, idempotencia, rate limiting, reintentos, trazabilidad, RLS, criterios de aceptación).
+- `DECISIONES.md` D-F11-1 a D-F11-5 (PROPUESTA).
+- `F11-PLAN.md` (alcance aprobado, qué incluye, qué no, orden de implementación).
+- `ROADMAP.md` actualizado (F11 en progreso con docs 5a-5b).
+- `SESSION-STATE.md` actualizado (D-F11-* como PROPUESTA, próximos 3 pasos).
+
+**Decisiones:** D-F11-1 a D-F11-5 (PROPUESTA, se aprueban al cerrar F11).
+
+**Commits:** 14ca03b, d53b5b3, fdd5ef6.
+
+**Pendiente:** código de F11 (migración 013, lib/email/, notificaciones-actions, tests), `next build` verde, cierre de F11.
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).
