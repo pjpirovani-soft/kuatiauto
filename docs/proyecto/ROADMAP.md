@@ -26,7 +26,7 @@
 | 8 | Costes y sostenibilidad | **COMPLETADA** (2026-10-30) | BUSINESS-LOGIC.md |
 | 9 | Privacidad y datos | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Privacidad |
 | 10 | Directorio y geolocalización | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Directorio |
-| 11 | Notificaciones | **EN PROGRESO** | ARCHITECTURE.md §Notificaciones |
+| 11 | Notificaciones | **EN PROGRESO** (docs 5a-5b; falta 5c, código, cierre) | ARCHITECTURE.md §Notificaciones + F11-PLAN.md |
 | 12 | Modelo comercial | Pendiente | BUSINESS-LOGIC.md |
 | 13 | Operación y continuidad | Pendiente | MANTENIMIENTO.md |
 | 14 | Plan de implementación | Pendiente | ROADMAP.md + STATUS.md |
@@ -72,8 +72,8 @@
 1. Corregir `ROADMAP.md` (este commit).
 2. `npm audit fix` (sin `--force` primero). Evaluar críticas residuales.
 3. Verificar `package.json` `name` — **ya verificado: `kuatiauto`**. Sin commit.
-4. Crear `docs/proyecto/F11-PLAN.md`. Aprobación del propietario.
-5. Docs de F11. Commit `docs`.
+4. Crear `docs/proyecto/F11-PLAN.md`. Aprobación del propietario. **HECHO** (14ca03b).
+5. Docs de F11. Commit `docs`. **EN CURSO** (5a hecho d53b5b3; 5b en curso; 5c pendiente).
 6. Código de F11. Commit `feat`.
 7. Cerrar F11. Commit `docs`.
 

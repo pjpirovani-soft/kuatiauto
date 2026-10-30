@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F10 — Directorio y geolocalización (completada).
-- **Trabajando en:** F11 — Notificaciones y automatizaciones.
+- **Fase:** F11 — Notificaciones (en progreso).
+- **Trabajando en:** F11 — Notificaciones y automatizaciones. Docs 5a-5b hechos (ARCHITECTURE §Notificaciones, DECISIONES D-F11-1..5, ROADMAP actualizado). Falta 5c (BITACORA + CHANGELOG), código (lib/email/, notificaciones-actions, migración 013) y cierre.
 - **Bloqueado por:** nada. Decisiones pendientes: verificar redes/DINAPI de KuatiAuto, confirmar datos del piloto.
 
 ## Alcance MVP (confirmado 2026-10-30)
@@ -61,11 +61,20 @@ Los 4 componentes del PROMPT MAESTRO entran en MVP:
 - **R5 (alcance MVP inflado):** cerrado por P-Alcance-MVP.
 - **R1, R2, R3, R4, R6-R14:** abiertos, con fase asignada.
 
+## Decisiones de F11 (2026-10-30, PROPUESTA)
+
+- D-F11-1: mecanismo de envío = Vercel Cron.
+- D-F11-2: idempotencia = idempotency_key UNIQUE (tipo:refId:YYYY-MM-DD).
+- D-F11-3: rate limiting = check_rate_limit (20/día empresa, 100/día global).
+- D-F11-4: reintentos = 3, backoff 1m/5m/30m, luego fallido.
+- D-F11-5: trazabilidad = notificacion_log (siempre) + audit_log (solo manuales).
+- Estado: PROPUESTA — se aprueban al cerrar F11 (paso 7).
+
 ## Próximos 3 pasos
 
-1. F11: notificaciones y automatizaciones (email, recordatorios).
-2. F12: modelo comercial (suscripciones, planes, estrategia).
-3. F13: operación y continuidad (runbook, backups, incidentes).
+1. F11 5c: BITACORA + CHANGELOG + commit docs.
+2. F11 código: migración 013, lib/email/, notificaciones-actions, tests, build.
+3. Cerrar F11 (commit docs) y arrancar F12.
 
 ## Nota metodológica
 
