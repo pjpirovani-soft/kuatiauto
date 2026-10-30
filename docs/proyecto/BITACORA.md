@@ -213,6 +213,20 @@
 
 **Deuda:** empresa_id: null (TODO F12), SUPABASE_SERVICE_ROLE_KEY y RESEND_API_KEY sin configurar, tipos Supabase sin regenerar, reintentos y cron disenados no implementados.
 
+## 2026-10-30 - Fase 12: modelo comercial
+
+**Docs:**
+- F12-PLAN.md (alcance, decisiones D-F12-1..5, criterios de aceptacion).
+- BUSINESS-LOGIC.md §Modelo comercial (planes, limites, premium, estrategia, suscripciones).
+- DECISIONES.md D-F12-1..5 (PROPUESTA).
+- ROADMAP.md F12 EN PROGRESO.
+- SESSION-STATE.md actualizado.
+
+**Decisiones:** D-F12-1..5 (PROPUESTA, se aprueban al cerrar F12).
+
+**Commits:** d64e534, 5dcdaec, f5a1311, 60a0815.
+
+**Pendiente:** cierre de F12 (aprobacion D-F12, CHANGELOG, commit final).
 ## Deuda tÃ©cnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).
