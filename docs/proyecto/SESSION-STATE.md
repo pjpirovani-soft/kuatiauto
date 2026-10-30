@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F1 — Definición de producto y alcance MVP (completada).
-- **Trabajando en:** F2 — Usuarios, roles y permisos.
+- **Fase:** F2 — Usuarios, roles y permisos (completada).
+- **Trabajando en:** F3 — Arquitectura multiempresa.
 - **Bloqueado por:** nada. Decisiones pendientes: verificar redes/DINAPI de KuatiAuto, confirmar datos del piloto.
 
 ## Alcance MVP (confirmado 2026-10-30)
@@ -63,9 +63,9 @@ Los 4 componentes del PROMPT MAESTRO entran en MVP:
 
 ## Próximos 3 pasos
 
-1. F2: roles y permisos (matriz completa propietario/empleado/admin/conductor, separación authn/authz, operaciones auditables).
-2. F3: arquitectura multiempresa (RLS, aislamiento, SECURITY DEFINER). **Bloqueante de todo lo posterior.**
-3. F4: seguridad y modelo de amenazas (OWASP Top 10, ASVS aplicable, gate por módulo).
+1. F3: arquitectura multiempresa (modelo empresa/establecimiento, RLS formal, aislamiento, SECURITY DEFINER). **Bloqueante de todo lo posterior.**
+2. F4: seguridad y modelo de amenazas (OWASP Top 10, ASVS aplicable, gate por módulo).
+3. F5: modelo de datos (DDL, índices, restricciones, migraciones 001-008).
 
 ## Nota metodológica
 

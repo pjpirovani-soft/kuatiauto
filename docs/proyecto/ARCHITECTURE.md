@@ -133,6 +133,65 @@ Un módulo con hallazgos críticos/altos abiertos NO se commitea como completo. 
 - OWASP Top 10.
 - OWASP ASVS (controles aplicables seleccionados).
 
+
+## Autorización (F2 — 2026-10-30)
+
+Modelo de permisos, autenticación y operaciones auditables. La matriz completa está en `SPEC.md` sección 3.
+
+### Autenticación
+
+- **Proveedor:** Supabase Auth (email/password).
+- **Roles con cuenta:** `admin_general`, `propietario`, `empleado`, `conductor`.
+- **Roles sin cuenta:** `visitante` (directorio público).
+- **Sesión:** cookie HttpOnly gestionada por `@supabase/ssr`. Server components y server actions leen la sesión del servidor, no del cliente.
+
+### Autorización (doble capa)
+
+1. **RLS (Row Level Security):** primera línea. Todas las tablas con datos de usuario o empresa tienen políticas RLS. El `empresa_id` nunca se confía del frontend.
+2. **Server actions:** segunda línea. Cada acción valida el rol y la pertenencia antes de escribir. Si RLS falla por error de configuración, la server action debe fallar igual.
+
+**Regla dura:** ningún componente de cliente decide permisos. Solo muestra u oculta UI. La decisión real es server-side.
+
+### Modelo de aislamiento multiempresa
+
+- Cada tabla de negocio tiene `empresa_id` (FK a `empresa`).
+- RLS: `empresa_id = (select empresa_id from usuario where id = auth.uid())`.
+- El `usuario.empresa_id` se setea al crear la empresa o al aceptar la invitación. No se puede cambiar sin pasar por una operación auditada.
+- Admin general: `empresa_id` null. RLS le permite ver empresas y catálogo global, pero **no** tablas de negocio (clientes, vehículos, órdenes, stock).
+- Conductor: RLS le permite ver sus vehículos y su historial compartido, pero no datos de empresas.
+- Visitante: RLS le permite ver `establecimiento_publico` (con coordenadas aproximadas), nada más.
+
+### Operaciones auditables
+
+Tabla `audit_log` (a crear en F5) con: `id`, `usuario_id`, `empresa_id` (nullable), `accion`, `entidad`, `entidad_id`, `datos_anteriores` (jsonb), `datos_nuevos` (jsonb), `created_at`.
+
+Operaciones registradas (mínimo MVP):
+
+- Alta/baja/deshabilitación de empresa.
+- Alta/desactivación de empleado.
+- Edición de cliente/vehículo/orden (solo cambios, no lecturas).
+- Edición de catálogo global (fabricantes, marcas, modelos, especificaciones, servicios/productos globales).
+- Cambios de rol.
+- Autorización/revocación de historial compartido.
+- Publicación/despublicación en directorio.
+- Uso de `service_role` (si se usa).
+
+### Reglas de negocio que condicionan RLS
+
+- **Conductor:** ve historial de sus vehículos solo si el establecimiento lo compartió o él lo autorizó (`historial_compartido`).
+- **Establecimiento:** no ve historial de vehículos de otros establecimientos (R8).
+- **Directorio:** coordenadas aproximadas (barrio/distrito) para visitantes. Exactas solo para autenticados.
+- **Propietario:** no puede degradarse a sí mismo ni eliminarse (evita lockout).
+- **Empleado:** ve datos del mismo tenant, no de otros.
+- **Admin general:** no ve datos de negocio. Solo empresas, catálogo y moderación.
+
+### Pendiente para F3/F4
+
+- RLS formal por tabla (F3).
+- Modelo de amenazas (F4).
+- Rate limiting (F4).
+- Protección de `service_role` (F4).
+- Recuperación ante incidentes (F4).
 ## Migraciones SQL (plan preliminar, DDL exacto en F5)
 
 | # | Archivo | Contenido |

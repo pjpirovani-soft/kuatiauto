@@ -2,6 +2,16 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.4] - 2026-10-30
+
+### Added
+- Fase 2: usuarios, roles y permisos.
+- `SPEC.md` sección 3: roles definitivos (admin_general, propietario, empleado, conductor, visitante), matriz de permisos (20 entidades × 5 roles), reglas de negocio por rol, operaciones auditables.
+- `ARCHITECTURE.md` sección Autorización: authn/authz (doble capa RLS + server actions), modelo de aislamiento multiempresa, operaciones auditables, reglas que condicionan RLS.
+- `DECISIONES.md`: D-F2-1 a D-F2-5.
+
+### Closed
+- F2 — Usuarios, roles y permisos.
 ## [0.0.3] - 2026-10-30
 
 ### Added

@@ -27,17 +27,99 @@ Fuera del MVP (v2 o permanente):
 - Recibo simple.
 - Notificaciones push nativas (email transaccional en MVP, push en v2).
 
-## 3. Usuarios y roles (esqueleto, se cierra en F2)
+## 3. Usuarios, roles y permisos (F2 — 2026-10-30)
 
-| Rol | Alcance | MVP |
-|---|---|---|
-| Administrador general | Plataforma | Sí (mínimo) |
-| Propietario de empresa | Empresa | Sí |
-| Empleado | Empresa | Sí (mismo permiso que propietario salvo gestión de usuarios) |
-| Conductor/cliente particular | Plataforma | No (v2) |
-| Verificador de catálogo | Plataforma | No (admin manual en MVP) |
+### Roles definitivos del MVP
 
-Matriz completa de permisos → F2.
+| Rol | Componente | Cuenta | Descripción |
+|---|---|---|---|
+| `admin_general` | Plataforma | Sí | Gestiona empresas, catálogo global, moderación del directorio. No ve datos de negocio de empresas. |
+| `propietario` | Gestión | Sí | Dueño del establecimiento. CRUD de su empresa, empleados, clientes, vehículos, órdenes, stock, catálogo local. |
+| `empleado` | Gestión | Sí | Opera dentro de una empresa. Mismo permiso que propietario salvo gestión de usuarios y empresa. |
+| `conductor` | Portal | Sí | Dueño de vehículos. Ve su historial, autoriza/revoca compartir con establecimientos. |
+| `visitante` | Directorio | No | Sin cuenta. Ve el directorio público (establecimientos, servicios, ubicación aproximada). |
+
+`verificador_catalogo` → v2. En MVP, el admin general verifica el catálogo manualmente.
+
+### Separación autenticación / autorización
+
+- **Autenticación (authn):** Supabase Auth (email/password) para `admin_general`, `propietario`, `empleado`, `conductor`. `visitante` no tiene cuenta.
+- **Autorización (authz):** dos capas.
+  1. **RLS** en todas las tablas con datos de usuario o empresa. Primera línea, no negociable.
+  2. **Server actions** validan permisos antes de escribir. Segunda línea, defensa en profundidad.
+- **Regla:** el frontend nunca decide. El `empresa_id` que llega del navegador no se confía. Se valida en server contra el `usuario.empresa_id` de la sesión.
+
+### Matriz de permisos (rol × entidad × operación)
+
+**Leyenda:** V=ver, C=crear, E=editar, D=eliminar, R=restringido (solo sus datos), ❌=denegado.
+
+#### Gestión
+
+| Entidad | admin_general | propietario | empleado | conductor | visitante |
+|---|---|---|---|---|---|
+| `empresa` | V todas, C, deshabilitar | V/E la suya | V la suya | ❌ | ❌ |
+| `establecimiento` | V todos | CRUD los suyos | V los suyos | ❌ | ❌ |
+| `usuario` | V todos, deshabilitar | CRUD empleados de su empresa | V/E su perfil | V/E su perfil | ❌ |
+| `cliente` | ❌ | CRUD los suyos | CRUD los suyos | ❌ | ❌ |
+| `vehiculo` (gestión) | ❌ | CRUD los suyos | CRUD los suyos | ❌ | ❌ |
+| `vehiculo_identidad` | ❌ | auto (trigger) | auto (trigger) | ❌ | ❌ |
+| `orden_trabajo` | ❌ | CRUD las suyas | CRUD las suyas | V las de sus vehículos (si compartido) | ❌ |
+| `orden_servicio` | ❌ | cascada de orden | cascada de orden | V cascada | ❌ |
+| `orden_producto` | ❌ | cascada de orden | cascada de orden | V cascada | ❌ |
+| `stock_movimiento` | ❌ | CRUD los suyos | CRUD los suyos | ❌ | ❌ |
+
+#### Catálogo
+
+| Entidad | admin_general | propietario | empleado | conductor | visitante |
+|---|---|---|---|---|---|
+| `fabricante`, `marca`, `modelo`, `version`, `motorizacion` | CRUD | V | V | V | V |
+| `especificacion_lubricante` | CRUD | V | V | V | V |
+| `servicio_global`, `producto_global` | CRUD | V | V | V | ❌ |
+| `servicio_empresa`, `producto_empresa` | ❌ | CRUD los suyos | CRUD los suyos | ❌ | ❌ |
+
+#### Directorio
+
+| Entidad | admin_general | propietario | empleado | conductor | visitante |
+|---|---|---|---|---|---|
+| `establecimiento_publico` | V todos, moderar, despublicar | publicar/despublicar el suyo | ❌ | ❌ | V (coordenadas aproximadas) |
+
+#### Portal
+
+| Entidad | admin_general | propietario | empleado | conductor | visitante |
+|---|---|---|---|---|---|
+| `conductor` | V todos, deshabilitar | ❌ | ❌ | V/E su perfil | ❌ |
+| `vehiculo_conductor` | ❌ | ❌ | ❌ | CRUD los suyos | ❌ |
+| `historial_compartido` | ❌ | V si el conductor autorizó | V si el conductor autorizó | autorizar/revocar | ❌ |
+
+### Reglas de negocio por rol
+
+- **Aislamiento:** un usuario de empresa A no ve datos de empresa B. RLS por `empresa_id`.
+- **Conductor:** ve el historial de **sus** vehículos. El establecimiento solo lo ve si el conductor autorizó (`historial_compartido`).
+- **Directorio:** coordenadas aproximadas (barrio/distrito) para visitantes. Exactas solo para usuarios autenticados.
+- **Propietario:** no puede degradarse a sí mismo ni eliminarse (evita lockout).
+- **Empleado:** ve datos del mismo tenant, no de otros.
+- **Admin general:** no ve datos de negocio (clientes, vehículos, órdenes). Solo empresas, catálogo y moderación.
+
+### Operaciones auditables (mínimo MVP)
+
+Se registran en `audit_log` (tabla a crear en F5):
+
+- Alta/baja/deshabilitación de empresa.
+- Alta/desactivación de empleado.
+- Edición de cliente/vehículo/orden (solo cambios, no lecturas).
+- Edición de catálogo global (fabricantes, marcas, modelos, especificaciones, servicios/productos globales).
+- Cambios de rol.
+- Autorización/revocación de historial compartido.
+- Publicación/despublicación en directorio.
+- Acceso a `service_role` (si se usa).
+
+### Decisiones de F2 (por delegación)
+
+- **D-F2-1:** roles = admin_general, propietario, empleado, conductor, visitante. `verificador_catalogo` → v2.
+- **D-F2-2:** authn con Supabase Auth para todos los roles con cuenta. Authz con RLS + server actions (doble capa).
+- **D-F2-3:** operaciones auditables = las 8 listadas arriba.
+- **D-F2-4:** conductor ve historial solo si autorizó. Establecimiento no ve historial cross-tenant.
+- **D-F2-5:** directorio con coordenadas aproximadas. Exactas solo para autenticados.
 
 ## 4. Riesgos abiertos
 

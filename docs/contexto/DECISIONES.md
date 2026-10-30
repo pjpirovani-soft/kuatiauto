@@ -56,6 +56,16 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | ADR-005 | Catálogo híbrido global + local | PROPUESTA |
 | ADR-006 | Productos y servicios en tablas aparte | PROPUESTA |
 
+
+## Decisiones de F2 (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F2-1 | Roles del MVP: `admin_general`, `propietario`, `empleado`, `conductor`, `visitante`. `verificador_catalogo` → v2 | APROBADA por delegación |
+| D-F2-2 | Authn con Supabase Auth para todos los roles con cuenta. Authz con RLS + server actions (doble capa) | APROBADA por delegación |
+| D-F2-3 | Operaciones auditables: 8 listadas en ARCHITECTURE sección Autorización | APROBADA por delegación |
+| D-F2-4 | Conductor ve historial solo si autorizó. Establecimiento no ve historial cross-tenant (R8) | APROBADA por delegación |
+| D-F2-5 | Directorio con coordenadas aproximadas. Exactas solo para autenticados (R10) | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |

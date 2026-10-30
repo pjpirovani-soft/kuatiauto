@@ -40,6 +40,25 @@
 - **Docs actualizados:** `SPEC.md` (sección 2), `DECISIONES.md`, `ROADMAP.md`, `SESSION-STATE.md`, `BITACORA.md`, `CHANGELOG.md`.
 
 **Commits:** (pendiente).
+
+## 2026-10-30 — Fase 2: usuarios, roles y permisos
+
+- **Contexto:** se define la matriz completa de permisos, la separación authn/authz, las operaciones auditables y las reglas de negocio por rol.
+- **Roles del MVP:** `admin_general`, `propietario`, `empleado`, `conductor`, `visitante`. `verificador_catalogo` → v2.
+- **Authn:** Supabase Auth para roles con cuenta. **Authz:** RLS + server actions (doble capa).
+- **Matriz de permisos:** 20 entidades × 5 roles × operaciones (V/C/E/D). En `SPEC.md` sección 3.
+- **Reglas clave:**
+  - Conductor ve historial solo si autorizó. Establecimiento no ve historial cross-tenant (R8).
+  - Directorio con coordenadas aproximadas. Exactas solo para autenticados (R10).
+  - Propietario no puede degradarse a sí mismo ni eliminarse.
+  - Admin general no ve datos de negocio.
+- **Operaciones auditables:** 8 (alta/baja empresa, alta/desactivación empleado, edición cliente/vehículo/orden, edición catálogo global, cambios de rol, autorización de historial, publicación en directorio, uso de service_role).
+- **Decisiones:** D-F2-1 a D-F2-5 en `DECISIONES.md`.
+- **Docs actualizados:** `SPEC.md` (sección 3), `ARCHITECTURE.md` (sección Autorización), `DECISIONES.md`, `ROADMAP.md`, `SESSION-STATE.md`, `BITACORA.md`, `CHANGELOG.md`.
+- **No se tocó:** `app/`, `components/`, `lib/`, `supabase/`. El scaffold `web-app` queda intacto hasta F3.
+
+**Commits:** (pendiente).
+
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).

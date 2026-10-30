@@ -2,7 +2,7 @@
 
 **Actualizado:** 2026-10-30
 **Fuente de verdad:** PROMPT MAESTRO (14 fases). Este archivo es el índice de estado.
-**Estado general:** Fase 1 completada. Fase 2 en progreso. Fases 3-14 pendientes.
+**Estado general:** Fases 1-2 completadas. Fase 3 en progreso. Fases 4-14 pendientes.
 
 ## Regla de avance
 
@@ -16,8 +16,8 @@
 | # | Fase | Estado | Doc principal | Bloquea a |
 |---|---|---|---|---|
 | 1 | Definición del producto | **COMPLETADA** (2026-10-30) | `SPEC.md` | — |
-| 2 | Usuarios, roles, permisos | **EN PROGRESO** | `SPEC.md` sección 3 | F3, F4 |
-| 3 | Arquitectura multiempresa | Pendiente | `ARCHITECTURE.md` | F5, F6, F7 |
+| 2 | Usuarios, roles, permisos | **COMPLETADA** (2026-10-30) | `SPEC.md` sección 3 + `ARCHITECTURE.md` Autorización | — |
+| 3 | Arquitectura multiempresa | **EN PROGRESO** | `ARCHITECTURE.md` | F5, F6, F7 |
 | 4 | Arquitectura de seguridad | Pendiente | `ARCHITECTURE.md` sección Seguridad | F5, F7, F9 |
 | 5 | Modelo de datos | Pendiente | `SPEC.md` sección 10 + migraciones | F6, F11 |
 | 6 | Catálogo automotriz | Pendiente | `BUSINESS-LOGIC.md` | F12 |
