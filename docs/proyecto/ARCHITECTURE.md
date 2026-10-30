@@ -56,6 +56,20 @@ Separación futura en múltiples apps si el crecimiento lo justifica (ADR-001).
 - **Decisión:** `KuatiAuto` como nombre de trabajo. Dominio `kuatiauto.com.py` verificado disponible (2026-10-30, NIC.py), sin registrar. Pendiente verificar redes y DINAPI.
 - **Consecuencias:** si se confirma, pasa a DECIDIDO. Si colisiona, se renombra en `GLOSARIO.md` + `SPEC.md` (2 archivos), sin tocar código.
 
+### ADR-005: Catálogo híbrido global + local
+
+- **Contexto:** tensión entre "catálogo compartido" (PROMPT MAESTRO) y "catálogo por empresa en MVP" (GLOSARIO F0).
+- **Decisión:** modelo híbrido. Catálogo global (`servicio_global`, `producto_global`) administrado por admin general, solo lectura para empresas. Catálogo local (`servicio_empresa`, `producto_empresa`) editable por cada empresa. El piloto arranca con seed manual del catálogo global, no con datos inventados.
+- **Alternativas:** (a) solo global (admin carga todo, cuello de botella); (b) solo local (cada empresa inventa la rueda).
+- **Consecuencias:** las empresas no dependen del admin para operar, pero se benefician del catálogo compartido. Consolidación local→global es v2.
+
+### ADR-006: Productos y servicios en tablas aparte, no texto libre
+
+- **Contexto:** una orden de trabajo puede tener múltiples servicios y productos. Texto libre es simple pero no permite reportes ni reutilización.
+- **Decisión:** `orden_servicio` (N:M orden-servicio) y `orden_producto` (N:M orden-producto) con FK al catálogo. El importe total es un solo campo en `orden_trabajo` en MVP; desglose por línea → v2.
+- **Alternativas:** texto libre (simple, no escalable); JSON en columna (peor de ambos mundos).
+- **Consecuencias:** reportes futuros posibles ("cuántos cambios de aceite este mes"). Requiere UI de multi-select, más compleja que un textarea.
+
 ## Seguridad
 
 Documento central: `ARCHITECTURE.md` sección Seguridad + `SPEC.md` criterios + `BITACORA.md` hallazgos. No hay `SEGURIDAD.md` separado (decisión D-B, 2026-10-30).
@@ -119,16 +133,29 @@ Un módulo con hallazgos críticos/altos abiertos NO se commitea como completo. 
 - OWASP Top 10.
 - OWASP ASVS (controles aplicables seleccionados).
 
-## Migraciones SQL
+## Migraciones SQL (plan preliminar, DDL exacto en F5)
 
-Vacío. Se llenan en F5 (modelo conceptual y BD).
+| # | Archivo | Contenido |
+|---|---|---|
+| 001 | `001_empresa_establecimiento.sql` | `empresa`, `establecimiento`, trigger de creación automática de establecimiento |
+| 002 | `002_usuario.sql` | `usuario` vinculado a `auth.users`, roles |
+| 003 | `003_cliente.sql` | `cliente` |
+| 004 | `004_vehiculo.sql` | `vehiculo`, `vehiculo_identidad` |
+| 005 | `005_catalogo.sql` | `servicio_global`, `servicio_empresa`, `producto_global`, `producto_empresa` |
+| 006 | `006_orden_trabajo.sql` | `orden_trabajo`, `orden_servicio`, `orden_producto` |
+| 007 | `007_rls.sql` | Políticas RLS de todas las tablas |
+| 008 | `008_seed.sql` | Datos iniciales del catálogo global (solo piloto) |
+
+Las migraciones se numeran por fase (regla del studio). El número de archivo no necesariamente coincide con el número de fase del PROMPT MAESTRO.
 
 ## Flujos principales
 
-Vacío. Se llenan en F1 (producto) + F2 (roles).
+Ver `SPEC.md` sección 9 "Flujos del MVP".
 
 ## Deuda y decisiones abiertas
 
 - `STATUS.md` vs `SESSION-STATE.md`: `SESSION-STATE.md` es el operativo, `STATUS.md` es macro.
 - Estructura de `app/` con route groups: se confirma en F3.
 - Renombrar `clientes` a `establecimientos` en el scaffold: F3.
+- `vehiculo_identidad`: decidir en F5 si se puebla automáticamente por trigger o en server action.
+- Catálogo global seed: contenido exacto de los ~20-30 servicios/productos → F6.

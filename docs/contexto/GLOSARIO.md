@@ -31,11 +31,27 @@ Términos canónicos del proyecto. Si un término aparece en otro doc, debe coin
 
 **Vehículo_identidad** — Tabla auxiliar que normaliza patente y VIN para permitir consolidación de historial entre empresas en v2. En el MVP se puebla pero no se expone cross-tenant. Ver ADR-002.
 
-**Orden de trabajo** — Registro de un servicio realizado a un vehículo en un establecimiento. Contiene fecha, kilometraje, servicios, productos, importe, próximo mantenimiento. Aislado por empresa.
+**Orden de trabajo** — Registro de un servicio realizado a un vehículo en un establecimiento. Contiene fecha, kilometraje, servicios, productos, importe, próximo mantenimiento, estado (borrador/completada/anulada). Aislado por empresa.
 
-**Servicio** — Tipo de trabajo ofrecido o realizado (cambio de aceite, filtro, revisión). Catálogo por empresa en el MVP; catálogo global en v2.
+**Orden_servicio** — Relación N:M entre una orden de trabajo y un servicio (global o local). Permite múltiples servicios por orden.
 
-**Catálogo automotriz** — Base de conocimiento compartida con especificaciones técnicas (viscosidad, normas API/ACEA, capacidades, intervalos). Tiene estado `pendiente` / `verificado` / `disputado`, fuente documental y fecha de verificación. En el MVP arranca mínimo, con datos del piloto.
+**Orden_producto** — Relación N:M entre una orden de trabajo y un producto (global o local). Incluye cantidad y precio unitario.
+
+**Servicio** — Tipo de trabajo ofrecido o realizado (cambio de aceite, filtro, revisión). En el MVP puede ser global (admin) o local (empresa). Ver `servicio_global` y `servicio_empresa`.
+
+**servicio_global** — Servicio del catálogo administrado por el admin general. Solo lectura para las empresas.
+
+**servicio_empresa** — Servicio del catálogo local de una empresa. Editable por el propietario/empleado.
+
+**Producto** — Ítem físico usado en un servicio (aceite, filtro, repuesto). En el MVP puede ser global o local. Ver `producto_global` y `producto_empresa`.
+
+**producto_global** — Producto del catálogo administrado por el admin general. Solo lectura para las empresas.
+
+**producto_empresa** — Producto del catálogo local de una empresa. Editable por el propietario/empleado.
+
+**Catálogo automotriz** — Base de conocimiento compartida con especificaciones técnicas (viscosidad, normas API/ACEA, capacidades, intervalos). Tiene estado `pendiente` / `verificado` / `disputado`, fuente documental y fecha de verificación. En el MVP arranca mínimo, con datos del piloto. Consolidación global → v2.
+
+**Seed** — Script SQL (`supabase/seed.sql`) con los datos iniciales del catálogo global para el piloto. Versionado, corre solo en el piloto.
 
 ## Técnicos
 

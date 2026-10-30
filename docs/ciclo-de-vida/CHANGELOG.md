@@ -2,6 +2,20 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.2] - 2026-10-30
+
+### Added
+- Fase 1: definición de producto y alcance MVP.
+- `SPEC.md` sección 9: flujos del MVP (7 pasos del camino feliz + flujos secundarios).
+- `SPEC.md` sección 10: modelo de datos preliminar (13 entidades).
+- `SPEC.md` sección 11: criterios de aceptación del MVP (funcionales, seguridad, calidad).
+- `ARCHITECTURE.md`: ADR-005 (catálogo híbrido), ADR-006 (productos/servicios en tablas aparte), plan de migraciones SQL (001-008).
+- `GLOSARIO.md`: términos nuevos (orden_servicio, orden_producto, servicio_global, servicio_empresa, producto_global, producto_empresa, seed).
+- `SESSION-STATE.md`: decisiones D-F1-1, D-F1-2, D-F1-3.
+
+### Closed
+- R5 (alcance MVP inflado).
+
 ## [0.0.1] - 2026-10-30
 
 ### Added
