@@ -125,6 +125,17 @@
 - **No se tocó:** app/, components/, lib/.
 
 **Commits:** (pendiente).
+
+## 2026-10-30 — Fase 6a: catálogo automotriz (fuentes y validación)
+
+- **Contexto:** se define el proceso de llenado y validación del catálogo. No es código: es la política de fuentes y el proceso de verificación.
+- **Fuentes:** niveles 1-3 aceptables (manual del fabricante, fabricante del lubricante, bases técnicas). Nivel 4 (foros) no aceptable.
+- **Validación:** admin_general verifica en MVP. pendiente → verificado o disputado. Contradicción → disputado. Revisión anual.
+- **Alcance inicial:** 10 fabricantes comunes en Paraguay, 2-3 modelos cada uno, solo especificaciones de aceite de motor. Ampliación en v2.
+- **Carga:** manual por admin en MVP. CSV en v2. Versionado por fila nueva. Auditoría en audit_log.
+- **Pendiente F6b:** carga inicial del catálogo con datos verificados. Requiere que el piloto o el admin verifiquen las fuentes antes de cargar.
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).

@@ -2,6 +2,15 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.10] - 2026-10-30
+
+### Added
+- Fase 6a: catálogo automotriz (fuentes y validación).
+- BUSINESS-LOGIC.md: jerarquía de fuentes (1-3 aceptables, 4 no), proceso de validación, alcance inicial (10 fabricantes, 2-3 modelos), proceso de carga.
+- DECISIONES.md: D-F6-1 a D-F6-4.
+
+### Closed
+- F6 — Catálogo automotriz: fuentes y validación.
 ## [0.0.9] - 2026-10-30
 
 ### Added

@@ -110,6 +110,15 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F5c-1 | RLS en todas las tablas. 2 helpers (`current_empresa_id`, `is_admin_general`). Políticas por tabla y operación, siguiendo el modelo de F3. `rate_limit` sin políticas (solo service_role). | APROBADA por delegación |
 | D-F5c-2 | Seed del catálogo: 15 fabricantes, 5 marcas, 3 modelos, 10 servicios globales, 8 productos globales (marca `[PENDIENTE]`). Especificaciones de lubricantes vacías hasta F6 (no inventar). | APROBADA por delegación |
 | D-F5c-3 | `check_rate_limit(clave, max, ventana_segundos)` SECURITY DEFINER. `cleanup_rate_limit()` para limpieza periódica. | APROBADA por delegación |
+
+## Decisiones de F6a (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F6-1 | Fuentes aceptables: niveles 1-3 (manual del fabricante, fabricante del lubricante, bases técnicas). Nivel 4 (foros) no aceptable. Cada especificación con fuente, fecha, estado, verificador. | APROBADA por delegación |
+| D-F6-2 | Validación por admin_general en MVP. `pendiente` → `verificado` o `disputado`. Contradicción → `disputado`. Revisión anual. | APROBADA por delegación |
+| D-F6-3 | Alcance inicial: 10 fabricantes comunes en Paraguay, 2-3 modelos cada uno, solo especificaciones de aceite de motor. Ampliación en v2. | APROBADA por delegación |
+| D-F6-4 | Carga manual por admin en MVP. Importación CSV en v2. Versionado por fila nueva. Auditoría en audit_log. | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |
