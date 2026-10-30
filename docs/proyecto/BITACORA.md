@@ -73,6 +73,20 @@
 - **No se tocó:** app/, components/, lib/, supabase/. El scaffold web-app queda intacto hasta F5.
 
 **Commits:** 6507ebe (arquitectura), pendiente (cierre F3).
+
+## 2026-10-30 — Fase 4: arquitectura de seguridad
+
+- **Contexto:** se cierra el modelo de amenazas, límites de confianza, rate limiting, auditoría y recuperación. Es la última fase crítica antes de F5.
+- **Modelo de amenazas:** OWASP Top 10 (2021) completo + OWASP ASVS nivel 2 + amenazas del dominio (R7-R14, cada una con control y fase).
+- **Límites de confianza:** frontend no confiable, server actions confiables pero validan todo, Supabase confiable (RLS última línea), service_role solo server-side, terceros con permisos mínimos y rotación.
+- **Rate limiting:** login 5/min IP, registro 3/min IP, recuperación 3/min IP, API 100/min usuario, crear empresa 10/min, invitar empleado 10/min, publicar directorio 20/min. Implementación: middleware + tabla rate_limit.
+- **Auditoría:** tabla audit_log con 9 operaciones auditables, retención 1 año, solo admin_general lee, INSERT vía SECURITY DEFINER o server action con service_role.
+- **Recuperación:** backups diarios Supabase (7 días free), rotación de secretos 90 días, plan de respuesta documentado, notificación de incidentes críticos en 72h (Ley 6534/2020).
+- **Decisiones:** D-F4-1 a D-F4-5 en DECISIONES.md.
+- **Docs actualizados:** ARCHITECTURE.md (sección Seguridad ampliada), DECISIONES.md, ROADMAP.md, SESSION-STATE.md, BITACORA.md, CHANGELOG.md.
+- **No se tocó:** app/, components/, lib/, supabase/.
+
+**Commits:** 9d7b1c2 (arquitectura), pendiente (cierre F4).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).

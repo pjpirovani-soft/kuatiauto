@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F3 — Arquitectura multiempresa (completada).
-- **Trabajando en:** F4 — Arquitectura de seguridad.
+- **Fase:** F4 — Arquitectura de seguridad (completada).
+- **Trabajando en:** F5 — Modelo de datos.
 - **Bloqueado por:** nada. Decisiones pendientes: verificar redes/DINAPI de KuatiAuto, confirmar datos del piloto.
 
 ## Alcance MVP (confirmado 2026-10-30)
@@ -63,9 +63,9 @@ Los 4 componentes del PROMPT MAESTRO entran en MVP:
 
 ## Próximos 3 pasos
 
-1. F4: seguridad y modelo de amenazas (OWASP Top 10, ASVS aplicable, límites de confianza, rate limiting, auditoría).
-2. F5: modelo de datos (DDL, índices, restricciones, migraciones 001-008, RLS formal por tabla).
-3. F6: catálogo automotriz (fabricantes, marcas, modelos, motores, especificaciones, fuentes y validación).
+1. F5: modelo de datos (DDL, índices, restricciones, migraciones 001-008, RLS formal por tabla).
+2. F6: catálogo automotriz (fabricantes, marcas, modelos, motores, especificaciones, fuentes y validación).
+3. F7: stack tecnológico (justificación de cada elección, correo transaccional, mapas, analítica, CI/CD).
 
 ## Nota metodológica
 

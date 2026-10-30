@@ -2,6 +2,15 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.6] - 2026-10-30
+
+### Added
+- Fase 4: arquitectura de seguridad.
+- ARCHITECTURE.md sección Seguridad ampliada: modelo de amenazas (OWASP Top 10 + ASVS nivel 2 + dominio), límites de confianza, rate limiting, auditoría (audit_log), logging y monitoreo, recuperación ante incidentes.
+- DECISIONES.md: D-F4-1 a D-F4-5.
+
+### Closed
+- F4 — Arquitectura de seguridad.
 ## [0.0.5] - 2026-10-30
 
 ### Added

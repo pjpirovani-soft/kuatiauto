@@ -76,6 +76,16 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F3-3 | Una sola función SECURITY DEFINER en MVP: crear_empresa_con_establecimiento. search_path fijo, permisos solo authenticated | APROBADA por delegación |
 | D-F3-4 | Pruebas cruzadas obligatorias antes de cerrar F3. 2 sesiones, todas las tablas, documentadas en BITACORA.md | APROBADA por delegación |
 | D-F3-5 | RLS diferencia por empresa_id, no por rol. Roles se validan en server actions. Excepción: historial_compartido | APROBADA por delegación |
+
+## Decisiones de F4 (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F4-1 | Modelo de amenazas: OWASP Top 10 completo + ASVS nivel 2 + amenazas del dominio (R7-R14) | APROBADA por delegación |
+| D-F4-2 | Límites de confianza: frontend no confiable, server actions confiables pero validan, Supabase confiable (RLS última línea), service_role solo server-side, terceros con permisos mínimos | APROBADA por delegación |
+| D-F4-3 | Rate limiting: login 5/min IP, registro 3/min IP, recuperación 3/min IP, API 100/min usuario, crear empresa 10/min, invitar empleado 10/min, publicar directorio 20/min. Implementación: middleware + tabla rate_limit | APROBADA por delegación |
+| D-F4-4 | Auditoría: tabla audit_log con 9 operaciones auditables, retención 1 año, solo admin_general lee, INSERT vía SECURITY DEFINER o server action con service_role | APROBADA por delegación |
+| D-F4-5 | Recuperación: backups diarios Supabase (7 días free), rotación de secretos 90 días, plan de respuesta documentado, notificación de incidentes críticos en 72h | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |
