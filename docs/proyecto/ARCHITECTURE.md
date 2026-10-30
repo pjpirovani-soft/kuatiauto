@@ -349,6 +349,143 @@ Excepción: historial_compartido tiene RLS propia porque el acceso es condiciona
 - D-F3-4: pruebas cruzadas obligatorias antes de cerrar F3. 2 sesiones, todas las tablas, documentadas en BITACORA.md.
 - D-F3-5: RLS diferencia por empresa_id, no por rol. Roles se validan en server actions. Excepción: historial_compartido.
 
+
+## Arquitectura de seguridad (F4 — 2026-10-30)
+
+Modelo de amenazas, límites de confianza, rate limiting, auditoría y recuperación. Complementa la sección Seguridad de F0 y la sección Multiempresa de F3. Sin F4, no se puede escribir código seguro.
+
+### Modelo de amenazas
+
+Referencias: OWASP Top 10 (2021) y OWASP ASVS nivel 2 (aplicable a SaaS con datos personales).
+
+**Amenazas generales (OWASP Top 10):**
+
+| ID | Amenaza | Control | Fase |
+|---|---|---|---|
+| A01 | Broken Access Control | RLS + server actions + pruebas cruzadas | F3, F4 |
+| A02 | Cryptographic Failures | HTTPS obligatorio, secretos en env, Supabase Auth | F4, F7 |
+| A03 | Injection | Zod en cliente y servidor, queries parametrizadas | F4, F5 |
+| A04 | Insecure Design | Este modelo de amenazas, gate por módulo | F4 |
+| A05 | Security Misconfiguration | Checklist de config, headers, CORS, CSP | F4, F7 |
+| A06 | Vulnerable Components | npm audit, Dependabot, actualización mensual | F4, F13 |
+| A07 | Auth Failures | Rate limiting, MFA opcional, sesiones cortas | F4, F7 |
+| A08 | Data Integrity Failures | Auditoría, validación de integridad, backups | F4, F5 |
+| A09 | Logging Failures | audit_log + logs de Vercel + alertas | F4, F13 |
+| A10 | SSRF | Validación de URLs externas, allowlist | F4, F7 |
+
+**Amenazas específicas del dominio:**
+
+| ID | Amenaza | Control | Fase |
+|---|---|---|---|
+| R7 | Fuga entre lubricentros competidores | RLS por empresa_id + pruebas cruzadas | F3, F4 |
+| R8 | Historial vehicular como dato sensible comercial | historial_compartido con consentimiento del conductor | F3, F4 |
+| R9 | Datos personales de conductores | Minimización, retención, consentimiento (Ley 6534/2020) | F9 |
+| R10 | Coordenadas de establecimientos | Aproximación a barrio/distrito en directorio público | F3, F10 |
+| R11 | Integridad del catálogo automotriz | Fuentes, fecha, estado de validación, auditoría | F6 |
+| R12 | Endpoints de notificación abusables | Rate limiting, validación de destinatarios, idempotencia | F11 |
+| R13 | Funciones SQL privilegiadas | SECURITY DEFINER solo con justificación, search_path fijo | F3, F5 |
+| R14 | Dependencias externas | Permisos mínimos, rotación de tokens, monitoreo | F7, F13 |
+
+### Límites de confianza
+
+| Zona | Confianza | Regla |
+|---|---|---|
+| Frontend (navegador) | NO confiable | Todo se valida en server. Nunca decidir permisos en cliente. |
+| Server actions / route handlers | Confiable, pero valida todo | Zod en cada input. Verificar sesión y permisos antes de escribir. |
+| Supabase (PostgreSQL + Auth) | Confiable | RLS es la última línea. Si RLS falla, la operación falla. |
+| service_role | Confiable pero nunca en cliente | Solo server-side. Solo operaciones auditadas. Rotación cada 90 días. |
+| Cloudinary, Resend, mapas | Terceros | Tokens con permisos mínimos. Rotación. Monitoreo de uso. |
+
+**Regla dura:** ningún componente de cliente decide permisos. Solo muestra u oculta UI. La decisión real es server-side.
+### Rate limiting
+
+Implementación: middleware de Next.js + tabla rate_limit en Supabase (pg_cron para limpieza).
+
+| Endpoint | Límite | Ventana | Por |
+|---|---|---|---|
+| Login | 5 intentos | 1 minuto | IP |
+| Registro | 3 intentos | 1 minuto | IP |
+| Recuperación de contraseña | 3 intentos | 1 minuto | IP |
+| API general | 100 requests | 1 minuto | usuario autenticado |
+| Crear empresa | 10 requests | 1 minuto | usuario |
+| Invitar empleado | 10 requests | 1 minuto | usuario |
+| Publicar/despublicar en directorio | 20 requests | 1 minuto | usuario |
+| Endpoints de notificación (v2) | 50 requests | 1 minuto | usuario |
+
+Respuesta al exceder: HTTP 429 con header Retry-After. Log en audit_log (acción rate_limit_exceeded). No bloquear permanentemente por IP (evitar negación de servicio a usuarios legítimos detrás de NAT).
+
+### Auditoría
+
+Tabla audit_log (a crear en F5):
+
+- id (uuid, PK)
+- usuario_id (uuid, FK a auth.users, nullable para operaciones del sistema)
+- empresa_id (uuid, FK a empresa, nullable para admin_general)
+- accion (text: 'crear', 'editar', 'eliminar', 'deshabilitar', 'publicar', 'autorizar', 'revocar', 'login', 'rate_limit_exceeded')
+- entidad (text: nombre de la tabla afectada)
+- entidad_id (uuid, nullable)
+- datos_anteriores (jsonb, nullable)
+- datos_nuevos (jsonb, nullable)
+- ip (inet, nullable)
+- user_agent (text, nullable)
+- created_at (timestamptz, default now())
+
+Operaciones auditables (mínimo MVP, ya definidas en F2):
+
+- Alta/baja/deshabilitación de empresa.
+- Alta/desactivación de empleado.
+- Edición de cliente/vehículo/orden (solo cambios, no lecturas).
+- Edición de catálogo global.
+- Cambios de rol.
+- Autorización/revocación de historial compartido.
+- Publicación/despublicación en directorio.
+- Uso de service_role.
+- Login fallido y rate_limit_exceeded.
+
+Retención: 1 año mínimo. Solo admin_general lee (RLS). INSERT vía función SECURITY DEFINER o server action con service_role (nunca desde el cliente).
+
+### Logging y monitoreo
+
+- Logs de Vercel para errores 500 y latencia.
+- Logs de Supabase para queries lentas y errores de RLS.
+- Alertas: errores 500 > 10/min, latencia p95 > 2s, intentos de login fallidos > 20/min.
+- Dashboard de Vercel Speed Insights para Core Web Vitals.
+### Recuperación ante incidentes
+
+Plan de respuesta:
+
+1. Detección: alertas de Vercel/Supabase, reporte de usuario, revisión de audit_log.
+2. Contención: deshabilitar cuenta comprometida, rotar tokens, bloquear IP si aplica.
+3. Erradicación: identificar causa raíz, corregir, testear, deployar.
+4. Recuperación: restaurar desde backup si hay pérdida de datos, verificar integridad.
+5. Lecciones aprendidas: documentar en BITACORA.md, actualizar este doc si corresponde.
+
+Backups:
+
+- Supabase: backups diarios automáticos (7 días en free tier, 30 días en pro).
+- Export semanal a Cloudinary o S3: v2.
+- Verificación de backup: mensual, restaurar en entorno de prueba y verificar integridad.
+
+Rotación de secretos:
+
+- Tokens de servicio (service_role, Cloudinary, Resend): cada 90 días o ante sospecha.
+- Variables de entorno: nunca commitear. .env.example versionado sin valores reales.
+- Rotación documentada en BITACORA.md.
+
+Contacto de seguridad:
+
+- Responsable: el propietario del proyecto.
+- Email: (pendiente, usar el del propietario).
+- Escalación: si el incidente es crítico (fuga de datos), notificar a usuarios afectados en 72h (Ley 6534/2020).
+
+### Decisiones de F4 (por delegación)
+
+- D-F4-1: modelo de amenazas = OWASP Top 10 completo + ASVS nivel 2 + amenazas del dominio (R7-R14).
+- D-F4-2: límites de confianza = frontend no confiable, server actions confiables pero validan, Supabase confiable (RLS última línea), service_role solo server-side, terceros con permisos mínimos.
+- D-F4-3: rate limiting = login 5/min IP, registro 3/min IP, recuperación 3/min IP, API 100/min usuario, crear empresa 10/min, invitar empleado 10/min, publicar directorio 20/min. Implementación: middleware + tabla rate_limit.
+- D-F4-4: auditoría = tabla audit_log con 9 operaciones auditables, retención 1 año, solo admin_general lee, INSERT vía SECURITY DEFINER o server action con service_role.
+- D-F4-5: recuperación = backups diarios Supabase (7 días free), rotación de secretos 90 días, plan de respuesta documentado, notificación de incidentes críticos en 72h.
+
 ## Migraciones SQL (plan preliminar, DDL exacto en F5)
 
 | # | Archivo | Contenido |
