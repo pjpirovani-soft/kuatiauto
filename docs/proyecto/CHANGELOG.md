@@ -2,7 +2,7 @@
 
 Registro de cambios por fase. Formato: Keep a Changelog adaptado. Fechas en ISO 8601.
 
-## [F12] - 2026-10-30 - Modelo comercial (docs) - EN PROGRESO
+## [F12] - 2026-10-30 - Modelo comercial - COMPLETADA
 
 ### Added
 - docs/proyecto/F12-PLAN.md: alcance F12, decisiones D-F12-1..5, criterios de aceptacion.
@@ -13,9 +13,10 @@ Registro de cambios por fase. Formato: Keep a Changelog adaptado. Fechas en ISO 
 - ROADMAP.md: F12 marcado EN PROGRESO.
 - SESSION-STATE.md: F12 en curso.
 
-### Pending (cierre F12)
-- Aprobacion D-F12-1..5.
-- CHANGELOG entrada de cierre.
+### Verified
+- D-F12-1..5 APROBADAS.
+- BUSINESS-LOGIC.md §Modelo comercial completo.
+
 ## [F11] - 2026-10-30 - Notificaciones (stub + mocks) - COMPLETADA
 
 ### Added

@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F12 — Modelo comercial (en progreso). F11 cerrada.
-- **Trabajando en:** F12 — Modelo comercial. F12-PLAN aprobado, BUSINESS-LOGIC §Modelo comercial y D-F12-1..5 en DECISIONES. Falta BITACORA, CHANGELOG y cierre de F12.
+- **Fase:** F12 — Modelo comercial (COMPLETADA 2026-10-30). F13 siguiente.
+- **Trabajando en:** F12 cerrada. D-F12-1..5 APROBADAS. F13 — Operacion y continuidad siguiente.
 - **Bloqueado por:** nada. Decisiones pendientes: verificar redes/DINAPI de KuatiAuto, confirmar datos del piloto.
 
 ## Alcance MVP (confirmado 2026-10-30)

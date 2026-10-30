@@ -2,7 +2,7 @@
 
 **Actualizado:** 2026-10-30
 **Fuente de verdad:** PROMPT MAESTRO (14 fases). Este archivo es el índice de estado.
-**Estado general:** F0-F11 completadas (2026-10-30). F12 en curso. F13-F14 pendientes.
+**Estado general:** F0-F12 completadas (2026-10-30). F13 siguiente. F14 pendiente.
 
 ## Regla de avance
 
@@ -27,7 +27,7 @@
 | 9 | Privacidad y datos | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Privacidad |
 | 10 | Directorio y geolocalización | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Directorio |
 | 11 | Notificaciones | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Notificaciones + F11-PLAN.md |
-| 12 | Modelo comercial | **EN PROGRESO** (BUSINESS-LOGIC + D-F12 hechos; falta BITACORA/CHANGELOG/cierre) | BUSINESS-LOGIC.md + F12-PLAN.md |
+| 12 | Modelo comercial | **COMPLETADA** (2026-10-30) | BUSINESS-LOGIC.md + F12-PLAN.md |
 | 13 | Operación y continuidad | Pendiente | MANTENIMIENTO.md |
 | 14 | Plan de implementación | Pendiente | ROADMAP.md + STATUS.md |
 

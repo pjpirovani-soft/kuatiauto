@@ -213,7 +213,7 @@
 
 **Deuda:** empresa_id: null (TODO F12), SUPABASE_SERVICE_ROLE_KEY y RESEND_API_KEY sin configurar, tipos Supabase sin regenerar, reintentos y cron disenados no implementados.
 
-## 2026-10-30 - Fase 12: modelo comercial
+## 2026-10-30 - Cierre de F12: modelo comercial
 
 **Docs:**
 - F12-PLAN.md (alcance, decisiones D-F12-1..5, criterios de aceptacion).
@@ -222,7 +222,7 @@
 - ROADMAP.md F12 EN PROGRESO.
 - SESSION-STATE.md actualizado.
 
-**Decisiones:** D-F12-1..5 (PROPUESTA, se aprueban al cerrar F12).
+**Decisiones:** D-F12-1..5 (APROBADAS).
 
 **Commits:** d64e534, 5dcdaec, f5a1311, 60a0815.
 
