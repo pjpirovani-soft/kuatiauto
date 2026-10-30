@@ -119,6 +119,15 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F6-2 | Validación por admin_general en MVP. `pendiente` → `verificado` o `disputado`. Contradicción → `disputado`. Revisión anual. | APROBADA por delegación |
 | D-F6-3 | Alcance inicial: 10 fabricantes comunes en Paraguay, 2-3 modelos cada uno, solo especificaciones de aceite de motor. Ampliación en v2. | APROBADA por delegación |
 | D-F6-4 | Carga manual por admin en MVP. Importación CSV en v2. Versionado por fila nueva. Auditoría en audit_log. | APROBADA por delegación |
+
+## Decisiones de F7 (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F7-1 | Stack core = Next.js 16 + React 19 + TypeScript + Tailwind 4 + Supabase + Zod + Vitest + Vercel | APROBADA por delegación |
+| D-F7-2 | Correo transaccional = Resend (free tier 100 emails/día, 3000/mes) | APROBADA por delegación |
+| D-F7-3 | Mapas = Leaflet + OpenStreetMap en MVP. Mapbox en v2 | APROBADA por delegación |
+| D-F7-4 | Analítica = Vercel Analytics. Monitoreo = Sentry free tier. CI/CD = GitHub Actions | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |

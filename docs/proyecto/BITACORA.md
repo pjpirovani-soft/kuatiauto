@@ -136,6 +136,18 @@
 - **Pendiente F6b:** carga inicial del catálogo con datos verificados. Requiere que el piloto o el admin verifiquen las fuentes antes de cargar.
 
 **Commits:** (pendiente).
+
+## 2026-10-30 — Fase 7: stack tecnológico (justificación)
+
+- **Contexto:** se justifica cada elección del stack y se definen los servicios externos que faltaban: correo, mapas, analítica, CI/CD.
+- **Stack core:** Next.js 16 + React 19 + TypeScript + Tailwind 4 + Supabase + Zod + Vitest + Vercel. Justificación en ARCHITECTURE.md.
+- **Correo:** Resend (free tier 100/día, 3000/mes). Emails: confirmación, recuperación, invitación. v2: notificación de mantenimiento.
+- **Mapas:** Leaflet + OpenStreetMap en MVP (gratis). Mapbox en v2 si el directorio crece.
+- **Analítica:** Vercel Analytics + Sentry free tier. CI/CD: GitHub Actions.
+- **Variables de entorno:** 6 definidas (Supabase URL + anon + service_role, Resend, Sentry, app URL).
+- **Decisiones:** D-F7-1 a D-F7-4 en DECISIONES.md.
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).

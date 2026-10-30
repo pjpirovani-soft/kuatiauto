@@ -2,16 +2,66 @@
 
 **Actualizado:** 2026-10-30
 
-## Stack Tecnológico
+## Stack Tecnológico (F7 — 2026-10-30)
 
-- **Framework:** Next.js 16 (App Router, Turbopack).
-- **Lenguaje:** TypeScript + React 19.
-- **Estilos:** Tailwind CSS 4.
-- **Base de Datos:** Supabase (PostgreSQL 15 + RLS).
-- **Autenticación:** Supabase Auth (email/password).
-- **Validación:** Zod (cliente y servidor).
-- **Tests:** Vitest + Testing Library.
-- **Deploy:** Vercel + Supabase cloud.
+### Stack core (justificado)
+
+| Tecnología | Por qué | Alternativas evaluadas | Costo |
+|---|---|---|---|
+| Next.js 16 (App Router, Turbopack) | Server Components, Server Actions, route groups, deploy en Vercel, ecosistema maduro | Remix (menos ecosistema), SvelteKit (menos devs en PY), Astro (no para SaaS) | Gratis |
+| React 19 | Requerido por Next 16, ecosistema, Server Components | Preact (menos ecosistema), Vue (no con Next) | Gratis |
+| TypeScript estricto | Tipado en cliente y servidor, Zod integrado, menos bugs | JavaScript (sin tipos), Flow (menos adopción) | Gratis |
+| Tailwind CSS 4 | Utility-first, rápido de iterar, buen DX | CSS Modules (más verboso), styled-components (runtime) | Gratis |
+| Supabase (PostgreSQL 15 + RLS + Auth) | Auth + RLS + Storage + Realtime en un servicio, free tier generoso, SQL nativo | Firebase (NoSQL, sin RLS SQL), PlanetScale (sin Auth), Neon (sin Auth) | Free tier |
+| Zod | Validación TS-first, schemas reutilizables, integración con React Hook Form | Yup (menos TS), Valibot (más nuevo, menos ecosistema) | Gratis |
+| Vitest + Testing Library | Rápido, integración con Vite, API compatible con Jest | Jest (más lento, más config) | Gratis |
+| Vercel | Deploy de Next.js, edge functions, CI/CD, free tier | Netlify (menos integración con Next), Cloudflare Pages (más complejo) | Free tier |
+
+### Servicios externos
+
+**Correo transaccional: Resend.**
+
+- Free tier: 100 emails/día, 3000/mes. Suficiente para MVP.
+- Alternativas: SendGrid (100/día), Mailgun (100/día), AWS SES (pago por uso, más complejo).
+- Emails del MVP: confirmación de registro, recuperación de contraseña, invitación de empleado.
+- v2: notificación de próximo mantenimiento.
+
+**Mapas y geocodificación: Leaflet + OpenStreetMap (MVP). Mapbox (v2).**
+
+- Leaflet + OSM: gratis, sin API key, mapas base. Geocodificación con Nominatim (1 req/segundo).
+- Mapbox: free tier 50k requests/mes, mejor calidad, requiere API key.
+- Decisión: Leaflet + OSM en MVP. Mapbox en v2 si el directorio crece.
+
+**Analítica: Vercel Analytics.**
+
+- Incluido en Vercel, free tier. Core Web Vitals + page views.
+- v2: Umami self-hosted si se necesita más detalle.
+
+**Monitoreo de errores: Sentry.**
+
+- Free tier: 5k eventos/mes. Suficiente para MVP.
+- Alternativas: Highlight (free tier), ninguno (no recomendado).
+
+**CI/CD: GitHub Actions.**
+
+- Ya configurado en el studio. Lint + test + build en cada push a main.
+- Deploy automático a Vercel en merge a main.
+
+### Variables de entorno necesarias
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (solo server)
+- `RESEND_API_KEY`
+- `SENTRY_DSN`
+- `NEXT_PUBLIC_APP_URL`
+
+### Decisiones de F7 (por delegación)
+
+- D-F7-1: stack core = Next.js 16 + React 19 + TypeScript + Tailwind 4 + Supabase + Zod + Vitest + Vercel.
+- D-F7-2: correo transaccional = Resend (free tier 100/día).
+- D-F7-3: mapas = Leaflet + OpenStreetMap en MVP. Mapbox en v2.
+- D-F7-4: analítica = Vercel Analytics + Sentry free tier + GitHub Actions.
 
 ## Estructura del repositorio
 

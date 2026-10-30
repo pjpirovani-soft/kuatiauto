@@ -2,6 +2,15 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.11] - 2026-10-30
+
+### Added
+- Fase 7: stack tecnológico (justificación).
+- ARCHITECTURE.md: stack core justificado (Next.js, React, TypeScript, Tailwind, Supabase, Zod, Vitest, Vercel), servicios externos (Resend, Leaflet+OSM, Vercel Analytics, Sentry, GitHub Actions), variables de entorno.
+- DECISIONES.md: D-F7-1 a D-F7-4.
+
+### Closed
+- F7 — Stack tecnológico: justificación.
 ## [0.0.10] - 2026-10-30
 
 ### Added

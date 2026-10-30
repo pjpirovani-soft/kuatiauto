@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F6 — Catálogo automotriz: fuentes y validación (completada).
-- **Trabajando en:** F7 — Stack tecnológico (justificación de cada elección).
+- **Fase:** F7 — Stack tecnológico: justificación (completada).
+- **Trabajando en:** F8 — Costes y sostenibilidad.
 - **Bloqueado por:** nada. Decisiones pendientes: verificar redes/DINAPI de KuatiAuto, confirmar datos del piloto.
 
 ## Alcance MVP (confirmado 2026-10-30)
@@ -63,9 +63,9 @@ Los 4 componentes del PROMPT MAESTRO entran en MVP:
 
 ## Próximos 3 pasos
 
-1. F7: stack tecnológico (justificación, correo transaccional, mapas, analítica, CI/CD).
-2. F8: costes y sostenibilidad (free tier, escenarios de crecimiento).
-3. F9: privacidad y protección de datos (Ley 6534/2020).
+1. F8: costes y sostenibilidad (free tier, escenarios de crecimiento).
+2. F9: privacidad y protección de datos (Ley 6534/2020).
+3. F10: directorio y geolocalización (Leaflet + OSM, búsqueda por distancia).
 
 ## Nota metodológica
 
