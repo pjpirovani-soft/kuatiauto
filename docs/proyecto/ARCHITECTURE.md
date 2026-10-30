@@ -192,6 +192,163 @@ Operaciones registradas (mínimo MVP):
 - Rate limiting (F4).
 - Protección de `service_role` (F4).
 - Recuperación ante incidentes (F4).
+
+## Arquitectura multiempresa (F3 — 2026-10-30)
+
+Diseño formal del modelo multi-tenant, RLS, SECURITY DEFINER y pruebas cruzadas. Es la fase crítica del proyecto: sin esto, no hay código seguro.
+
+### Modelo empresa / establecimiento / usuario
+
+**Jerarquía:**
+
+- empresa — unidad de aislamiento. Tiene nombre, RUC (nullable), dirección, teléfono.
+- establecimiento — local físico. Pertenece a una empresa. 1 empresa → N establecimientos (el modelo lo soporta, la UI lo permite). En MVP, la mayoría de empresas tendrá 1.
+- usuario — persona con cuenta. Tiene empresa_id (nullable para admin_general y conductor), rol, email, nombre.
+
+**Pertenencia del usuario:**
+
+- En MVP, un usuario pertenece a 1 empresa. El usuario.empresa_id se setea al crear la empresa o al aceptar la invitación.
+- Multi-empresa → v2. El modelo lo soporta con una tabla intermedia usuario_empresa (no en MVP). En MVP, usuario.empresa_id es una FK directa.
+- admin_general tiene empresa_id = null. No pertenece a ninguna empresa.
+- conductor tiene empresa_id = null. Pertenece al portal, no a una empresa.
+
+**Regla de aislamiento:**
+
+> Toda tabla de negocio tiene empresa_id. RLS por empresa_id. El empresa_id nunca se confía del frontend. Se valida en server contra el usuario.empresa_id de la sesión.
+
+### RLS: estrategia formal
+
+**Tablas de negocio (con empresa_id):**
+
+cliente, vehiculo, vehiculo_identidad, orden_trabajo, orden_servicio, orden_producto, stock_movimiento, servicio_empresa, producto_empresa.
+
+Política base (SELECT, INSERT, UPDATE, DELETE):
+
+    empresa_id = (select empresa_id from usuario where id = auth.uid())
+
+Y para INSERT/UPDATE, además: empresa_id del registro debe coincidir con el del usuario. Para DELETE, solo propietario/empleado (RLS no diferencia rol, lo hace server action).
+
+**Tablas de catálogo global (sin empresa_id):**
+
+fabricante, marca, modelo, version, motorizacion, especificacion_lubricante, servicio_global, producto_global.
+
+Política:
+- SELECT: true (todos leen).
+- INSERT/UPDATE/DELETE: solo admin_general (exists (select 1 from usuario where id = auth.uid() and rol = 'admin_general')).
+
+**Tablas de directorio:**
+
+establecimiento_publico (vista o tabla materializada).
+
+Política:
+- SELECT: true (visitantes leen). Coordenadas aproximadas (barrio/distrito), no exactas.
+- INSERT/UPDATE/DELETE: solo propietario del establecimiento (para publicar/despublicar) y admin_general (para moderar).
+
+**Tablas de portal:**
+
+conductor, vehiculo_conductor, historial_compartido.
+
+Política:
+- conductor: SELECT/UPDATE solo su perfil (id = auth.uid()).
+- vehiculo_conductor: CRUD solo sus vehículos (conductor_id = auth.uid()).
+- historial_compartido: SELECT si conductor_id = auth.uid() o empresa_id = (select empresa_id from usuario where id = auth.uid()). INSERT/DELETE solo conductor (autoriza/revoca).
+
+**Tablas de administración:**
+
+empresa, usuario, audit_log.
+
+Política:
+- empresa: SELECT/UPDATE solo su empresa (id = (select empresa_id from usuario where id = auth.uid())). SELECT todas para admin_general. INSERT solo en el registro inicial (vía SECURITY DEFINER). DELETE solo admin_general (soft delete).
+- usuario: SELECT/UPDATE su perfil. SELECT todos para admin_general. INSERT/UPDATE empleados solo propietario de la misma empresa. DELETE solo admin_general (soft delete).
+- audit_log: SELECT solo admin_general. INSERT vía función SECURITY DEFINER o server action con service_role (nunca desde el cliente).
+### SECURITY DEFINER
+
+Solo una función en MVP:
+
+    crear_empresa_con_establecimiento(
+      p_nombre text,
+      p_ruc text default null,
+      p_direccion text default null,
+      p_telefono text default null
+    ) returns uuid
+
+Qué hace:
+1. Crea la empresa.
+2. Crea el establecimiento por defecto (mismo nombre, dirección de la empresa).
+3. Actualiza usuario.empresa_id y usuario.rol = 'propietario' para auth.uid().
+4. Devuelve el empresa_id.
+
+Requisitos:
+- SECURITY DEFINER con search_path fijo (set search_path = public, pg_temp).
+- Permisos de ejecución solo para authenticated.
+- Transacción atómica (todo o nada).
+- Documentada en BITACORA.md con justificación.
+
+Nada más. Cualquier otra operación cross-tenant (consolidar historial, migrar datos) es v2 y requiere su propia justificación.
+
+### Pruebas cruzadas (gate de seguridad)
+
+Obligatorias antes de marcar F3 como completa. Se documentan en BITACORA.md.
+
+Escenario: 2 sesiones, empresa A y empresa B. Cada una con 1 propietario, 1 empleado, 1 cliente, 1 vehículo, 1 orden.
+
+Pruebas por tabla de negocio:
+
+| Tabla | A intenta sobre B | Resultado esperado |
+|---|---|---|
+| cliente | SELECT | 0 filas |
+| cliente | INSERT con empresa_id = B | error RLS |
+| cliente | UPDATE empresa_id = B | 0 filas afectadas |
+| cliente | DELETE empresa_id = B | 0 filas afectadas |
+| vehiculo | SELECT | 0 filas |
+| vehiculo | INSERT/UPDATE/DELETE | error o 0 filas |
+| orden_trabajo | SELECT | 0 filas |
+| orden_trabajo | INSERT/UPDATE/DELETE | error o 0 filas |
+| stock_movimiento | SELECT | 0 filas |
+| stock_movimiento | INSERT/UPDATE/DELETE | error o 0 filas |
+| servicio_empresa, producto_empresa | SELECT | 0 filas |
+| servicio_empresa, producto_empresa | INSERT/UPDATE/DELETE | error o 0 filas |
+
+Pruebas por tabla de catálogo:
+
+| Tabla | A intenta | Resultado esperado |
+|---|---|---|
+| fabricante, marca, etc. | SELECT | OK (todos leen) |
+| fabricante, marca, etc. | INSERT/UPDATE/DELETE | error RLS (solo admin_general) |
+
+Pruebas por tabla de directorio:
+
+| Tabla | A intenta | Resultado esperado |
+|---|---|---|
+| establecimiento_publico | SELECT (visitante) | OK, coordenadas aproximadas |
+| establecimiento_publico | INSERT/UPDATE/DELETE | error RLS (solo propietario del suyo o admin_general) |
+
+Pruebas por tabla de portal:
+
+| Tabla | A intenta | Resultado esperado |
+|---|---|---|
+| conductor | SELECT su perfil | OK |
+| conductor | SELECT perfil de otro | 0 filas |
+| vehiculo_conductor | SELECT sus vehículos | OK |
+| vehiculo_conductor | SELECT vehículos de otro | 0 filas |
+| historial_compartido | SELECT si autorizó | OK |
+| historial_compartido | SELECT si no autorizó | 0 filas |
+
+Herramienta: tests de integración con Supabase. Puede ser pgTAP (dentro de PostgreSQL) o tests SQL directos desde Node (@supabase/supabase-js con 2 clientes). Se define en F5.
+### Aislamiento entre roles dentro de la misma empresa
+
+RLS diferencia por empresa_id, no por rol. La diferenciación por rol (empleado vs propietario) se hace en server actions, no en RLS. Motivo: RLS más simple y más segura; server actions son el lugar natural para validar permisos de negocio.
+
+Excepción: historial_compartido tiene RLS propia porque el acceso es condicional (conductor autorizó).
+
+### Decisiones de F3 (por delegación)
+
+- D-F3-1: 1 empresa → N establecimientos. En MVP, 1 usuario = 1 empresa. Multi-empresa → v2.
+- D-F3-2: RLS por empresa_id en todas las tablas de negocio. Catálogo global: SELECT true, escritura solo admin_general. Directorio: SELECT true con coordenadas aproximadas. Portal: RLS por conductor_id.
+- D-F3-3: una sola función SECURITY DEFINER en MVP: crear_empresa_con_establecimiento. search_path fijo, permisos solo authenticated.
+- D-F3-4: pruebas cruzadas obligatorias antes de cerrar F3. 2 sesiones, todas las tablas, documentadas en BITACORA.md.
+- D-F3-5: RLS diferencia por empresa_id, no por rol. Roles se validan en server actions. Excepción: historial_compartido.
+
 ## Migraciones SQL (plan preliminar, DDL exacto en F5)
 
 | # | Archivo | Contenido |
