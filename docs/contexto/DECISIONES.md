@@ -170,8 +170,8 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 
 | ID | Decisión | Estado |
 |---|---|---|
-| D-F11-1 | Mecanismo de envío programado = Vercel Cron (alternativa Edge Function documentada). | PROPUESTA |
-| D-F11-2 | Idempotencia = idempotency_key UNIQUE en notificacion_log, formato tipo:refId:YYYY-MM-DD. | PROPUESTA |
-| D-F11-3 | Rate limiting de envíos = reutiliza check_rate_limit de F5c. 20/día por empresa, 100/día global. | PROPUESTA |
-| D-F11-4 | Reintentos = máximo 3, backoff exponencial (1m, 5m, 30m), luego fallido para revisión manual. | PROPUESTA |
-| D-F11-5 | Trazabilidad = notificacion_log (siempre) + audit_log (solo envíos manuales). | PROPUESTA |
+| D-F11-1 | Mecanismo de envío programado = Vercel Cron (alternativa Edge Function documentada). | APROBADA |
+| D-F11-2 | Idempotencia = idempotency_key UNIQUE en notificacion_log, formato tipo:refId:YYYY-MM-DD. | APROBADA |
+| D-F11-3 | Rate limiting de envíos = reutiliza check_rate_limit de F5c. 20/día por empresa, 100/día global. | APROBADA |
+| D-F11-4 | Reintentos = máximo 3, backoff exponencial (1m, 5m, 30m), luego fallido para revisión manual. | APROBADA |
+| D-F11-5 | Trazabilidad = notificacion_log (siempre) + audit_log (solo envíos manuales). | APROBADA |
