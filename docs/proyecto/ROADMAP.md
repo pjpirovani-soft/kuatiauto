@@ -2,7 +2,7 @@
 
 **Actualizado:** 2026-10-30
 **Fuente de verdad:** PROMPT MAESTRO (14 fases). Este archivo es el índice de estado.
-**Estado general:** F0-F12 completadas (2026-10-30). F13 siguiente. F14 pendiente.
+**Estado general:** F0-F13 completadas (2026-10-30). F14 siguiente.
 
 ## Regla de avance
 
@@ -28,7 +28,7 @@
 | 10 | Directorio y geolocalización | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Directorio |
 | 11 | Notificaciones | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Notificaciones + F11-PLAN.md |
 | 12 | Modelo comercial | **COMPLETADA** (2026-10-30) | BUSINESS-LOGIC.md + F12-PLAN.md |
-| 13 | Operación y continuidad | Pendiente | MANTENIMIENTO.md |
+| 13 | Operación y continuidad | **COMPLETADA** (2026-10-30) | MANTENIMIENTO.md + ARCHITECTURE.md §Operación |
 | 14 | Plan de implementación | Pendiente | ROADMAP.md + STATUS.md |
 
 ## F11 — Notificaciones y automatizaciones (COMPLETADA 2026-10-30)
@@ -60,22 +60,28 @@
 
 **Bloquea a:** F12.
 
-## F12-F14 — Pendientes (sin detalle)
+## F13 — Operación y continuidad (COMPLETADA 2026-10-30)
 
-- **F12 — Modelo comercial:** suscripciones, planes, límites, premium. Bloquea a nada técnico.
-- **F13 — Operación y continuidad:** runbook específico de KuatiAuto (despliegues, backups, recuperación, monitorización, incidentes). Bloquea a nada.
+**Alcance:** runbook específico de KuatiAuto (entornos, despliegues, backups, recuperación, monitorización, incidentes, continuidad, accesos). Todo docs, sin código. No bloquea nada.
+
+**Docs hechos:**
+- `F13-PLAN.md` (plan de fase).
+- `DECISIONES.md` (D-F13-1..5, PROPUESTA).
+- `MANTENIMIENTO.md` (runbook completo).
+- `docs/ciclo-de-vida/MANTENIMIENTO.md` (stub que apunta al nuevo).
+- `ARCHITECTURE.md` §Operación (F13 — 2026-10-30).
+
+**Docs pendientes:** ninguno.
+
+**Bloquea a:** nada.
+
+## F14 — Pendiente (sin detalle)
+
 - **F14 — Plan de implementación:** etapas, módulos, dependencias, prioridades, entregables. Bloquea escritura de código.
 
 ## Próximo paso concreto
 
-**F11 cerrada.** Proximo: **F12 — Modelo comercial.** Orden historico de F11:
-1. Corregir `ROADMAP.md` (este commit).
-2. `npm audit fix` (sin `--force` primero). Evaluar críticas residuales.
-3. Verificar `package.json` `name` — **ya verificado: `kuatiauto`**. Sin commit.
-4. Crear `docs/proyecto/F11-PLAN.md`. Aprobación del propietario. **HECHO** (14ca03b).
-5. Docs de F11. Commit `docs`. **EN CURSO** (5a hecho d53b5b3; 5b en curso; 5c pendiente).
-6. Código de F11. Commit `feat`.
-7. Cerrar F11. Commit `docs`.
+**F13 COMPLETADA.** Proximo: F14 - Plan de implementacion.
 
 ## Deuda de docs
 
@@ -84,7 +90,8 @@ Los siguientes docs están **desactualizados** o son **templates del studio** y 
 - `PROMPT.md`: es el del studio. Referencia `CONVENCIONES.md` y `DECISIONES.md` (deprecados). Hay que reescribirlo.
 - `README.md`: es el del blueprint. Hay que reescribirlo.
 - `STATUS.md`: desactualizado (2026-10-29, template). Hay que actualizarlo.
-- `BUSINESS-LOGIC.md`: vacío. Hay que llenarlo.
-- `AI-RULES.md`, `SESSION-PROTOCOL.md`, `ROL.md`, `ENCODING.md`, `MANTENIMIENTO.md`: templates del studio. Hay que adaptarlos.
+- ~~`BUSINESS-LOGIC.md`: vacío~~ → **RESUELTO en F12** (catálogo, costes, modelo comercial; 183 líneas).
+- `AI-RULES.md`, `SESSION-PROTOCOL.md`, `ROL.md`, `ENCODING.md`: templates del studio. Hay que adaptarlos.
+- ~~`MANTENIMIENTO.md`: template del studio~~ → **RESUELTO en F13** (docs/proyecto/MANTENIMIENTO.md + stub en docs/ciclo-de-vida/).
 
 **Nota:** `DECISIONES.md` ya existe (creado en F2). Se actualiza por fase, no se recrea.

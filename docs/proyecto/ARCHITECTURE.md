@@ -708,6 +708,24 @@ Si hay fuga de datos personales, notificar a los afectados en 72h (Ley 6534/2020
 
 Las migraciones se numeran por fase (regla del studio). El número de archivo no necesariamente coincide con el número de fase del PROMPT MAESTRO.
 
+## Operación (F13 — 2026-10-30)
+
+Esta sección resume cómo se opera KuatiAuto en producción. El runbook detallado (procedimientos paso a paso, comandos, checklist de incidentes, plan de recuperación) vive en `docs/proyecto/MANTENIMIENTO.md`. Aquí solo se documenta el contrato operativo y su trazabilidad a decisiones.
+
+### Decisiones operativas
+
+- **D-F13-1 — Entornos.** Tres entornos: local (dev), preview (Vercel por PR), prod (Vercel `main` + Supabase prod). Un único proyecto Supabase en MVP; branching diferido a v2.
+- **D-F13-2 — Backups.** Supabase backup diario automático + export lógico semanal a almacenamiento externo (script manual documentado). Retención 30 días. Prueba de restauración trimestral documentada.
+- **D-F13-3 — Monitorización.** Vercel Analytics (Web Vitals + logs) + Sentry free tier para errores de servidor y cliente (diseñado, no configurado en MVP). Alertas por email al propietario.
+- **D-F13-4 — Incidentes.** Tres severidades: S1 (caída total o pérdida de datos) respuesta < 2 h; S2 (funcionalidad crítica degradada) < 24 h; S3 (bug menor o cosmético) próximo sprint. Canal único: email + WhatsApp del propietario. Post-mortem obligatorio para S1.
+- **D-F13-5 — Continuidad.** RTO 24 h, RPO 24 h. Accesos críticos (Vercel, Supabase, GitHub, dominio `.com.py`, Resend) en gestor de contraseñas del propietario con 2FA. Plan de recuperación documentado en `MANTENIMIENTO.md`.
+
+### Referencias
+
+- Runbook operativo completo: `docs/proyecto/MANTENIMIENTO.md`.
+- Decisiones registradas: `docs/contexto/DECISIONES.md` (D-F13-1..5).
+- Plan de fase: `docs/proyecto/F13-PLAN.md`.
+
 ## Flujos principales
 
 Ver `SPEC.md` sección 9 "Flujos del MVP".
