@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F11 - Notificaciones (COMPLETADA 2026-10-30). F12 siguiente.
-- **Trabajando en:** F11 cerrada. Codigo F11a completo (stub + mocks): migracion 013, lib/email/, templates, admin client, schemas, actions, tests. 28/28 vitest, tsc 0 errores, next build verde. D-F11-1..5 APROBADAS.
+- **Fase:** F12 — Modelo comercial (en progreso). F11 cerrada.
+- **Trabajando en:** F12 — Modelo comercial. F12-PLAN aprobado, BUSINESS-LOGIC §Modelo comercial y D-F12-1..5 en DECISIONES. Falta BITACORA, CHANGELOG y cierre de F12.
 - **Bloqueado por:** nada. Decisiones pendientes: verificar redes/DINAPI de KuatiAuto, confirmar datos del piloto.
 
 ## Alcance MVP (confirmado 2026-10-30)
