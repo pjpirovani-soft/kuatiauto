@@ -112,6 +112,19 @@
 - **No se tocó:** app/, components/, lib/.
 
 **Commits:** (pendiente).
+
+## 2026-10-30 — Fase 5c: RLS, audit_log, rate_limit y seed (F5 completa)
+
+- **Contexto:** se cierran las últimas 3 migraciones de F5. Con esto el modelo de datos del MVP está completo.
+- **Migraciones:** 009_audit_log_rate_limit, 010_rls_policies, 011_seed_catalogo. Total F5: 11 migraciones, ~49 KB de SQL.
+- **RLS:** habilitado en todas las tablas. 2 helpers (current_empresa_id, is_admin_general). Políticas por tabla y operación, siguiendo el modelo de F3.
+- **audit_log:** 9 operaciones auditables, retención 1 año, solo admin_general lee.
+- **rate_limit:** check_rate_limit(clave, max, ventana) SECURITY DEFINER. cleanup_rate_limit() para limpieza.
+- **Seed:** 15 fabricantes, 5 marcas, 3 modelos, 10 servicios globales, 8 productos globales. Marcas [PENDIENTE] hasta F6. Especificaciones de lubricantes vacías (no inventar).
+- **F5 completa:** modelo de datos del MVP cerrado. Listo para F6 (catálogo automotriz) y F7 (stack).
+- **No se tocó:** app/, components/, lib/.
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).

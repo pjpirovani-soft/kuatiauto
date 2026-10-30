@@ -486,7 +486,7 @@ Contacto de seguridad:
 - D-F4-4: auditoría = tabla audit_log con 9 operaciones auditables, retención 1 año, solo admin_general lee, INSERT vía SECURITY DEFINER o server action con service_role.
 - D-F4-5: recuperación = backups diarios Supabase (7 días free), rotación de secretos 90 días, plan de respuesta documentado, notificación de incidentes críticos en 72h.
 
-## Migraciones SQL (F5b implementada — 2026-10-30)
+## Migraciones SQL (F5 completa — 2026-10-30)
 
 | # | Archivo | Contenido |
 |---|---|---|

@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F4 — Arquitectura de seguridad (completada).
-- **Trabajando en:** F5c — audit_log, rate_limit, RLS policies y seed (migraciones 009-011).
+- **Fase:** F5 — Modelo de datos (completada).
+- **Trabajando en:** F6 — Catálogo automotriz (fuentes y validación de datos).
 - **Bloqueado por:** nada. Decisiones pendientes: verificar redes/DINAPI de KuatiAuto, confirmar datos del piloto.
 
 ## Alcance MVP (confirmado 2026-10-30)
@@ -63,9 +63,9 @@ Los 4 componentes del PROMPT MAESTRO entran en MVP:
 
 ## Próximos 3 pasos
 
-1. F5c: audit_log, rate_limit, RLS policies (011), seed del catálogo automotriz.
-2. F6: catálogo automotriz (fuentes y validación de datos).
-3. F7: stack tecnológico (justificación, correo transaccional, mapas, analítica, CI/CD).
+1. F6: catálogo automotriz (fuentes y validación de datos: fabricantes, marcas, modelos, especificaciones verificadas).
+2. F7: stack tecnológico (justificación, correo transaccional, mapas, analítica, CI/CD).
+3. F8: costes y sostenibilidad (free tier, escenarios de crecimiento).
 
 ## Nota metodológica
 

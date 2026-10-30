@@ -2,6 +2,18 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.9] - 2026-10-30
+
+### Added
+- Fase 5c: RLS, audit_log, rate_limit y seed. Migraciones 009-011.
+- audit_log: 9 operaciones auditables, retención 1 año.
+- rate_limit: check_rate_limit + cleanup_rate_limit.
+- RLS habilitado en todas las tablas (010). 2 helpers: current_empresa_id, is_admin_general.
+- Seed: 15 fabricantes, 5 marcas, 3 modelos, 10 servicios, 8 productos (marcas [PENDIENTE]).
+- DECISIONES.md: D-F5c-1 a D-F5c-3.
+
+### Closed
+- F5 — Modelo de datos (11 migraciones, ~49 KB de SQL).
 ## [0.0.8] - 2026-10-30
 
 ### Added

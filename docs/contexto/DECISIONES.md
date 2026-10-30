@@ -102,6 +102,14 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F5b-1 | Catálogo automotriz completo: jerarquía fabricante → marca → modelo → version → motorizacion. Especificaciones con fuente, fecha, estado de validación y verificador. | APROBADA por delegación |
 | D-F5b-2 | Directorio con coordenadas aproximadas (lat/lng con 5 decimales, barrio, ciudad, departamento). No expone coordenadas exactas (R10). | APROBADA por delegación |
 | D-F5b-3 | Portal del conductor con tabla propia (conductor), distinta de usuario de empresa. El conductor autoriza/revoca historial_compartido (R8). | APROBADA por delegación |
+
+## Decisiones de F5c (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F5c-1 | RLS en todas las tablas. 2 helpers (`current_empresa_id`, `is_admin_general`). Políticas por tabla y operación, siguiendo el modelo de F3. `rate_limit` sin políticas (solo service_role). | APROBADA por delegación |
+| D-F5c-2 | Seed del catálogo: 15 fabricantes, 5 marcas, 3 modelos, 10 servicios globales, 8 productos globales (marca `[PENDIENTE]`). Especificaciones de lubricantes vacías hasta F6 (no inventar). | APROBADA por delegación |
+| D-F5c-3 | `check_rate_limit(clave, max, ventana_segundos)` SECURITY DEFINER. `cleanup_rate_limit()` para limpieza periódica. | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |
