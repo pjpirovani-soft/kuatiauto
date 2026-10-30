@@ -19,7 +19,7 @@
 | 2 | Usuarios, roles, permisos | **COMPLETADA** (2026-10-30) | `SPEC.md` sección 3 + `ARCHITECTURE.md` Autorización | — |
 | 3 | Arquitectura multiempresa | **COMPLETADA** (2026-10-30) | `ARCHITECTURE.md` sección Multiempresa | — |
 | 4 | Arquitectura de seguridad | **COMPLETADA** (2026-10-30) | `ARCHITECTURE.md` sección Seguridad | — |
-| 5 | Modelo de datos | **EN PROGRESO** | `SPEC.md` sección 10 + migraciones | F6, F11 |
+| 5 | Modelo de datos | **EN PROGRESO** (F5a OK, F5b/F5c pendientes) | `SPEC.md` sección 10 + migraciones | F6, F11 |
 | 6 | Catálogo automotriz | Pendiente | `BUSINESS-LOGIC.md` | F12 |
 | 7 | Stack tecnológico | Parcial | `ARCHITECTURE.md` stack | F8, F13 |
 | 8 | Costes y sostenibilidad | Pendiente | `BUSINESS-LOGIC.md` | F12 |

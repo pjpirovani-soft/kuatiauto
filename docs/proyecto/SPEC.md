@@ -205,7 +205,7 @@ Se definen por módulo en F2-F14. Estructura obligatoria:
 - Notificaciones de próximo mantenimiento (v2).
 - Exportación de datos (v2).
 
-## 10. Modelo de datos preliminar (D-F1-2, D-F1-3)
+## 10. Modelo de datos (F5a — 2026-10-30)
 
 Entidades y relaciones. El DDL exacto → F5.
 
@@ -223,6 +223,15 @@ Entidades y relaciones. El DDL exacto → F5.
 - **`producto_global`** — id, nombre, marca (nullable), tipo (aceite/filtro/etc.), viscosidad (nullable), created_at.
 - **`producto_empresa`** — id, empresa_id, nombre, marca, tipo, created_at.
 
+
+**Estado F5a (2026-10-30):** las tablas de gestión (empresa, establecimiento, usuario, cliente, vehiculo, vehiculo_identidad, orden_trabajo, orden_servicio, orden_producto, producto_empresa, stock_movimiento) están implementadas en `supabase/migrations/001-006`. El catálogo automotriz, directorio, portal y audit_log se implementan en F5b y F5c.
+
+**Triggers y funciones implementados en F5a:**
+- `set_updated_at()` — actualiza `updated_at` en cada tabla.
+- `handle_new_user()` — crea `public.usuario` al crear `auth.users`.
+- `crear_empresa_con_establecimiento()` — SECURITY DEFINER, transacción atómica.
+- `poblar_vehiculo_identidad()` — normaliza patente al insertar/actualizar vehículo.
+- `actualizar_stock()` — actualiza `producto_empresa.stock_actual` al insertar movimiento.
 **Reglas de negocio básicas:**
 
 - Un cliente pertenece a una empresa (RLS).

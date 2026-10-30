@@ -2,6 +2,16 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.7] - 2026-10-30
+
+### Added
+- Fase 5a: modelo de datos (gestión). Migraciones 001-006 en supabase/migrations/.
+- Tablas: empresa, establecimiento, usuario, cliente, vehiculo, vehiculo_identidad, orden_trabajo, orden_servicio, orden_producto, producto_empresa, stock_movimiento.
+- Triggers y funciones: set_updated_at, handle_new_user, crear_empresa_con_establecimiento (SECURITY DEFINER), poblar_vehiculo_identidad, actualizar_stock.
+- DECISIONES.md: D-F5a-1 a D-F5a-3.
+
+### In Progress
+- F5 — Modelo de datos (F5a completada, F5b/F5c pendientes).
 ## [0.0.6] - 2026-10-30
 
 ### Added

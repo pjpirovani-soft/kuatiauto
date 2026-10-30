@@ -87,6 +87,18 @@
 - **No se tocó:** app/, components/, lib/, supabase/.
 
 **Commits:** 9d7b1c2 (arquitectura), pendiente (cierre F4).
+
+## 2026-10-30 — Fase 5a: modelo de datos (gestión)
+
+- **Contexto:** se implementan las migraciones 001-006 de las tablas de gestión. Es la primera fase con código real.
+- **Migraciones:** 001_empresa_establecimiento, 002_usuario, 003_cliente, 004_vehiculo, 005_orden_trabajo, 006_stock_movimiento. Total: ~14 KB de SQL.
+- **Tablas creadas:** empresa, establecimiento, usuario, cliente, vehiculo, vehiculo_identidad, orden_trabajo, orden_servicio, orden_producto, producto_empresa, stock_movimiento.
+- **Triggers y funciones:** set_updated_at, handle_new_user, crear_empresa_con_establecimiento (SECURITY DEFINER), poblar_vehiculo_identidad, actualizar_stock.
+- **Pendiente F5b:** catálogo automotriz (fabricante, marca, modelo, version, motorizacion, especificacion_lubricante, servicio_global, servicio_empresa, producto_global), directorio (establecimiento_publico), portal (conductor, vehiculo_conductor, historial_compartido).
+- **Pendiente F5c:** audit_log, rate_limit, RLS policies (011), seed del catálogo.
+- **No se tocó:** app/, components/, lib/. El scaffold web-app queda intacto hasta F6.
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).
