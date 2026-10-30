@@ -1,4 +1,4 @@
-# ROADMAP — KuatiAuto
+﻿# ROADMAP — KuatiAuto
 
 **Actualizado:** 2026-10-30
 **Fuente de verdad:** PROMPT MAESTRO (14 fases). Este archivo es el índice de estado.
@@ -74,6 +74,24 @@
 **Docs pendientes:** ninguno.
 
 **Bloquea a:** nada.
+
+## E1 — Fundamentos (WIP 2026-10-30, commit 1042f2e)
+
+**Alcance:** primer código real de módulos. Auth completo, rate limiting, multiempresa, audit hooks, shell + route groups.
+
+**Estado:** `wip`. Código completo y verificado (tsc 0 errores, vitest 28/28). Deuda diferida a E2: tests de rate-limit y empresa-actions, prueba cruzada A/B contra Supabase real, gate de seguridad de 10 puntos parcial (1-7 ok, 8-10 pendientes).
+
+**Bloquea a:** E2.
+**Bloqueado por:** nada.
+
+## E1 — Fundamentos (WIP 2026-10-30, commit 1042f2e)
+
+**Alcance:** primer código real de módulos. Auth completo, rate limiting, multiempresa, audit hooks, shell + route groups.
+
+**Estado:** `wip`. Código completo y verificado (tsc 0 errores, vitest 28/28). Deuda diferida a E2: tests de rate-limit y empresa-actions, prueba cruzada A/B contra Supabase real, gate de seguridad de 10 puntos parcial (1-7 ok, 8-10 pendientes).
+
+**Bloquea a:** E2.
+**Bloqueado por:** nada.
 
 ## F14 — Plan de implementación (EN PROGRESO 2026-10-30)
 
