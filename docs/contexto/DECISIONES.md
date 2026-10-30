@@ -66,6 +66,16 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F2-3 | Operaciones auditables: 8 listadas en ARCHITECTURE sección Autorización | APROBADA por delegación |
 | D-F2-4 | Conductor ve historial solo si autorizó. Establecimiento no ve historial cross-tenant (R8) | APROBADA por delegación |
 | D-F2-5 | Directorio con coordenadas aproximadas. Exactas solo para autenticados (R10) | APROBADA por delegación |
+
+## Decisiones de F3 (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F3-1 | 1 empresa → N establecimientos. En MVP, 1 usuario = 1 empresa. Multi-empresa → v2 | APROBADA por delegación |
+| D-F3-2 | RLS por empresa_id en tablas de negocio. Catálogo global: SELECT true, escritura admin_general. Directorio: SELECT true con coordenadas aproximadas. Portal: RLS por conductor_id | APROBADA por delegación |
+| D-F3-3 | Una sola función SECURITY DEFINER en MVP: crear_empresa_con_establecimiento. search_path fijo, permisos solo authenticated | APROBADA por delegación |
+| D-F3-4 | Pruebas cruzadas obligatorias antes de cerrar F3. 2 sesiones, todas las tablas, documentadas en BITACORA.md | APROBADA por delegación |
+| D-F3-5 | RLS diferencia por empresa_id, no por rol. Roles se validan en server actions. Excepción: historial_compartido | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |

@@ -2,6 +2,15 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.5] - 2026-10-30
+
+### Added
+- Fase 3: arquitectura multiempresa.
+- ARCHITECTURE.md sección Multiempresa: modelo empresa/establecimiento/usuario, estrategia RLS por tabla, SECURITY DEFINER (crear_empresa_con_establecimiento), pruebas cruzadas (gate de seguridad), aislamiento entre roles.
+- DECISIONES.md: D-F3-1 a D-F3-5.
+
+### Closed
+- F3 — Arquitectura multiempresa.
 ## [0.0.4] - 2026-10-30
 
 ### Added

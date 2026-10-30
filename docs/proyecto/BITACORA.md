@@ -59,6 +59,20 @@
 
 **Commits:** (pendiente).
 
+
+## 2026-10-30 — Fase 3: arquitectura multiempresa
+
+- **Contexto:** se define el modelo multi-tenant, la estrategia RLS, SECURITY DEFINER y las pruebas cruzadas. Es la fase crítica: sin esto, no hay código seguro.
+- **Modelo:** empresa → N establecimientos. 1 usuario = 1 empresa en MVP. Multi-empresa → v2 (tabla usuario_empresa). admin_general y conductor tienen empresa_id = null.
+- **RLS:** por empresa_id en todas las tablas de negocio. Catálogo global: SELECT true, escritura solo admin_general. Directorio: SELECT true con coordenadas aproximadas. Portal: RLS por conductor_id. Administración: empresa/usuario/audit_log con políticas específicas.
+- **SECURITY DEFINER:** una sola función en MVP: crear_empresa_con_establecimiento. search_path fijo, permisos solo authenticated, transacción atómica.
+- **Pruebas cruzadas:** 2 sesiones (empresa A y B), todas las tablas, SELECT/INSERT/UPDATE/DELETE. Documentadas en este archivo antes de cerrar F3.
+- **Diferenciación por rol:** RLS por empresa_id. Roles (empleado vs propietario) se validan en server actions. Excepción: historial_compartido.
+- **Decisiones:** D-F3-1 a D-F3-5 en DECISIONES.md.
+- **Docs actualizados:** ARCHITECTURE.md (sección Multiempresa), DECISIONES.md, ROADMAP.md, SESSION-STATE.md, BITACORA.md, CHANGELOG.md.
+- **No se tocó:** app/, components/, lib/, supabase/. El scaffold web-app queda intacto hasta F5.
+
+**Commits:** 6507ebe (arquitectura), pendiente (cierre F3).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).
