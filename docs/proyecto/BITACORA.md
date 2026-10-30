@@ -158,6 +158,18 @@
 - **Decisiones:** D-F8-1 a D-F8-3 en DECISIONES.md.
 
 **Commits:** (pendiente).
+
+## 2026-10-30 — Fase 9: privacidad y protección de datos
+
+- **Contexto:** se define el cumplimiento de la Ley 6534/2020 de Paraguay.
+- **Datos recopilados:** email, nombre, teléfono, patente, VIN (interno), km_actual, IP/user_agent (audit_log), coordenadas aproximadas. Nada más.
+- **Retención:** mientras cuenta/vehículo activo. audit_log 1 año. Eliminación: soft delete + anonimización en 30 días.
+- **Derechos:** acceso, rectificación, eliminación, oposición, portabilidad (v2).
+- **Consentimiento:** registro (términos + privacidad), conductor (historial compartido). Sin cookies de tracking.
+- **Incidentes:** notificación a afectados en 72h (Ley 6534/2020).
+- **Decisiones:** D-F9-1 a D-F9-4 en DECISIONES.md.
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).

@@ -136,6 +136,15 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F8-1 | Todo free tier. Único costo real en MVP: dominio `.com.py` (~$2/mes). No se paga nada más. | APROBADA por delegación |
 | D-F8-2 | Monitoreo mensual de límites. Si se acerca al límite, evaluar. No pagar por adelantado. | APROBADA por delegación |
 | D-F8-3 | Si el proyecto escala, se evalúan escenarios 3 y 4. Hasta entonces, $0/mes. | APROBADA por delegación |
+
+## Decisiones de F9 (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F9-1 | Datos personales: email, nombre, teléfono, patente, VIN (interno), km_actual, IP/user_agent (audit_log), coordenadas aproximadas. Nada más. | APROBADA por delegación |
+| D-F9-2 | Retención: mientras cuenta/vehículo activo. audit_log 1 año. Eliminación: soft delete + anonimización en 30 días. | APROBADA por delegación |
+| D-F9-3 | Derechos: acceso, rectificación, eliminación, oposición, portabilidad (v2). | APROBADA por delegación |
+| D-F9-4 | Consentimiento en registro (términos + privacidad) y en conductor (historial compartido). Sin cookies de tracking en MVP. | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |

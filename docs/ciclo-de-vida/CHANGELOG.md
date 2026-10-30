@@ -2,6 +2,15 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.13] - 2026-10-30
+
+### Added
+- Fase 9: privacidad y protección de datos (Ley 6534/2020).
+- ARCHITECTURE.md sección Privacidad: datos recopilados, retención, derechos del titular, consentimiento, notificación de incidentes.
+- DECISIONES.md: D-F9-1 a D-F9-4.
+
+### Closed
+- F9 — Privacidad y protección de datos.
 ## [0.0.12] - 2026-10-30
 
 ### Added

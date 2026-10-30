@@ -536,6 +536,63 @@ Contacto de seguridad:
 - D-F4-4: auditoría = tabla audit_log con 9 operaciones auditables, retención 1 año, solo admin_general lee, INSERT vía SECURITY DEFINER o server action con service_role.
 - D-F4-5: recuperación = backups diarios Supabase (7 días free), rotación de secretos 90 días, plan de respuesta documentado, notificación de incidentes críticos en 72h.
 
+
+## Privacidad y protección de datos (F9 — 2026-10-30)
+
+Cumplimiento de la Ley 6534/2020 de Paraguay (Protección de Datos Personales).
+
+### Datos personales recopilados
+
+| Dato | Tabla | Finalidad | Retención | Acceso |
+|---|---|---|---|---|
+| Email | usuario, conductor | Auth, contacto | Cuenta activa | El usuario, admin_general (solo email) |
+| Nombre | usuario, conductor, cliente | Identificación | Cuenta activa | El usuario, su empresa, admin_general |
+| Teléfono | usuario, conductor, cliente | Contacto | Cuenta activa | El usuario, su empresa |
+| Patente | vehiculo, vehiculo_conductor | Identificación del vehículo | Vehículo activo | El usuario, su empresa, conductor (sus vehículos) |
+| VIN | vehiculo_identidad | Consolidación (v2) | Vehículo activo | Nadie en MVP (solo interno) |
+| km_actual | vehiculo, vehiculo_conductor | Mantenimiento | Vehículo activo | El usuario, su empresa, conductor |
+| IP, user agent | audit_log | Seguridad | 1 año | admin_general |
+| Coordenadas aproximadas | establecimiento_publico | Directorio | Mientras publicado | Público |
+
+### Datos que NO se recopilan
+
+- RUC del cliente (no es persona física).
+- Datos de tarjetas de crédito (no hay pagos en MVP).
+- Datos biométricos.
+- Geolocalización exacta del conductor (solo del establecimiento, aproximada).
+
+### Derechos del titular (Ley 6534/2020)
+
+- **Acceso:** el usuario ve sus datos en su perfil.
+- **Rectificación:** el usuario edita sus datos.
+- **Eliminación:** el usuario solicita baja. Soft delete + anonimización en 30 días.
+- **Oposición:** el conductor revoca el historial compartido.
+- **Portabilidad:** exportación de datos (v2).
+
+### Consentimiento
+
+- Registro: aceptación de términos y política de privacidad.
+- Conductor: autorización explícita para compartir historial con establecimientos.
+- Sin cookies de tracking en MVP.
+
+### Seguridad de datos personales
+
+- RLS por empresa_id (F3).
+- HTTPS obligatorio (F4).
+- Secretos en env (F4).
+- Auditoría de accesos (F4).
+- Retención definida (arriba).
+
+### Notificación de incidentes
+
+Si hay fuga de datos personales, notificar a los afectados en 72h (Ley 6534/2020). Documentar en BITACORA.md.
+
+### Decisiones de F9 (por delegación)
+
+- D-F9-1: datos personales recopilados = email, nombre, teléfono, patente, VIN (interno), km_actual, IP/user_agent (audit_log), coordenadas aproximadas. Nada más.
+- D-F9-2: retención = mientras la cuenta/vehículo esté activo. audit_log 1 año. Eliminación: soft delete + anonimización en 30 días.
+- D-F9-3: derechos del titular = acceso, rectificación, eliminación, oposición, portabilidad (v2).
+- D-F9-4: consentimiento en registro (términos + privacidad) y en conductor (historial compartido). Sin cookies de tracking en MVP.
 ## Migraciones SQL (F5 completa — 2026-10-30)
 
 | # | Archivo | Contenido |
