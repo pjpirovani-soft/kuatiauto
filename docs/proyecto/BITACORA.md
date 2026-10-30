@@ -99,6 +99,19 @@
 - **No se tocó:** app/, components/, lib/. El scaffold web-app queda intacto hasta F6.
 
 **Commits:** (pendiente).
+
+## 2026-10-30 — Fase 5b: catálogo, directorio y portal
+
+- **Contexto:** se implementan las migraciones 007-008. Con esto el modelo de datos del MVP está completo (falta F5c: audit_log, rate_limit, RLS, seed).
+- **Migraciones:** 007_catalogo.sql (7112 bytes), 008_directorio_portal.sql (5444 bytes). Total F5a+F5b: ~26 KB de SQL.
+- **Catálogo:** fabricante → marca → modelo → version → motorizacion → especificacion_lubricante (con fuente, fecha, estado de validación). servicio_global, servicio_empresa, producto_global. FKs pendientes de orden_servicio/orden_producto agregadas.
+- **Directorio:** establecimiento_publico con coordenadas aproximadas (lat/lng 5 decimales, barrio, ciudad, departamento), servicios_ofrecidos, horarios.
+- **Portal:** conductor (cuenta propia), vehiculo_conductor, historial_compartido (con autorizado boolean).
+- **Trigger nuevo:** handle_new_conductor (crea conductor si el usuario se registra como tal).
+- **Pendiente F5c:** audit_log, rate_limit, RLS policies (011), seed del catálogo.
+- **No se tocó:** app/, components/, lib/.
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).

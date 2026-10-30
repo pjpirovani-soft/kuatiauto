@@ -224,7 +224,7 @@ Entidades y relaciones. El DDL exacto → F5.
 - **`producto_empresa`** — id, empresa_id, nombre, marca, tipo, created_at.
 
 
-**Estado F5a (2026-10-30):** las tablas de gestión (empresa, establecimiento, usuario, cliente, vehiculo, vehiculo_identidad, orden_trabajo, orden_servicio, orden_producto, producto_empresa, stock_movimiento) están implementadas en `supabase/migrations/001-006`. El catálogo automotriz, directorio, portal y audit_log se implementan en F5b y F5c.
+**Estado F5b (2026-10-30):** las tablas de gestión están en `supabase/migrations/001-006`. El catálogo automotriz (fabricante, marca, modelo, version, motorizacion, especificacion_lubricante, servicio_global, servicio_empresa, producto_global), el directorio (establecimiento_publico) y el portal (conductor, vehiculo_conductor, historial_compartido) están en `supabase/migrations/007-008`. Pendiente F5c: audit_log, rate_limit, RLS policies y seed.
 
 **Triggers y funciones implementados en F5a:**
 - `set_updated_at()` — actualiza `updated_at` en cada tabla.

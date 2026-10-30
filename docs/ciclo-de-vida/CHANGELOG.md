@@ -2,6 +2,18 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.8] - 2026-10-30
+
+### Added
+- Fase 5b: catálogo automotriz, directorio y portal. Migraciones 007-008.
+- Catálogo: fabricante, marca, modelo, version, motorizacion, especificacion_lubricante (con fuente, fecha, estado de validación), servicio_global, servicio_empresa, producto_global.
+- Directorio: establecimiento_publico (coordenadas aproximadas, servicios, horarios).
+- Portal: conductor, vehiculo_conductor, historial_compartido.
+- Trigger handle_new_conductor.
+- DECISIONES.md: D-F5b-1 a D-F5b-3.
+
+### In Progress
+- F5 — Modelo de datos (F5a y F5b completadas, F5c pendiente).
 ## [0.0.7] - 2026-10-30
 
 ### Added

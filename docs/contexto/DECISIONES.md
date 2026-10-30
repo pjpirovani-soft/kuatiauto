@@ -94,6 +94,14 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F5a-1 | DDL en migraciones numeradas por fase (001-006 en F5a). `id uuid default gen_random_uuid()`, `created_at timestamptz default now()`, `updated_at` con trigger. | APROBADA por delegación |
 | D-F5a-2 | Triggers: `set_updated_at`, `handle_new_user`, `crear_empresa_con_establecimiento` (SECURITY DEFINER), `poblar_vehiculo_identidad`, `actualizar_stock`. | APROBADA por delegación |
 | D-F5a-3 | FKs a tablas de catálogo (servicio_global, producto_global) se agregan en F5b, no en F5a, para evitar dependencia circular. En F5a solo se crean las columnas. | APROBADA por delegación |
+
+## Decisiones de F5b (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F5b-1 | Catálogo automotriz completo: jerarquía fabricante → marca → modelo → version → motorizacion. Especificaciones con fuente, fecha, estado de validación y verificador. | APROBADA por delegación |
+| D-F5b-2 | Directorio con coordenadas aproximadas (lat/lng con 5 decimales, barrio, ciudad, departamento). No expone coordenadas exactas (R10). | APROBADA por delegación |
+| D-F5b-3 | Portal del conductor con tabla propia (conductor), distinta de usuario de empresa. El conductor autoriza/revoca historial_compartido (R8). | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |
