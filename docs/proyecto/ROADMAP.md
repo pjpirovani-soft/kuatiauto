@@ -22,8 +22,8 @@
 | 5 | Modelo de datos | **COMPLETADA** (2026-10-30) | `SPEC.md` sección 10 + migraciones | — |
 | 6 | Catálogo automotriz | **COMPLETADA** (2026-10-30) | `BUSINESS-LOGIC.md` | — |
 | 7 | Stack tecnológico | **COMPLETADA** (2026-10-30) | `ARCHITECTURE.md` stack | — |
-| 8 | Costes y sostenibilidad | **EN PROGRESO** | `BUSINESS-LOGIC.md` | F12 |
-| 9 | Privacidad y datos | Pendiente | `ARCHITECTURE.md` | — |
+| 8 | Costes y sostenibilidad | **COMPLETADA** (2026-10-30) | `BUSINESS-LOGIC.md` | — |
+| 9 | Privacidad y datos | **EN PROGRESO** | `ARCHITECTURE.md` | — |
 | 10 | Directorio y geolocalización | Pendiente (¿MVP o v2?) | `ARCHITECTURE.md` | F12 |
 | 11 | Notificaciones | Pendiente (¿MVP o v2?) | `ARCHITECTURE.md` | F12 |
 | 12 | Modelo comercial | Pendiente | `BUSINESS-LOGIC.md` | — |

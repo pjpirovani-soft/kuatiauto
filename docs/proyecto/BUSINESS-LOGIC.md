@@ -56,6 +56,60 @@ En MVP, **solo el `admin_general`** verifica el catálogo. `verificador_catalogo
 - No cargar datos sin `fuente` y `fecha_consulta`.
 - El estado `verificado` requiere revisión humana del admin.
 
+
+## Costes y sostenibilidad (F8 — 2026-10-30)
+
+**Principio:** todo free tier. No se paga nada hasta que el proyecto lo justifique con uso real. Si el proyecto escala, se evalúa.
+
+### Free tiers del stack
+
+| Servicio | Free tier | Límite | Al superar |
+|---|---|---|---|
+| Vercel | Hobby | 100 GB bandwidth/mes, 100 GB-h compute | Evaluar (Pro $20/mes) |
+| Supabase | Free | 500 MB DB, 1 GB storage, 50k MAU, 2 GB egress | Evaluar (Pro $25/mes) |
+| Resend | Free | 100 emails/día, 3000/mes | Evaluar ($20/mes) |
+| Sentry | Free | 5k eventos/mes | Evaluar o desactivar |
+| Leaflet + OSM | Gratis | Sin límite (Nominatim 1 req/seg) | — |
+| GitHub | Free | Repos ilimitados, Actions 2000 min/mes | — |
+| Dominio `.com.py` | — | — | ~$15-30/año (NIC.py) |
+
+**Único costo real en MVP:** dominio `.com.py` (~$15-30/año, ~$2/mes). Todo lo demás, free tier.
+
+### Escenarios
+
+**Escenario 1 — Prueba (0-5 establecimientos):**
+- Vercel Hobby, Supabase Free, Resend Free, Sentry Free, OSM.
+- Costo: **$0/mes** + dominio (~$2/mes).
+- Límites: 500 MB DB, 1 GB storage, 3000 emails/mes. Suficiente para 5 establecimientos con ~100 clientes cada uno.
+
+**Escenario 2 — Primeros establecimientos (5-50):**
+- Mismos free tiers. Posiblemente se acerque al límite de Supabase Free (500 MB).
+- Costo: **$0/mes** hasta que se supere el free tier.
+- Cuándo evaluar: si la DB supera 400 MB o hay más de 10k emails/mes.
+
+**Escenario 3 — Crecimiento moderado (50-500):**
+- Si se supera el free tier, evaluar Supabase Pro ($25/mes) + Vercel Pro ($20/mes) + Resend ($20/mes) = ~$65/mes.
+- **No se paga hasta que el proyecto genere ingresos o el piloto lo justifique.**
+
+**Escenario 4 — Crecimiento importante (500+):**
+- Vercel Enterprise o self-hosted, Supabase Team. ~$1200/mes.
+- **Muy lejos del MVP. Se evalúa cuando se llegue.**
+
+### Regla de oro
+
+> **No se paga nada hasta que el proyecto lo justifique con uso real o ingresos.** El free tier es el plan. Si escala, se evalúa. Si no escala, no se paga.
+
+### Cuándo se empieza a pagar
+
+- **Dominio `.com.py`:** cuando el piloto confirme que va a probar la plataforma (es el único costo real del MVP).
+- **Vercel / Supabase / Resend / Sentry:** solo si se supera el free tier. Se monitorea mensualmente.
+- **Nunca** se paga por adelantado ni se asume que el proyecto va a escalar.
+
+### Decisiones de F8 (por delegación)
+
+- D-F8-1: todo free tier. Único costo real en MVP: dominio `.com.py` (~$2/mes).
+- D-F8-2: monitoreo mensual de límites. Si se acerca al límite, evaluar. No pagar por adelantado.
+- D-F8-3: si el proyecto escala, se evalúan los escenarios 3 y 4. Hasta entonces, $0/mes.
 ## Reglas de negocio
 
 - Un cliente pertenece a una empresa (RLS).

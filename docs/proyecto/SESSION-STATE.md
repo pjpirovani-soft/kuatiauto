@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F7 — Stack tecnológico: justificación (completada).
-- **Trabajando en:** F8 — Costes y sostenibilidad.
+- **Fase:** F8 — Costes y sostenibilidad (completada).
+- **Trabajando en:** F9 — Privacidad y protección de datos (Ley 6534/2020).
 - **Bloqueado por:** nada. Decisiones pendientes: verificar redes/DINAPI de KuatiAuto, confirmar datos del piloto.
 
 ## Alcance MVP (confirmado 2026-10-30)
@@ -63,9 +63,9 @@ Los 4 componentes del PROMPT MAESTRO entran en MVP:
 
 ## Próximos 3 pasos
 
-1. F8: costes y sostenibilidad (free tier, escenarios de crecimiento).
-2. F9: privacidad y protección de datos (Ley 6534/2020).
-3. F10: directorio y geolocalización (Leaflet + OSM, búsqueda por distancia).
+1. F9: privacidad y protección de datos (Ley 6534/2020).
+2. F10: directorio y geolocalización (Leaflet + OSM, búsqueda por distancia).
+3. F11: notificaciones y automatizaciones (email, recordatorios).
 
 ## Nota metodológica
 

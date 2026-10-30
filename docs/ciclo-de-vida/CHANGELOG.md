@@ -2,6 +2,15 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.12] - 2026-10-30
+
+### Added
+- Fase 8: costes y sostenibilidad.
+- BUSINESS-LOGIC.md: free tiers del stack, escenarios (prueba, primeros establecimientos, crecimiento moderado, crecimiento importante), regla de oro (todo free tier, no pagar por adelantado).
+- DECISIONES.md: D-F8-1 a D-F8-3.
+
+### Closed
+- F8 — Costes y sostenibilidad.
 ## [0.0.11] - 2026-10-30
 
 ### Added

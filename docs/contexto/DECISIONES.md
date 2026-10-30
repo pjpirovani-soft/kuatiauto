@@ -128,6 +128,14 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F7-2 | Correo transaccional = Resend (free tier 100 emails/día, 3000/mes) | APROBADA por delegación |
 | D-F7-3 | Mapas = Leaflet + OpenStreetMap en MVP. Mapbox en v2 | APROBADA por delegación |
 | D-F7-4 | Analítica = Vercel Analytics. Monitoreo = Sentry free tier. CI/CD = GitHub Actions | APROBADA por delegación |
+
+## Decisiones de F8 (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F8-1 | Todo free tier. Único costo real en MVP: dominio `.com.py` (~$2/mes). No se paga nada más. | APROBADA por delegación |
+| D-F8-2 | Monitoreo mensual de límites. Si se acerca al límite, evaluar. No pagar por adelantado. | APROBADA por delegación |
+| D-F8-3 | Si el proyecto escala, se evalúan escenarios 3 y 4. Hasta entonces, $0/mes. | APROBADA por delegación |
 ## Pendientes de verificar
 
 | ID | Decisión | Estado |

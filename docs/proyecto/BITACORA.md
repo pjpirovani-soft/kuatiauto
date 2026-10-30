@@ -148,6 +148,16 @@
 - **Decisiones:** D-F7-1 a D-F7-4 en DECISIONES.md.
 
 **Commits:** (pendiente).
+
+## 2026-10-30 — Fase 8: costes y sostenibilidad
+
+- **Contexto:** se define la política de costes. Todo free tier, sin pagar nada hasta que el proyecto lo justifique.
+- **Free tiers:** Vercel Hobby, Supabase Free, Resend Free, Sentry Free, Leaflet + OSM, GitHub Free. Único costo real: dominio `.com.py` (~$2/mes).
+- **Escenarios:** 1 (prueba) $0/mes, 2 (primeros establecimientos) $0/mes, 3 (crecimiento moderado) ~$65/mes si se supera free tier, 4 (crecimiento importante) ~$1200/mes.
+- **Regla de oro:** no se paga nada hasta que el proyecto lo justifique con uso real o ingresos. Monitoreo mensual de límites. No pagar por adelantado.
+- **Decisiones:** D-F8-1 a D-F8-3 en DECISIONES.md.
+
+**Commits:** (pendiente).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).
