@@ -185,3 +185,14 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F12-3 | Funcionalidades premium diferidas a v2: multi-empresa, exportacion, reportes avanzados, portal extendido, catalogo editable. | APROBADA |
 | D-F12-4 | Pricing tentativo v2: Gs. 150.000/mes por establecimiento, 3 tiers. Cobro manual en v2 temprana, pasarela en v2 avanzada. | APROBADA |
 | D-F12-5 | Canal MVP: outbound directo + red del propietario. Sin paid ads. CAC ~ 0. | APROBADA |
+
+## Decisiones de F13 (2026-10-30, por delegación)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| D-F13-1 | Entornos: local (dev), preview (Vercel por PR), prod (Vercel main + Supabase prod). Un solo proyecto Supabase en MVP; branching diferido a v2. | PROPUESTA |
+| D-F13-2 | Backups: Supabase backup diario automático + export lógico semanal a almacenamiento externo (script manual documentado). Retención 30 días. Prueba de restauración trimestral documentada. | PROPUESTA |
+| D-F13-3 | Monitorización: Vercel Analytics (Web Vitals + logs) + Sentry free tier para errores de servidor y cliente (diseñado, no configurado en MVP). Alertas por email al propietario. | PROPUESTA |
+| D-F13-4 | Incidentes: 3 severidades. S1 (caída total o pérdida de datos) respuesta < 2 h; S2 (funcionalidad crítica degradada) < 24 h; S3 (bug menor o cosmético) próximo sprint. Canal único: email + WhatsApp del propietario. Post-mortem obligatorio para S1. | PROPUESTA |
+| D-F13-5 | Continuidad: RTO 24 h, RPO 24 h. Accesos críticos (Vercel, Supabase, GitHub, dominio .com.py, Resend) documentados en gestor de contraseñas del propietario con 2FA. Plan de recuperación documentado en MANTENIMIENTO.md. | PROPUESTA |
+

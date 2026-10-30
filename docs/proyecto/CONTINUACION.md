@@ -10,7 +10,7 @@
 - **Local:** C:\Users\Admin\proyectos\studio-pjpirovani-soft\clients\kuatiauto
 - **Último commit:** b8ebdbb docs: cierra F12 - modelo comercial (D-F12-1..5 aprobadas)
 - **Fases completadas:** F0 a F12.
-- **Fase siguiente:** F13 — Operación y continuidad.
+- **Fase en curso:** F13 — Operación y continuidad (parcial, ver abajo).
 - **Fases pendientes:** F13, F14.
 
 ## Documentos clave
@@ -68,22 +68,21 @@
 - Tipos Supabase sin regenerar (supabase gen types al aplicar 013).
 - Reintentos y cron de F11 diseñados, no implementados en código.
 
-## Próximo paso (F13)
+## Próximo paso (F13, en curso)
 
-**F13 — Operación y continuidad.**
+**Hecho (2026-10-30):**
+- F13-PLAN.md (D-F13-1..5 PROPUESTA).
+- DECISIONES.md: D-F13-1..5 agregadas al final (PROPUESTA).
+- MANTENIMIENTO.md completo en docs/proyecto/ (runbook: entornos, despliegues, backups, monitorización, incidentes S1/S2/S3, continuidad, accesos).
+- docs/ciclo-de-vida/MANTENIMIENTO.md → stub que apunta al nuevo.
 
-Definir:
-- Runbook específico de KuatiAuto.
-- Despliegues (Vercel, Supabase).
-- Entornos (local, preview, prod).
-- Backups y recuperación.
-- Monitorización, logs, alertas.
-- Gestión de incidentes.
-- Continuidad del negocio.
-
-Docs: MANTENIMIENTO.md (template del studio a adaptar), ARCHITECTURE.md, DECISIONES.md (D-F13-*), ROADMAP.md, SESSION-STATE.md, BITACORA.md, CHANGELOG.md.
-
-Código: ninguno. F13 es solo docs.
+**Falta (todo docs, sin código):**
+1. ARCHITECTURE.md → sección Operación (referencia a MANTENIMIENTO.md).
+2. ROADMAP.md → F13 EN PROGRESO.
+3. SESSION-STATE.md → handoff.
+4. BITACORA.md → entrada 2026-10-30 F13.
+5. CHANGELOG.md → entrada F13.
+6. Cierre F13 (ROADMAP COMPLETADA + commit de cierre).
 
 ## Cómo retomar en una conversación nueva
 
