@@ -36,7 +36,7 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 
 | ID | Decisión | Estado |
 |---|---|---|
-| D-P1 | Alcance MVP = gestión + catálogo mínimo + admin mínimo. Directorio y portal → v2 | PROPUESTA |
+| D-P1 | Alcance MVP = gestión + directorio + portal + catálogo + inventario (los 4 componentes del PROMPT MAESTRO). | APROBADA |
 | D-P2 | Vehículo híbrido: pertenencia por empresa (MVP) + `vehiculo_identidad` (v2) | PROPUESTA |
 | D-P3 | Piloto provisional con `[PENDIENTE]` | APROBADA |
 | D-F1-1 | Flujo MVP: 7 pasos. Sin factura/recibo, sin impresión/PDF, sin métricas en dashboard. Próximo mantenimiento sugerido automático | PROPUESTA |
@@ -63,6 +63,6 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | P-Nombre | Verificar `@kuatiauto` en redes y DINAPI | PENDIENTE |
 | P-Piloto | Confirmar los 5 campos críticos de `CLIENTE.md` | PENDIENTE |
 | P-Dominio | Registrar `kuatiauto.com.py` | PENDIENTE |
-| P-Alcance-MVP | ¿Directorio y portal v2 (D-P1) o MVP (PROMPT MAESTRO)? | PENDIENTE |
-| P-Catálogo | ¿Catálogo mínimo o completo? | PENDIENTE |
-| P-Inventario | ¿Inventario y stock en MVP o v2? | PENDIENTE |
+| P-Alcance-MVP | Directorio y portal son MVP (resuelto 2026-10-30). | APROBADA |
+| P-Catálogo | Catálogo completo desde MVP: fabricantes, marcas, modelos, motores, especificaciones, fuentes (resuelto 2026-10-30). | APROBADA |
+| P-Inventario | Inventario y movimientos de stock en MVP (resuelto 2026-10-30). | APROBADA |

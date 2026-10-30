@@ -10,24 +10,22 @@ Especificación funcional. Estado: **Fase 1 — producto definido**. Fases 2-14 
 - **Qué es:** Plataforma SaaS multiempresa de gestión y mantenimiento automotor para Paraguay.
 - **Qué NO es:** No es un ERP de taller, no emite facturación tributaria oficial (D9), no es un marketplace de repuestos en MVP.
 
-## 2. Alcance MVP (D-P1, D-F1-1)
+## 2. Alcance MVP (D-P1, P-Alcance-MVP, P-Catálogo, P-Inventario)
 
-Módulos incluidos:
+Módulos incluidos (los 4 componentes del PROMPT MAESTRO):
 
-1. **Gestión multiempresa** — auth, empresa, establecimiento, clientes, vehículos, órdenes de trabajo, historial.
-2. **Catálogo mínimo** — global (admin) + local por empresa (D-F1-3).
-3. **Admin general mínimo** — alta/baja de empresas, catálogo global.
+1. **SaaS de gestión multiempresa** — auth, empresa, establecimiento, usuarios, clientes, vehículos, órdenes de trabajo, historial, inventario y movimientos de stock, administración.
+2. **Directorio público de establecimientos** — búsqueda por ubicación, geolocalización, filtros, perfil público, contacto, horarios.
+3. **Portal del conductor** — cuenta propia, vehículos, historial, próximos mantenimientos, recordatorios, información técnica, localización de establecimientos.
+4. **Catálogo automotriz técnico completo** — fabricantes, marcas, modelos, años, versiones, motorizaciones, cilindradas, combustibles, especificaciones de lubricantes (SAE, API, ACEA, aprobaciones), capacidades, intervalos. Con fuentes, fecha y estado de validación.
 
-Fuera del MVP (v2):
+Fuera del MVP (v2 o permanente):
 
-- Directorio público geolocalizado.
-- Portal del conductor (cuenta propia).
-- Notificaciones automáticas por email/push.
 - Facturación electrónica (fuera incluso de v2 según D9).
 - Marketplace de repuestos, seguros, grúas.
-- Dashboard con métricas (clientes totales, ingresos) — solo próximos mantenimientos en MVP.
-- Impresión/PDF de orden de trabajo (D-F1-1).
-- Recibo simple (D-F1-1).
+- Impresión/PDF de orden de trabajo.
+- Recibo simple.
+- Notificaciones push nativas (email transaccional en MVP, push en v2).
 
 ## 3. Usuarios y roles (esqueleto, se cierra en F2)
 

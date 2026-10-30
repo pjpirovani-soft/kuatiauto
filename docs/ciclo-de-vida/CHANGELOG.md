@@ -2,6 +2,20 @@
 
 Formato basado en Keep a Changelog y Semantic Versioning.
 
+## [0.0.3] - 2026-10-30
+
+### Added
+- `PROMPT-MAESTRO.md`: documento fundacional del proyecto.
+- `ROADMAP.md`: hoja de ruta de 14 fases con estado y dependencias.
+- `DECISIONES.md`: registro A/B/C/D de decisiones.
+
+### Changed
+- Alcance MVP confirmado: los 4 componentes del PROMPT MAESTRO (gestión + directorio + portal + catálogo + inventario).
+- `SPEC.md` sección 2 actualizada.
+- D-P1 (recorte a gestión + catálogo mínimo) revertida. El alcance es el del PROMPT MAESTRO.
+
+### Closed
+- F1 — Definición del producto.
 ## [0.0.2] - 2026-10-30
 
 ### Added
