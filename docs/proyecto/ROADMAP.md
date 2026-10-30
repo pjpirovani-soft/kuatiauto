@@ -2,7 +2,7 @@
 
 **Actualizado:** 2026-10-30
 **Fuente de verdad:** PROMPT MAESTRO (14 fases). Este archivo es el índice de estado.
-**Estado general:** F0-F10 completadas (2026-10-30). F11 en curso. F12-F14 pendientes.
+**Estado general:** F0-F11 completadas (2026-10-30). F12 siguiente. F13-F14 pendientes.
 
 ## Regla de avance
 
@@ -26,12 +26,12 @@
 | 8 | Costes y sostenibilidad | **COMPLETADA** (2026-10-30) | BUSINESS-LOGIC.md |
 | 9 | Privacidad y datos | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Privacidad |
 | 10 | Directorio y geolocalización | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Directorio |
-| 11 | Notificaciones | **EN PROGRESO** (docs 5a-5b; falta 5c, código, cierre) | ARCHITECTURE.md §Notificaciones + F11-PLAN.md |
+| 11 | Notificaciones | **COMPLETADA** (2026-10-30) | ARCHITECTURE.md §Notificaciones + F11-PLAN.md |
 | 12 | Modelo comercial | Pendiente | BUSINESS-LOGIC.md |
 | 13 | Operación y continuidad | Pendiente | MANTENIMIENTO.md |
 | 14 | Plan de implementación | Pendiente | ROADMAP.md + STATUS.md |
 
-## F11 — Notificaciones y automatizaciones (EN PROGRESO)
+## F11 — Notificaciones y automatizaciones (COMPLETADA 2026-10-30)
 
 **Alcance aprobado:** F11a (stub + mocks). El código debe funcionar sin `RESEND_API_KEY` (modo mock) y con ella (envío real). La cuenta de Resend se crea cuando el piloto esté listo.
 
@@ -68,7 +68,7 @@
 
 ## Próximo paso concreto
 
-**Cerrar F11.** Orden acordado:
+**F11 cerrada.** Proximo: **F12 — Modelo comercial.** Orden historico de F11:
 1. Corregir `ROADMAP.md` (este commit).
 2. `npm audit fix` (sin `--force` primero). Evaluar críticas residuales.
 3. Verificar `package.json` `name` — **ya verificado: `kuatiauto`**. Sin commit.
