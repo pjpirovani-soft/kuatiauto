@@ -110,6 +110,51 @@ En MVP, **solo el `admin_general`** verifica el catálogo. `verificador_catalogo
 - D-F8-1: todo free tier. Único costo real en MVP: dominio `.com.py` (~$2/mes).
 - D-F8-2: monitoreo mensual de límites. Si se acerca al límite, evaluar. No pagar por adelantado.
 - D-F8-3: si el proyecto escala, se evalúan los escenarios 3 y 4. Hasta entonces, $0/mes.
+## Modelo comercial (F12 — 2026-10-30)
+
+### Planes
+
+- **MVP:** plan unico free. Sin cobro. Todas las funcionalidades del MVP disponibles para todos los pilotos.
+- **v2 (tentativo):** 3 tiers.
+  - **Free:** 1 establecimiento, funcionalidades del MVP, sin exportacion.
+  - **Pro:** Gs. 150.000/mes por establecimiento. Multi-establecimiento, exportacion, reportes.
+  - **Business:** a definir. Multi-empresa, catalogo editable, API.
+
+### Limites por plan
+
+- **MVP:** 1 empresa por usuario (D-F3-1). Establecimientos y vehiculos sin tope duro. Monitoreo mensual de uso.
+- **v2:** limites por tier en la tabla de planes. Gating por feature flag en server actions.
+
+### Funcionalidades premium diferidas a v2
+
+- Multi-empresa (mas de 1 empresa por usuario).
+- Exportacion de datos (CSV, PDF).
+- Reportes avanzados (rentabilidad, productividad, stock proyectado).
+- Portal del conductor con historial extendido (mas alla de lo compartido).
+- Catalogo editable por empresa (hoy: catalogo global + local limitado).
+
+### Estrategia comercial
+
+- **Canal MVP:** outbound directo al piloto + 5 talleres de la red del propietario. Sin paid ads.
+- **CAC estimado MVP:** ~Gs. 0 (tiempo del propietario).
+- **LTV estimado v2:** ~Gs. 1.800.000 por establecimiento (12 meses de Pro).
+- **Retencion objetivo:** >80% anual en Pro.
+- **Metrica norte MVP:** establecimientos activos con al menos 1 orden de trabajo cerrada por mes.
+
+### Suscripciones y cobro
+
+- **MVP:** sin cobro. Sin pasarela. Sin facturacion.
+- **v2 temprana:** cobro manual por transferencia. Validacion de demanda antes de integrar pasarela.
+- **v2 avanzada:** pasarela local (Bancard o Pagopar). Stripe solo si hay clientes fuera de PY (D1: establecimientos solo PY, asi que no prioritario).
+- **Facturacion tributaria oficial:** sigue fuera del alcance (D9).
+
+### Decisiones de F12 (por delegacion)
+
+- **D-F12-1:** plan unico free en MVP. Sin freemium ni planes pagos. (PROPUESTA)
+- **D-F12-2:** limites tecnicos suaves en MVP. 1 empresa por usuario. Sin tope duro de establecimientos ni vehiculos. Monitoreo mensual. (PROPUESTA)
+- **D-F12-3:** funcionalidades premium diferidas a v2: multi-empresa, exportacion, reportes avanzados, portal extendido, catalogo editable. (PROPUESTA)
+- **D-F12-4:** pricing tentativo v2: Gs. 150.000/mes por establecimiento, 3 tiers. Cobro manual en v2 temprana, pasarela en v2 avanzada. (PROPUESTA)
+- **D-F12-5:** canal MVP: outbound directo + red del propietario. Sin paid ads. CAC ~ 0. (PROPUESTA)
 ## Reglas de negocio
 
 - Un cliente pertenece a una empresa (RLS).
