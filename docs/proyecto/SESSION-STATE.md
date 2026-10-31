@@ -6,12 +6,12 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** E2b1 cerrada (2026-10-31). F0–F14 completas. E1 wip (gate 7/10). E2a-bis cerrada. E2b1 cerrada (UI vehiculos + layout dashboard + tests + registro con nombre).
+- **Fase:** E2b2 sesion 1 cerrada (2026-10-31). F0–F14 completas. E1 wip (gate 7/10). E2a-bis cerrada. E2b1 cerrada. E2b2 backend cerrado (schema + 8 server actions + 44 tests).
 - **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 15 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehiculo → persistencia → audit_log.
 - **Piloto cargado:** Luis María Delvalle Ramírez (importjapanencar@gmail.com) como propietario de Import Japan - Autorepuestos (adbcd23e-f296-435c-b835-e9ce837a9d95). Cliente de prueba: María José Bitar Balletbo.
 - **CEO:** Pedro José Pirovani (pirovanipedrojose@gmail.com) como admin_general, empresa_id=null. Panel de admin real: Supabase Dashboard (UI /admin es E5).
-- **Tests:** 92/92 verdes (11 archivos). **tsc --noEmit:** 0 errores. **build:** OK.
+- **Tests:** 133/133 verdes (13 archivos). **tsc --noEmit:** 0 errores. **build:** OK.
 - **Repo:** C:\Users\Admin\proyectos\kuatiauto (movido fuera del studio). Remote: github.com/pjpirovani-soft/kuatiauto.
 - **Bloqueado por:** nada.
 
@@ -19,6 +19,8 @@
 
 | Hash | Contenido |
 |---|---|
+| 326bd1c | feat - E2b2 backend de ordenes (schema + actions + tests) |
+| b957510 | fix - migracion 016 sincroniza producto_empresa con la DB real |
 | 3e4bd1d | fix - registro envia nombre a raw_user_meta_data |
 | 8caefb9 | docs - cierre E2b1 completa (bitacora, changelog, handoff) |
 | 99db01f | test - cubre listarVehiculosEmpresa (3 casos) |
@@ -98,7 +100,7 @@
 
 Pegar este mensaje:
 
-> Retomo KuatiAuto. Leé docs/proyecto/SESSION-STATE.md y docs/proyecto/STATUS.md. Estado: F0–F14 cerradas, E1 wip (gate 7/10), E2a-bis cerrada, E2b1 cerrada (UI vehículos + layout dashboard + tests + registro con nombre). 92/92 tests, tsc 0, build OK. Próximo: E2b2 (órdenes + empleados). Protocolo: PowerShell 5.x, un comando por mensaje, -LiteralPath para [id], archivos TS en VS Code (no consola), npm test via cmd /c con redirect a archivo, UTF-8 sin BOM, verificar encoding con bytes y regex. Repo en C:\Users\Admin\proyectos\kuatiauto.
+> Retomo KuatiAuto. Leé docs/proyecto/SESSION-STATE.md y docs/proyecto/STATUS.md. Estado: F0–F14 cerradas, E1 wip (gate 7/10), E2a-bis cerrada, E2b1 cerrada, E2b2 backend cerrado. 133/133 tests, tsc 0, build OK. Proximo: E2b2 sesion 2 (UI de ordenes). Protocolo: PowerShell 5.x, un comando por mensaje, -LiteralPath para [id], archivos TS en VS Code (no consola), npm test via cmd /c con redirect a archivo, UTF-8 sin BOM, verificar encoding con bytes y regex. Repo en C:\Users\Admin\proyectos\kuatiauto.
 
 ## Contacto
 

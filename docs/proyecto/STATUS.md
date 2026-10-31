@@ -105,3 +105,16 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 - Registro manda `nombre` en `signUp` → `raw_user_meta_data.nombre`. Trigger `handle_new_user` no requirió migración SQL (ya leía con `coalesce`).
 - BITACORA.md y CHANGELOG.md actualizados con el cierre de E2b1.
 - Pendiente residual: test unitario para `auth-actions.ts` (register con nombre); cobertura por integración manual en el próximo registro real.
+
+## Nota de avance E2b2 sesion 1 (2026-10-31)
+
+**Backend de ordenes cerrado.** Commit 326bd1c. 928 lineas, 44 tests nuevos (133/133 suite completa).
+
+- Migracion 016_producto_empresa.sql: sincroniza el repo con la DB real (drift detectado al planificar E2b2). Aplicada con supabase db push.
+- lib/schemas/ordenSchema.ts: crearOrdenSchema, editarOrdenSchema, anularOrdenSchema, listarOrdenesSchema, ordenIdSchema. Validacion de lineas (exactamente uno de servicio_global_id / servicio_empresa_id; idem producto). Limites duros (max 50 servicios, 100 productos). 26 tests.
+- lib/ordenes-actions.ts: 8 server actions (listarOrdenes, listarOrdenesEmpresa, obtenerOrden, crearOrden, editarOrden, completarOrden, anularOrden, eliminarOrdenBorrador). Rate limit en mutaciones, audit log, validacion cross-empresa, calculo de importe_total y proximo_mantenimiento (D-E2-2) al completar.
+- lib/ordenes-actions.test.ts: 15 tests. Cubre auth, rate limit, cross-empresa, transiciones de estado.
+
+**Deuda aceptada en backend:** editarOrden y crearOrden sin transaccion real (delete + insert sin rollback). Mitigado con audit log. Si aparece bug, migrar a RPC en sesion futura.
+
+**Proximo:** E2b2 sesion 2 (UI de ordenes: /ordenes, /ordenes/nuevo, /ordenes/[id], OrdenForm, OrdenLineas).
