@@ -26,8 +26,8 @@
 | E2a | vehículos UI (form, lista, nuevo, editar) | pendiente | E2a-vehículos backend | E2b1 |
 | E2a | layout dashboard con navegación | pendiente | — | E2b1 |
 | E2b1 | UI vehículos + layout dashboard | pendiente | E2a | próxima sesión |
-| E2b2 | órdenes (CRUD + líneas) | pendiente | E2a | — |
-| E2b2 | empleados (invitación Resend) | pendiente | E2a | depende de RESEND_API_KEY |
+| E2b2 | órdenes (CRUD + líneas) | wip (UI completa, falta gate) | — | UI cerrada commit 64c6b23 |
+| E2b2 | empleados (invitación Resend) | pendiente | RESEND_API_KEY | sacado de E2b2 |
 | E3 | catálogo global (lectura) | pendiente | E1 | — |
 | E3 | catálogo local (CRUD) | pendiente | E1 | — |
 | E3 | stock + movimientos | pendiente | E2b2-órdenes | — |
@@ -43,7 +43,7 @@
 | Item | Estado |
 |---|---|
 | Supabase proyecto `kuatiauto` | ✅ Activo (free tier, us-east-1) |
-| 15 migraciones aplicadas | ✅ 2026-10-31 |
+| 16 migraciones aplicadas | ✅ 2026-10-31 |
 | `lib/supabase/types.ts` (27 tablas, 12 funciones) | ✅ Generado |
 | `@supabase/ssr@0.12.7` | ✅ Bug `never` resuelto |
 | `.env.local` | ✅ Cargado (URL, anon, service_role) |
@@ -118,3 +118,25 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 **Deuda aceptada en backend:** editarOrden y crearOrden sin transaccion real (delete + insert sin rollback). Mitigado con audit log. Si aparece bug, migrar a RPC en sesion futura.
 
 **Proximo:** E2b2 sesion 2 (UI de ordenes: /ordenes, /ordenes/nuevo, /ordenes/[id], OrdenForm, OrdenLineas).
+## Nota de cierre E2b2 sesion 2 (2026-10-31)
+
+**UI de órdenes cerrada.** Commit `64c6b23`. 922 líneas, 9 archivos (7 nuevos + 2 modificados).
+
+- `/ordenes`: lista global por empresa con badge de estado, importe, observaciones truncadas, link a detalle.
+- `/ordenes/nuevo`: form de creación, precarga de vehículo vía `?vehiculo_id=` desde `/vehiculos/[id]`.
+- `/ordenes/[id]`: form de edición + acciones (completar / anular con motivo / eliminar borrador).
+- `components/OrdenLineas.tsx`: editor de líneas de servicio y producto, respeta el schema real (sin `descripcion` ni `cantidad` en servicios).
+- `components/OrdenForm.tsx`: cabecera + líneas + submit, discriminated union `modo: crear | editar`.
+- `components/NuevaOrdenClient.tsx` y `components/EditarOrdenClient.tsx`: wrappers cliente que importan las server actions (no se puede pasar function de server a client en Next 16).
+- `app/(dashboard)/layout.tsx`: link "Órdenes" agregado al sidebar.
+
+**Verificado:** tsc 0 errores, npm test 133/133, npm run build OK (15 rutas, incluye las 3 nuevas), encoding sin BOM y sin mojibake en 9 archivos.
+
+**Deuda generada / diferida:**
+- `editarOrden` y `crearOrden` sin transacción real (delete + insert sin rollback). Mitigado con audit log. Migrar a RPC si aparece bug.
+- Inmutabilidad de orden `completada` no bloqueada en backend (solo UI).
+- Catálogo global/empresa vacío: seed pendiente E3.
+- `any` en helper `mapearOpciones` de las páginas de órdenes.
+- `RESEND_API_KEY` sin configurar → empleados se pospone.
+
+**Próximo:** E3 (catálogo global + local) + cierre E1 (gate 10/10).

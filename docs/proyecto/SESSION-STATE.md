@@ -6,7 +6,7 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** E2b2 sesion 1 cerrada (2026-10-31). F0–F14 completas. E1 wip (gate 7/10). E2a-bis cerrada. E2b1 cerrada. E2b2 backend cerrado (schema + 8 server actions + 44 tests).
+- **Fase:** E2b2 cerrada (2026-10-31, sesion 1 backend + sesion 2 UI). F0–F14 completas. E1 wip (gate 7/10). E2a-bis cerrada. E2b1 cerrada. E2b2 backend cerrado (schema + 8 server actions + 44 tests). UI de ordenes cerrada (lista, nuevo, detalle, lineas, acciones).
 - **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 15 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehiculo → persistencia → audit_log.
 - **Piloto cargado:** Luis María Delvalle Ramírez (importjapanencar@gmail.com) como propietario de Import Japan - Autorepuestos (adbcd23e-f296-435c-b835-e9ce837a9d95). Cliente de prueba: María José Bitar Balletbo.
@@ -19,6 +19,7 @@
 
 | Hash | Contenido |
 |---|---|
+| 64c6b23 | feat - E2b2 UI de ordenes (lista, nuevo, detalle, lineas, acciones) |
 | 326bd1c | feat - E2b2 backend de ordenes (schema + actions + tests) |
 | b957510 | fix - migracion 016 sincroniza producto_empresa con la DB real |
 | 3e4bd1d | fix - registro envia nombre a raw_user_meta_data |
@@ -38,20 +39,26 @@
 
 ## Próximos 3 pasos
 
-1. **E2b2 — Órdenes de trabajo + empleados (~3-4 sesiones).**
-   - CRUD de orden_trabajo + orden_servicio + orden_producto.
-   - Invitación de empleados vía Resend (cuando haya key).
-2. **Cierre de E1 (gate 10/10).**
+1. **E3 — Catálogo global + local.**
+   - Resuelve seed de marcas [PENDIENTE].
+   - Catálogo local (CRUD).
+2. **Empleados (invitación Resend).**
+   - Depende de RESEND_API_KEY.
+   - Quedó fuera de E2b2 por bloqueo de key.
+3. **Cierre de E1 (gate 10/10).**
    - Prueba cruzada A/B contra Supabase real (8-10 del gate).
    - 2FA en gestor de contraseñas (acción del propietario).
-3. **E3 — Catálogo global + local.**
-   - Resuelve seed de marcas [PENDIENTE].
-
 ## Deuda pendiente
 
 ### E1 (gate 7/10)
 - Prueba cruzada A/B contra Supabase real (8-10 del gate).
 - 2FA en gestor de contraseñas (acción del propietario).
+
+### E2b2 (resuelto 2026-10-31, salvo residuales)
+- editarOrden y crearOrden sin transaccion real (delete + insert sin rollback). Mitigado con audit log.
+- Inmutabilidad de orden `completada`: UI la marca solo-lectura, pero el backend no bloquea edicion explicita. Deuda de hardening.
+- Catalogo global/empresa vacio: seed pendiente E3.
+- `any` en helper `mapearOpciones` de las paginas de ordenes (deuda menor de tipado).
 
 ### E2a (menor)
 - empresa_id: null en notificaciones-actions.ts (enviarBienvenida) — deuda F11 conocida.
@@ -83,6 +90,16 @@
 ## Deudas diferidas (heredadas)
 
 - Decisión D-E2-1 a D-E2-5 de E2a (soft-delete, próximo mantenimiento por fecha_orden + intervalo_km, invitación por token, subdivisión E2a/E2b, tests E1 diferidos).
+
+## Drift check (obligatorio antes de etapas que tocan tablas existentes)
+
+Antes de planificar cualquier etapa que toque tablas ya creadas:
+
+1. `supabase migration list --linked` — comparar aplicadas vs `supabase/migrations/`.
+2. `supabase db diff --linked --schema public` — detectar objetos en la DB real ausentes en el repo.
+3. Si hay drift: migración de sincronización `NNN_*.sql`, commit aparte, push, recién después planificar.
+
+Origen: `producto_empresa` apareció a mitad de planificar E2b2 sesión 1. Detectado a tiempo por suerte. Nota: `supabase db diff` requiere Docker Desktop corriendo (`docker ps` sin error). `rls_auto_enable` es ruido conocido de Supabase (event trigger del dashboard), no es drift.
 
 ## Protocolo de sesión (PowerShell 5.x)
 

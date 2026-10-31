@@ -235,4 +235,6 @@ Ver `BITACORA.md` §Fase 1. Alcance MVP confirmado: gestión + directorio + port
 ## [F0] — 2026-10-30 — Punto de partida
 
 Ver `BITACORA.md` §Fase 0. Metodología, nombre provisional, repo único modular.
+## [E2b2-s2] — 2026-10-31 — UI de órdenes
 
+Ver `BITACORA.md` §Cierre E2b2 sesión 2. Lista `/ordenes`, form `/ordenes/nuevo` con precarga vía `?vehiculo_id=`, detalle `/ordenes/[id]` con acciones (completar / anular / eliminar borrador). `OrdenLineas` respeta schema real (servicios sin cantidad, productos sin descripción). Link "Órdenes" en sidebar. Botón "Nueva orden para este vehículo" en `/vehiculos/[id]`. Commit `64c6b23`. 133/133 tests, tsc 0, build OK.

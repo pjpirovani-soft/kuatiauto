@@ -429,3 +429,36 @@
 - Nunca pegar TS/output en la consola. Se perdió ~40 min en esta sesión por eso.
 - La deuda del trigger `handle_new_user` era realmente del form de registro (no del SQL). Diagnosticar antes de migrar.
 - `.next/` cachea types generados. Si `tsc` falla en `.next/dev/types/validator.ts`, borrar `.next` y reintentar.
+## Cierre E2b2 sesión 2 — 2026-10-31
+
+**Cerrado:**
+- `/ordenes` (lista global por empresa, badge de estado, importe, observaciones trunc).
+- `/ordenes/nuevo` (form de creación, precarga de vehículo vía `?vehiculo_id=`).
+- `/ordenes/[id]` (form de edición + acciones: completar / anular con motivo / eliminar borrador).
+- `components/OrdenLineas.tsx` (servicios y productos, respeta schema real).
+- `components/OrdenForm.tsx` (cabecera + líneas, discriminated union `crear | editar`).
+- `components/NuevaOrdenClient.tsx` y `components/EditarOrdenClient.tsx` (wrappers cliente que importan server actions).
+- `app/(dashboard)/layout.tsx`: link "Órdenes" en sidebar.
+- `app/(dashboard)/vehiculos/[id]/page.tsx`: botón "Nueva orden para este vehículo".
+
+**Verificación:**
+- `npx tsc --noEmit`: 0 errores.
+- `npm run build`: OK (15 rutas, incluye `/ordenes`, `/ordenes/nuevo`, `/ordenes/[id]`).
+- `npx vitest run`: 133/133 verdes (13 archivos).
+- Encoding: 0 BOM, 0 mojibake en 9 archivos (verificado por bytes + codepoints, no por `Get-Content`).
+
+**Deuda generada:**
+- `editarOrden` y `crearOrden` sin transacción real (delete + insert sin rollback). Mitigado con audit log. Deuda aceptada en backend E2b2 sesión 1.
+- Inmutabilidad de orden `completada` no bloqueada en backend (solo UI).
+- Catálogo global/empresa vacío: seed pendiente E3.
+- `any` en helper `mapearOpciones` de las páginas de órdenes (deuda menor de tipado).
+
+**Commits:** `64c6b23` (feat E2b2 UI), `[pendiente]` (docs cierre E2b2 sesión 2).
+
+**Lecciones:**
+- **`Get-Content` de PowerShell 5.x en esta máquina miente sobre encoding** (muestra mojibake incluso en archivos UTF-8 limpios). Para verificar encoding: `[System.IO.File]::ReadAllText` + inspección de codepoints, o `ReadAllBytes` y chequeo de BOM. Nunca confiar en `Get-Content` para diagnóstico de encoding.
+- **Drift check obligatorio antes de etapas que tocan tablas existentes.** `producto_empresa` apareció a mitad de planificar E2b2 sesión 1. Detectado por suerte. Protocolo ahora exige `supabase migration list --linked` + `supabase db diff --linked --schema public` al inicio de la etapa.
+- **`supabase db diff` requiere Docker Desktop corriendo.** En esta máquina, `docker desktop start` arranca el daemon y el named pipe `dockerDesktopLinuxPipe` queda disponible. `Get-Service com.docker.service` falla porque es instalación per-user (no registra servicio de Windows). Normal.
+- **`rls_auto_enable` es ruido de Supabase**, no drift real. Es un event trigger que el dashboard instala para habilitar RLS en tablas nuevas. Ignorar en diffs futuros.
+- **Heredocs `@"..."@` de PowerShell expanden `$` y backticks.** Para bloques con `${}` o backticks de TS, usar heredoc de comillas simples `@'...'@` o construir con `$lines = @(...) -join`.
+- **Pastes duplicados** de bloques largos ocurren con frecuencia en esta sesión. Si pasa, `Ctrl+C` para salir del modo continuación, y verificar con `Get-Item Length` que el archivo final quedó correcto. `WriteAllText` es idempotente, no corrompe.
