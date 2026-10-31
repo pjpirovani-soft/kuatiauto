@@ -492,3 +492,26 @@
 - `orden_servicio` y `orden_producto` tienen las columnas FK (`servicio_empresa_id`, etc.) **sin FK declarada** en la migración (comentario en `005_orden_trabajo.sql` dice "se agregan en 005b o 006" pero nunca se agregaron). La DB real sí las tiene (probablemente aplicadas a mano vía dashboard). No bloquea hoy, pero deuda de housekeeping.
 - `supabase db query --linked` es el comando correcto para queries ad-hoc (no `db execute`).
 - Heredocs `@'...'@` de PowerShell insertan LF, no CRLF. Si el archivo destino tiene CRLF, el `.Replace()` falla silenciosamente. Solución: construir strings con `[char]13 + [char]10` o comparar por líneas, no por bloques.
+
+## Prueba cruzada A/B — 2026-10-31
+
+**Gate E1 cruzado cerrado (punto 8-10).**
+
+Setup:
+- Usuario A: `importjapanencar@gmail.com` (Luis, Import Japan). Password: `ImportJapan-2026` (recordada en esta sesión).
+- Usuario B: `test-b-user@example.com` (Taller Prueba B). Creado vía Auth Admin API con `sb_secret_` y `User-Agent: kua­ti­auto-script/1.0` (evita el bloqueo "Forbidden use of secret API key in browser").
+- Empresa B + cliente B: creados vía SQL directo (`supabase db query --file`). IDs documentados en STATUS.md.
+
+Pruebas ejecutadas:
+1. Login A y login B (ventanas separadas) → cada uno ve solo sus propios clientes.
+2. B → URL directa `localhost:3000/clientes/<id-cliente-A>` → "Cliente no encontrado." ✅
+3. A → URL directa `localhost:3000/clientes/<id-cliente-B>` → "Cliente no encontrado." ✅
+
+**Resultado:** RLS aísla correctamente. Gate E1 pasa de 7/10 a 9/10. Falta solo 2FA del propietario para el 10/10.
+
+**Lecciones:**
+- Las nuevas API keys de Supabase (`sb_publishable_`, `sb_secret_`) **no son JWT**. El header `Authorization: Bearer <key>` falla si se usa con ellas en endpoints de Auth. La key va solo en `apikey`. Para REST queries con JWT de usuario, `apikey` = publishable, `Authorization` = JWT del usuario.
+- La `sb_secret_` solo funciona fuera del navegador (User-Agent de script). Desde Chrome DevTools, Supabase la rechaza con "Forbidden use of secret API key in browser". Usar PowerShell/curl con User-Agent custom.
+- La prueba cruzada real se hace en la UI (login A, login B, intentar acceder por URL), no con scripts que peleen con keys. Fue más rápido y confiable.
+- Crear usuarios de prueba: Auth Admin API (`POST /auth/v1/admin/users`) + SQL para vincular a empresa. Reutilizable para futuras pruebas cruzadas.
+- Password de Luis: `ImportJapan-2026`. Guardar en gestor de contraseñas del propietario.

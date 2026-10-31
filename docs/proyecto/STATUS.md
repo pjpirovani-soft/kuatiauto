@@ -15,7 +15,7 @@
 
 | Etapa | Módulo | Estado | Bloqueantes | Hallazgos |
 |---|---|---|---|---|
-| E1 | auth completo (registro/login/reset/confirmación) | wip (gate 7/10) | — | prueba cruzada A/B pendiente |
+| E1 | auth completo (registro/login/reset/confirmación) | wip (gate 9/10) | — | prueba cruzada A/B ✅ 2026-10-31; 2FA pendiente (acción del propietario) |
 | E1 | multiempresa (crear empresa + establecimiento) | wip | — | validado end-to-end (Luis) |
 | E1 | shell + route groups + layout base | wip | — | layout dashboard es E2b1 |
 | E1 | middleware rate limiting | wip | — | tests 8/8 verdes |
@@ -159,3 +159,19 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 - Stock: solo columnas `stock_actual`/`stock_minimo`; UI de movimientos pendiente.
 
 **Próximo:** cierre de E1 (gate 10/10) — prueba cruzada A/B + 2FA. Después E4 (directorio + portal del conductor) y E5 (recordatorios + panel admin).
+
+## Nota de prueba cruzada A/B (2026-10-31)
+
+**Prueba cruzada A/B completada contra Supabase real.**
+
+- Usuario A: `importjapanencar@gmail.com` (Luis, Import Japan, empresa adbcd23e-f296-435c-b835-e9ce837a9d95).
+- Usuario B: `test-b-user@example.com` (Taller Prueba B, empresa b4d1b031-f3c9-4c86-a513-b0b071929b28). Creado vía Auth Admin API con service_role.
+- Cliente A: María José Bitar Balletbo (7e74bf38-796b-4d92-8fd3-338ea3a6fd2b).
+- Cliente B: Cliente Prueba B (4538656d-9c65-4dd6-8d9a-195af4741803).
+
+**Verificado:**
+- B ve solo sus propios clientes (Taller Prueba B).
+- B → URL directa a cliente de A → "Cliente no encontrado".
+- A (Luis) → URL directa a cliente de B → "Cliente no encontrado".
+
+**Resultado:** RLS aísla correctamente. Gate E1 cruzado cerrado. E1 pasa de gate 7/10 a gate 9/10 (falta solo 2FA del propietario para el 10/10).

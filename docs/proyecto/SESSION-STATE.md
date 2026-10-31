@@ -52,9 +52,10 @@
    - 2FA en gestor de contraseñas (acción del propietario).
 ## Deuda pendiente
 
-### E1 (gate 7/10)
-- Prueba cruzada A/B contra Supabase real (8-10 del gate).
-- 2FA en gestor de contraseñas (acción del propietario).
+### E1 (gate 9/10)
+- ~~Prueba cruzada A/B contra Supabase real~~ ✅ 2026-10-31. Usuario A (Luis, Import Japan) y usuario B (test-b-user@example.com, Taller Prueba B) creados. B no ve A (listado + acceso directo por URL a cliente de A → "Cliente no encontrado"). A no ve B (idem). RLS verificado contra DB real.
+- 2FA en gestor de contraseñas (acción del propietario). **Único pendiente para cerrar E1 al 10/10.**
+- Usuarios de prueba: `test-b-user@example.com` (Taller Prueba B, empresa b4d1b031-f3c9-4c86-a513-b0b071929b28). Sirve para futuras pruebas cruzadas.
 
 ### E3 (resuelto 2026-10-31, salvo residuales)
 - Soft-delete de catalogo local: `servicio_empresa` y `producto_empresa` no tienen columna `activo`. Se decidio no implementar `eliminar` en E3a para evitar huerfanos o errores de FK. Deuda: migracion 018 que agregue `activo boolean not null default true` + actions `eliminarX` con soft-delete.
