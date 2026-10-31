@@ -83,3 +83,19 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 **Piloto funcional end-to-end contra Supabase real.** Registro → login → crear empresa → crear cliente → persistencia → audit_log. Suite 89/89. `tsc` 0. Encoding limpio. Commits `93c3f9a` y `6a4d365` pusheados.
 
 **Próximo:** E2b1 (UI vehículos + layout dashboard con navegación).
+## Nota de cierre E2b1 (2026-10-31)
+
+**UI vehículos + layout dashboard cerrados.** Commit 6143d08.
+
+- listarVehiculosEmpresa() agregado a lib/vehiculos-actions.ts (lista global, filtro por empresa).
+- app/(dashboard)/layout.tsx: sidebar (Panel, Clientes, Vehículos, Directorio, Logout) + auth check server-side.
+- components/VehiculoForm.tsx: client component crear/editar con discriminated union.
+- /vehiculos (lista), /vehiculos/nuevo (form crear), /vehiculos/[id] (form editar).
+- Panel logueado movido de (dashboard)/page.tsx a (dashboard)/dashboard/page.tsx. (dashboard)/page.tsx borrado (colisión con landing app/page.tsx).
+- / sigue siendo landing pública estática. /directorio queda fuera del shell.
+
+**Verificado:** tsc 0 errores, npm run build OK (11 rutas, incluye las 3 nuevas), npm test 89/89. Encoding sin BOM en 6 archivos nuevos.
+
+**Deuda generada:** listarVehiculosEmpresa() sin tests (agregar 2 casos en próxima sesión).
+
+**Próximo:** tests de listarVehiculosEmpresa() + trigger handle_new_user, después E2b2 (órdenes + empleados).
