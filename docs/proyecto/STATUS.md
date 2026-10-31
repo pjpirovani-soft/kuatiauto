@@ -28,9 +28,9 @@
 | E2b1 | UI vehículos + layout dashboard | pendiente | E2a | próxima sesión |
 | E2b2 | órdenes (CRUD + líneas) | wip (UI completa, falta gate) | — | UI cerrada commit 64c6b23 |
 | E2b2 | empleados (invitación Resend) | pendiente | RESEND_API_KEY | sacado de E2b2 |
-| E3 | catálogo global (lectura) | pendiente | E1 | — |
-| E3 | catálogo local (CRUD) | pendiente | E1 | — |
-| E3 | stock + movimientos | pendiente | E2b2-órdenes | — |
+| E3 | catálogo global (lectura) | wip (seed cargado) | — | 15 fabricantes, 73 modelos, 10 servicios, 8 productos |
+| E3 | catálogo local (CRUD) | wip (funcional) | — | commit b399b28 |
+| E3 | stock + movimientos | pendiente | — | columnas stock_actual/stock_minimo ya existen en producto_empresa; falta UI de movimientos |
 | E4 | directorio (búsqueda + mapa) | wip | — | página base en app/directorio |
 | E4 | publicación/moderación directorio | pendiente | E4-directorio | — |
 | E4 | portal del conductor | pendiente | E1, E2b2 | — |
@@ -140,3 +140,22 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 - `RESEND_API_KEY` sin configurar → empleados se pospone.
 
 **Próximo:** E3 (catálogo global + local) + cierre E1 (gate 10/10).
+
+## Nota de cierre E3 (2026-10-31)
+
+**Catálogo local + seed de marcas/modelos cerrados.** Commit `b399b28`. 19 archivos, 1482 líneas.
+
+- Backend: `lib/schemas/servicioEmpresaSchema.ts`, `lib/schemas/productoEmpresaSchema.ts`, `lib/servicios-empresa-actions.ts`, `lib/productos-empresa-actions.ts` (listar / obtener / crear / editar; **sin eliminar**, decisión D-E3a-1 por falta de columna `activo`).
+- Tests: 17 schema + 26 actions = 43 nuevos. Suite total 176/176.
+- UI: `/catalogo` (índice), `/catalogo/servicios` (lista + nuevo + editar), `/catalogo/productos` (lista + nuevo + editar). Link "Catálogo" en sidebar.
+- Migración `017_seed_marcas_modelos.sql`: 10 marcas faltantes (todas las de `fabricante` que no tenían homónima) + 70 modelos populares en Paraguay. Total: 15 fabricantes, 15 marcas, 73 modelos.
+
+**Verificado:** tsc 0, 176/176 tests, build OK (22 rutas), encoding limpio.
+
+**Deuda generada:**
+- Soft-delete de catálogo local: falta migración 018 con `activo` + actions `eliminarX`.
+- Catálogo técnico profundo (versiones, motorizaciones, especificaciones): vacío, deuda v2.
+- Productos globales con `marca = [PENDIENTE]`: deuda v2.
+- Stock: solo columnas `stock_actual`/`stock_minimo`; UI de movimientos pendiente.
+
+**Próximo:** cierre de E1 (gate 10/10) — prueba cruzada A/B + 2FA. Después E4 (directorio + portal del conductor) y E5 (recordatorios + panel admin).

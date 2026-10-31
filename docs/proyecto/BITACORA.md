@@ -462,3 +462,33 @@
 - **`rls_auto_enable` es ruido de Supabase**, no drift real. Es un event trigger que el dashboard instala para habilitar RLS en tablas nuevas. Ignorar en diffs futuros.
 - **Heredocs `@"..."@` de PowerShell expanden `$` y backticks.** Para bloques con `${}` o backticks de TS, usar heredoc de comillas simples `@'...'@` o construir con `$lines = @(...) -join`.
 - **Pastes duplicados** de bloques largos ocurren con frecuencia en esta sesión. Si pasa, `Ctrl+C` para salir del modo continuación, y verificar con `Get-Item Length` que el archivo final quedó correcto. `WriteAllText` es idempotente, no corrompe.
+
+## Cierre E3 — 2026-10-31
+
+**Cerrado: catálogo local CRUD + seed de marcas/modelos.**
+
+- Backend: `lib/schemas/servicioEmpresaSchema.ts`, `lib/schemas/productoEmpresaSchema.ts`, `lib/servicios-empresa-actions.ts`, `lib/productos-empresa-actions.ts` (listar / obtener / crear / editar). **Sin eliminar** (D-E3a-1).
+- Tests: 17 schema + 26 actions = 43 nuevos. Suite 133 → 176.
+- UI: `/catalogo` (índice), `/catalogo/servicios` (lista + nuevo + editar), `/catalogo/productos` (lista + nuevo + editar). Link "Catálogo" en sidebar.
+- Migración `017_seed_marcas_modelos.sql`: 10 marcas faltantes + 70 modelos populares en Paraguay. Total: 15 fabricantes, 15 marcas, 73 modelos.
+
+**Verificación:**
+- `npx tsc --noEmit`: 0 errores.
+- `npm test`: 176/176 verdes (17 archivos).
+- `npm run build`: OK (22 rutas, incluye las 7 nuevas del catálogo).
+- Encoding: 0 BOM, 0 mojibake en 18 archivos.
+- `supabase db push`: 017 aplicada y verificada (15/15 fabricantes con marca, 73 modelos).
+
+**Deuda generada:**
+- Soft-delete de catálogo local: falta migración 018 con columna `activo` + actions `eliminarX`.
+- Catálogo técnico profundo (versiones, motorizaciones, especificaciones): vacío, deuda v2.
+- Productos globales con `marca = [PENDIENTE]`: requiere verificación real, deuda v2.
+- Stock: solo columnas `stock_actual`/`stock_minimo`; UI de movimientos pendiente.
+
+**Commits:** `b399b28` (feat E3), `[pendiente]` (docs cierre E3).
+
+**Lecciones:**
+- La tabla `servicio_empresa` es más simple de lo que el resumen mental asumía: solo `nombre + descripcion`, sin `precio_base` ni `activo`. Leer `types.ts` de las tablas involucradas **antes** de planificar, no confiar en resúmenes.
+- `orden_servicio` y `orden_producto` tienen las columnas FK (`servicio_empresa_id`, etc.) **sin FK declarada** en la migración (comentario en `005_orden_trabajo.sql` dice "se agregan en 005b o 006" pero nunca se agregaron). La DB real sí las tiene (probablemente aplicadas a mano vía dashboard). No bloquea hoy, pero deuda de housekeeping.
+- `supabase db query --linked` es el comando correcto para queries ad-hoc (no `db execute`).
+- Heredocs `@'...'@` de PowerShell insertan LF, no CRLF. Si el archivo destino tiene CRLF, el `.Replace()` falla silenciosamente. Solución: construir strings con `[char]13 + [char]10` o comparar por líneas, no por bloques.

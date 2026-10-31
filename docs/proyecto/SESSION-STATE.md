@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** E2b2 cerrada (2026-10-31, sesion 1 backend + sesion 2 UI). F0–F14 completas. E1 wip (gate 7/10). E2a-bis cerrada. E2b1 cerrada. E2b2 backend cerrado (schema + 8 server actions + 44 tests). UI de ordenes cerrada (lista, nuevo, detalle, lineas, acciones).
-- **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 15 migraciones aplicadas. .env.local cargado.
+- **Fase:** E3 cerrada (2026-10-31, catalogo local + seed de marcas/modelos). F0–F14 completas. E1 wip (gate 7/10). E2a-bis, E2b1, E2b2 (backend + UI de ordenes), E3 cerradas. Catalogo global con 15 fabricantes, 73 modelos, 10 servicios y 8 productos. Catalogo local CRUD funcional.
+- **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 17 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehiculo → persistencia → audit_log.
 - **Piloto cargado:** Luis María Delvalle Ramírez (importjapanencar@gmail.com) como propietario de Import Japan - Autorepuestos (adbcd23e-f296-435c-b835-e9ce837a9d95). Cliente de prueba: María José Bitar Balletbo.
 - **CEO:** Pedro José Pirovani (pirovanipedrojose@gmail.com) como admin_general, empresa_id=null. Panel de admin real: Supabase Dashboard (UI /admin es E5).
@@ -19,6 +19,7 @@
 
 | Hash | Contenido |
 |---|---|
+| b399b28 | feat - E3 catalogo local (CRUD servicios/productos) + seed marcas/modelos |
 | 64c6b23 | feat - E2b2 UI de ordenes (lista, nuevo, detalle, lineas, acciones) |
 | 326bd1c | feat - E2b2 backend de ordenes (schema + actions + tests) |
 | b957510 | fix - migracion 016 sincroniza producto_empresa con la DB real |
@@ -53,6 +54,11 @@
 ### E1 (gate 7/10)
 - Prueba cruzada A/B contra Supabase real (8-10 del gate).
 - 2FA en gestor de contraseñas (acción del propietario).
+
+### E3 (resuelto 2026-10-31, salvo residuales)
+- Soft-delete de catalogo local: `servicio_empresa` y `producto_empresa` no tienen columna `activo`. Se decidio no implementar `eliminar` en E3a para evitar huerfanos o errores de FK. Deuda: migracion 018 que agregue `activo boolean not null default true` + actions `eliminarX` con soft-delete.
+- Catalogo tecnico profundo (versiones, motorizaciones, especificaciones de lubricante) sigue vacio: el seed solo cubre fabricante -> marca -> modelo. Deuda v2 si el piloto lo pide.
+- Productos globales con `marca = [PENDIENTE]` (aceites y filtros). Requiere verificacion real de marcas (Mobil, Shell, Castrol) con fuentes. Deuda v2.
 
 ### E2b2 (resuelto 2026-10-31, salvo residuales)
 - editarOrden y crearOrden sin transaccion real (delete + insert sin rollback). Mitigado con audit log.

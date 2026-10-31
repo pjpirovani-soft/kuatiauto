@@ -238,3 +238,7 @@ Ver `BITACORA.md` §Fase 0. Metodología, nombre provisional, repo único modula
 ## [E2b2-s2] — 2026-10-31 — UI de órdenes
 
 Ver `BITACORA.md` §Cierre E2b2 sesión 2. Lista `/ordenes`, form `/ordenes/nuevo` con precarga vía `?vehiculo_id=`, detalle `/ordenes/[id]` con acciones (completar / anular / eliminar borrador). `OrdenLineas` respeta schema real (servicios sin cantidad, productos sin descripción). Link "Órdenes" en sidebar. Botón "Nueva orden para este vehículo" en `/vehiculos/[id]`. Commit `64c6b23`. 133/133 tests, tsc 0, build OK.
+
+## [E3] — 2026-10-31 — Catálogo local + seed de marcas/modelos
+
+Ver `BITACORA.md` §Cierre E3. CRUD de servicios y productos propios de la empresa (`/catalogo/servicios`, `/catalogo/productos`), backend con 4 actions cada uno, 43 tests nuevos (suite 176). Migración `017` con 10 marcas faltantes + 70 modelos populares en Paraguay. Commit `b399b28`.
