@@ -19,8 +19,9 @@
 
 | Hash | Contenido |
 |---|---|
-| (pendiente) | fix - registro envia nombre a raw_user_meta_data |
-| (pendiente) | docs - cierre E2b1 completa (bitacora, changelog, handoff) |
+| 3e4bd1d | fix - registro envia nombre a raw_user_meta_data |
+| 8caefb9 | docs - cierre E2b1 completa (bitacora, changelog, handoff) |
+| 99db01f | test - cubre listarVehiculosEmpresa (3 casos) |
 | cbc6af3 | docs - cierre E2b1 |
 | 6143d08 | feat - E2b1 UI vehiculos + layout dashboard |
 | 45620f7 | fix(e2a) - E2a-bis saneamiento (tests E1 cerrados, ClienteForm reescrito, docs) |
