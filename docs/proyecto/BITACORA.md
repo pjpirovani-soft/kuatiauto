@@ -1,4 +1,4 @@
-﻿# BITACORA — KuatiAuto (provisional)
+# BITACORA — KuatiAuto (provisional)
 
 ## 2026-10-30 — Fase 0: punto de partida arquitectónico
 
@@ -336,4 +336,63 @@
 - Verificar `@kuatiauto` en redes y DINAPI.
 - Registrar `kuatiauto.com.py` cuando el piloto lo justifique.
 - Definir contenido exacto del seed del catálogo global (~20-30 servicios/productos) (F6).
+## 2026-10-31 — E2a-bis: Supabase real + piloto end-to-end
 
+**Contexto:** sesión larga de conexión real. Se sale del modo mock y se valida el flujo completo contra PostgreSQL real.
+
+**Supabase:**
+- Proyecto `kuatiauto` (`wzfukuzcousihslfgelr`, us-east-1, free tier).
+- CLI `2.122.0` instalada como devDependency (`supabase`).
+- Login con PAT, link al project-ref.
+- 15 migraciones aplicadas en orden (001–015) sin errores.
+- Migración scaffold `001_clientes.sql` del blueprint web-app movida a `_cuarentena/` (crea tabla `clientes` plural, RLS por user_id — no pertenece a KuatiAuto).
+- `lib/supabase/types.ts` generado (83 KB, 27 tablas, 12 funciones).
+
+**Tipos cableados:**
+- `@supabase/ssr` de `0.5.2` a `0.12.7` — resuelve el bug de `never` en queries (por `__InternalSupabase.PostgrestVersion: "14.18"`).
+- `<Database>` cableado en `server.ts` y `client.ts`.
+- 23 errores de `never` resueltos al actualizar `@supabase/ssr`. Quedaron 6 de `null` → `undefined` en params RPC (`directorio-actions.ts`, `empresa-actions.ts`), resueltos con reemplazo quirúrgico.
+
+**Flujo piloto validado end-to-end:**
+- Luis María Delvalle Ramírez (`importjapanencar@gmail.com`) creado desde Supabase Dashboard (auto-confirm, sin email — el SMTP de Supabase free no manda a emails fuera del equipo).
+- `rol='propietario'`, `nombre` corregido por SQL, `empresa_id` seteado al crear empresa.
+- Empresa `Import Japan - Autorepuestos` (`adbcd23e-f296-435c-b835-e9ce837a9d95`) creada vía `crear_empresa_con_establecimiento` (SECURITY DEFINER) desde `/crear-empresa`.
+- Cliente `María José Bitar Balletbo` creado vía `crearCliente`, persistido con `empresa_id` correcto.
+- `audit_log` registra `crear/empresa` (14:07) y `crear/cliente` (14:19).
+
+**CEO:**
+- Pedro José Pirovani (`pirovanipedrojose@gmail.com`) como `admin_general`, `empresa_id=null`. Panel de admin real: Supabase Dashboard (UI `/admin` es E5).
+
+**Reorganización de repos:**
+- Studio (`studio-pjpirovani-soft`) limpiado: scripts/, blueprints/, .github/workflows/ retirados. Queda como "documentación + clients". Commit `53ebf93`.
+- KuatiAuto movido a `C:\Users\Admin\proyectos\kuatiauto` (fuera del studio). Commit `4adf7aa..6a4d365` pusheado.
+- ENC-Logística movida a `C:\Users\Admin\proyectos\enc-logistica`. Sin cambios (ya sincronizado en `0319683`).
+
+**Fixes UI:**
+- `/crear-empresa` (form + page) creado. Sin esto, Luis no podía crear empresa.
+- `app/(dashboard)/page.tsx` reescrito (sin mojibake, condicional: crear empresa vs gestionar clientes).
+- `app/(dashboard)/dashboard/page.tsx` → redirect a `/`.
+- Links `/dashboard/clientes` → `/clientes` en 6 archivos (deuda de E2a documentada).
+
+**E2a-bis cerrado:**
+- `vehiculoSchema.test.ts`: test `default km_actual a 0` reemplazado por 2 tests (optional + 0 explícito). 13/13 verdes.
+- `empresa-actions.ts` reformateado (era 1 línea, ahora legible). Sin mojibake (`Datos inv�lidos` → `Datos inválidos`).
+- `ClienteForm.test.tsx` reescrito contra interfaz nueva (action plano, no FormData). 5/5 verdes.
+- `rate-limit.test.ts` (nuevo): 8 tests (`buildClave` + `checkRateLimit` con fail-open). 8/8 verdes.
+- `empresa-actions.test.ts` (nuevo): 5 tests (`crearEmpresa`: validación Zod, sin sesión, RPC OK, RPC falla). 5/5 verdes.
+
+**Verificación:**
+- `npx vitest run`: **89/89** tests verdes (11 archivos).
+- `npx tsc --noEmit`: **0 errores**.
+- Encoding: 0 BOM, 0 mojibake en archivos nuevos.
+
+**Deuda pendiente (E1 gate):** prueba cruzada A/B contra Supabase real (8-10 del gate).
+**Deuda pendiente (E2a):** `empresa_id: null` en `notificaciones-actions.ts` (dejar para cuando se toque notificaciones), trigger `handle_new_user` (mejorar en E2b), `/` vs `/dashboard` (E2b1).
+
+**Commits:** `93c3f9a` (CLI + cuarentena), `6a4d365` (Supabase real + flujo piloto), `[pendiente]` (E2a-bis).
+
+**Lecciones:**
+- El SMTP de Supabase free solo manda a emails del equipo. Sin Resend, los signups externos fallan. Workaround: crear usuarios desde Dashboard con "Auto Confirm User".
+- `@supabase/ssr@0.5.2` + `supabase-js` moderno → `never` en queries. Actualizar a `0.12.7`.
+- PowerShell: `Resolve-Path` falla con `[id]` (wildcards). Usar `Join-Path (Get-Location) $path` + `[System.IO.File]::ReadAllText($full)`.
+- Nunca pegar output de comandos en la consola. Nunca pegar TS en la consola.

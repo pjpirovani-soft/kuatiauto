@@ -1,4 +1,4 @@
-﻿# Session State — KuatiAuto (provisional)
+# Session State — KuatiAuto (provisional)
 
 **Actualizado:** 2026-10-31
 
@@ -6,70 +6,83 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** E2a — Gestión core: clientes + vehículos backend (WIP 2026-10-31). F0–F14 COMPLETADAS. E1 wip.
-- **Trabajando en:** E2a. Hecho: clientes CRUD end-to-end (schema, actions, tests, UI), vehículos backend (schema, actions, tests), fix de colisión de rutas, home real, migraciones 014/015.
-- **Tests:** 71/73 verdes. 2 desactualizados (vehiculoSchema.test.ts: `km_actual` optional; ClienteForm.test.tsx: props viejas).
-- **tsc --noEmit:** 0 errores.
-- **App funcional:** login, directorio, CRUD clientes. Verificado con `npm run dev`.
+- **Fase:** E2a-bis cerrada (2026-10-31). F0–F14 completas. E1 wip (gate 7/10). E2a wip con piloto funcional.
+- **Supabase real:** proyecto `kuatiauto` (`wzfukuzcousihslfgelr`, us-east-1). 15 migraciones aplicadas. `.env.local` cargado.
+- **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → persistencia → audit_log.
+- **Piloto cargado:** Luis María Delvalle Ramírez (`importjapanencar@gmail.com`) como `propietario` de Import Japan - Autorepuestos (`adbcd23e-f296-435c-b835-e9ce837a9d95`). Cliente de prueba: María José Bitar Balletbo.
+- **CEO:** Pedro José Pirovani (`pirovanipedrojose@gmail.com`) como `admin_general`, `empresa_id=null`. Panel de admin real: Supabase Dashboard (UI `/admin` es E5).
+- **Tests:** 89/89 verdes (11 archivos). **tsc --noEmit:** 0 errores.
+- **Repo:** `C:\Users\Admin\proyectos\kuatiauto` (movido fuera del studio). Remote: `github.com/pjpirovani-soft/kuatiauto`.
 - **Bloqueado por:** nada.
 
 ## Commits clave (main)
 
 | Hash | Contenido |
 |---|---|
-| `1042f2e` | E1 - fundamentos (wip) |
-| `4987fc3` | docs - sección E1 en ROADMAP |
-| `4fa3185` | E2a - plan de gestión core |
-| `41fede8` | E2a - clientes (schema, actions, tests) |
-| `fd1d1cf` | E2a - vehículos (schema, actions, tests, migración 015) |
-| `7316326` | E2a - UI clientes (form, lista, nuevo, editar) |
-| `62e3962` | E2a - fix colisión de rutas + home real |
+| `6a4d365` | feat - conecta Supabase real y valida flujo piloto end-to-end |
+| `4adf7aa` | docs - E2a cierre |
+| `62e3962` | fix - resolver colisión de rutas + home real |
+| `7316326` | feat - UI clientes |
+| `fd1d1cf` | feat - vehículos backend |
+| `41fede8` | feat - clientes backend |
+| `1042f2e` | feat - E1 fundamentos |
+| `3684ff2` | docs - cierre F13 |
 
-## Próximos 3 pasos
+## Próximos 3 pasos (E2b subdividido)
 
-1. **Cerrar docs de E2a:** `STATUS.md` actualizado, commit `docs(kuatiauto): E2a - cierre` (BITACORA y CHANGELOG ya actualizados).
-2. **UI vehículos:** `VehiculoForm.tsx` + 3 páginas (`vehiculos/page.tsx`, `nuevo/page.tsx`, `[id]/page.tsx`). Backend listo.
-3. **Layout dashboard con navegación:** sidebar o menú que una clientes, vehículos, directorio, logout.
+1. **E2b1 — UI vehículos + layout dashboard con navegación (~1 sesión).**
+   - `components/VehiculoForm.tsx` + 3 páginas (`/vehiculos`, `/vehiculos/nuevo`, `/vehiculos/[id]`).
+   - Layout dashboard con sidebar (clientes, vehículos, directorio, logout).
+2. **E2b2 — Órdenes de trabajo + empleados (~3-4 sesiones).**
+   - CRUD de `orden_trabajo` + `orden_servicio` + `orden_producto`.
+   - Invitación de empleados vía Resend (cuando haya key).
+3. **Cierre de E1 (gate 10/10).**
+   - Prueba cruzada A/B contra Supabase real.
+   - 2FA en gestor de contraseñas (acción del propietario).
 
-## Deuda pendiente (E2a)
+## Deuda pendiente
 
-- `vehiculoSchema.test.ts`: 1 test espera `km_actual: 0`, ahora es `optional`.
-- `ClienteForm.test.tsx`: test escrito para componente viejo (FormData), reescribir.
-- Links de clientes apuntan a `/dashboard/clientes`, ruta real es `/clientes` (por route group).
-- `lib/empresa-actions.ts` está en una línea (reformatear).
+### E1 (gate 7/10)
+- Prueba cruzada A/B contra Supabase real (8-10 del gate).
+- 2FA en gestor de contraseñas (acción del propietario).
 
-## Deuda pendiente (E1)
+### E2a (menor)
+- `empresa_id: null` en `notificaciones-actions.ts` (enviarBienvenida) — deuda F11 conocida.
+- Seed del catálogo con marcas `[PENDIENTE]` — se resuelve con E3.
+- Trigger `handle_new_user` pone `empleado` + email como nombre. Debería tomar `raw_user_meta_data` o default `propietario`. Anotado para E2b.
+- Panel `/` mezclado con dashboard. Meta final: `/` = landing pública, `/dashboard` = panel logueado. Anotado para E2b1.
 
-- Tests de `rate-limit.ts` y `empresa-actions.ts` (diferidos a E2a, aún no escritos).
-- Prueba cruzada A/B contra Supabase real.
-- Gate de seguridad de 10 puntos: parcial (1-7 ok, 8-10 pendientes por Supabase real).
-
-## Deuda pendiente (proyecto)
-
-- Verificar `@kuatiauto` en redes y DINAPI.
-- Registrar `kuatiauto.com.py` cuando el piloto lo justifique.
-- `SUPABASE_SERVICE_ROLE_KEY` y `RESEND_API_KEY` sin configurar (modo mock).
-- Tipos Supabase sin regenerar.
+### Proyecto
+- `SUPABASE_SERVICE_ROLE_KEY` seteada ✅
+- `RESEND_API_KEY` sin configurar (modo mock) — E2b2.
+- `npm audit`: 19 vulnerabilidades (17 moderate, 2 critical). Revisar al cerrar E2b. Probablemente dev-only.
+- Sentry diseñado, no configurado — E5.
+- Backups automatizados, export semanal — v2.
 
 ## Decisiones de E2a (por delegación, 2026-10-31)
 
 - **D-E2-1:** soft-delete en cliente y vehículo (campo `activo`). Órdenes no se borran, se anulan.
 - **D-E2-2:** próximo mantenimiento = `fecha_orden + intervalo_km`. Cálculo en server action.
 - **D-E2-3:** invitación empleado = token en `usuario` + email con link. Sin tabla nueva.
-- **D-E2-4:** subdivisión E2a (clientes+vehículos) → E2b (órdenes+empleados).
-- **D-E2-5:** tests de E1 diferidos se escriben al final de E2a.
+- **D-E2-4:** subdivisión E2a (clientes+vehículos) → E2b (órdenes+empleados). Refinada 2026-10-31: E2b1 (UI vehículos + layout) → E2b2 (órdenes + empleados).
+- **D-E2-5:** tests de E1 diferidos. **Cerrados 2026-10-31** (`rate-limit.test.ts`, `empresa-actions.test.ts`).
 
 ## Protocolo de sesión (PowerShell 5.x)
 
 - Un comando por mensaje. Corto, pegado, verificado antes del siguiente.
-- `Set-Clipboard` al final de comandos con output útil. **Ctrl+V en el chat, no en la consola.**
-- Nunca pegar `PS C:\...>` ni `>>`. Nunca here-strings multilínea sin `@'...'@` bien cerrado.
-- `-LiteralPath` para paths con `[id]`.
+- `-LiteralPath` para paths con `[id]` (wildcards de PowerShell).
+- Si el output de un comando se pega en la consola, PowerShell lo interpreta como comando y falla. Los outputs van al chat, no a la consola.
 - Si un comando falla 2 veces → cambiar a VS Code.
+- **Archivos `.ts`/`.tsx`: se editan en VS Code o con `[System.IO.File]::WriteAllText` desde PowerShell. Nunca pegar TS en la consola.**
+- **Encoding:** UTF-8 sin BOM. Verificar con `$bytes[0..2]` (no `0xEF 0xBB 0xBF`) y regex `Ã[\x80-\xBF]` para mojibake.
 
 ## Cómo retomar en conversación nueva
 
 Pegar este mensaje:
 
-> Retomo KuatiAuto. Leé `docs/proyecto/SESSION-STATE.md` y `docs/proyecto/CONTINUACION.md`. Estado: F0–F14 cerradas, E1 wip, E2a funcional end-to-end (clientes CRUD + vehículos backend). 71/73 tests, tsc 0. Próximo: cerrar docs E2a, UI vehículos, layout dashboard. Protocolo: PowerShell 5.x, un comando por mensaje, Set-Clipboard al final, sin pegar PS> ni transcripts, -LiteralPath para [id], si falla 2 veces → VS Code.
+> Retomo KuatiAuto. Leé `docs/proyecto/SESSION-STATE.md` y `docs/proyecto/STATUS.md`. Estado: F0–F14 cerradas, E1 wip (gate 7/10), E2a wip con piloto funcional end-to-end contra Supabase real. 89/89 tests, tsc 0. Próximo: E2b1 (UI vehículos + layout dashboard). Protocolo: PowerShell 5.x, un comando por mensaje, `-LiteralPath` para [id], archivos TS en VS Code (no consola), UTF-8 sin BOM, verificar encoding con bytes y regex. Repo en `C:\Users\Admin\proyectos\kuatiauto`.
 
+## Contacto
+
+- Propietario: Pedro J. Pirovani (pjpirovani-soft en GitHub).
+- Piloto: Luis María Delvalle Ramírez — Import Japan - Autorepuestos (Encarnación).

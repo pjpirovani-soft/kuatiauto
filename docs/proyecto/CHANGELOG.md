@@ -1,4 +1,51 @@
-﻿# CHANGELOG — KuatiAuto (provisional)
+## [E2a-bis] - 2026-10-31 - Saneamiento: Supabase real + flujo piloto end-to-end
+
+### Added
+- Proyecto Supabase real `kuatiauto` (`wzfukuzcousihslfgelr`, us-east-1). 15 migraciones aplicadas (001–015).
+- `lib/supabase/types.ts` generado (83 KB, 27 tablas, 12 funciones).
+- `lib/rate-limit.test.ts` (8 tests: buildClave + checkRateLimit con fail-open).
+- `lib/empresa-actions.test.ts` (5 tests: validación Zod, sin sesión, RPC OK, RPC falla).
+- `components/EmpresaForm.tsx` + `app/(dashboard)/crear-empresa/page.tsx`: form para que el propietario cree su empresa.
+- `app/(dashboard)/dashboard/page.tsx`: redirect a `/` (parche del 404).
+- `supabase/migrations/_cuarentena/` con `001_clientes.sql` (scaffold blueprint) + README explicativo.
+
+### Changed
+- `@supabase/ssr`: 0.5.2 → 0.12.7. Resuelve bug `never` en queries (Postgrest 14.18).
+- `<Database>` cableado en `lib/supabase/server.ts` y `lib/supabase/client.ts`.
+- `lib/directorio-actions.ts`: params RPC `null` → `undefined` (3 reemplazos).
+- `lib/empresa-actions.ts`: reformateado (era 1 línea), `Datos inválidos` (corregido), params RPC `undefined`.
+- `app/(dashboard)/page.tsx`: reescrito sin mojibake, condicional (crear empresa vs gestionar clientes), link `/clientes`.
+- `app/(dashboard)/clientes/page.tsx`, `nuevo/page.tsx`, `[id]/page.tsx`, `components/ClienteForm.tsx`, `lib/clientes-actions.ts`, `lib/vehiculos-actions.ts`: links `/dashboard/clientes` → `/clientes`.
+- `package.json` / `package-lock.json`: `supabase` como devDependency.
+- `.gitignore`: `supabase/.temp/` (config local CLI).
+
+### Fixed
+- `lib/schemas/vehiculoSchema.test.ts`: test `default km_actual a 0` reemplazado por 2 tests (`optional` → `undefined`; `0` explícito).
+- `components/ClienteForm.test.tsx`: reescrito contra interfaz nueva (action plano, no FormData).
+- 23 errores de `never` en `tsc` al cablear `Database` (resueltos con `@supabase/ssr@0.12.7`).
+- 6 errores de `null` en params RPC (resueltos con `?? undefined`).
+
+### Verified
+- `npx vitest run`: **89/89** tests verdes (11 archivos).
+- `npx tsc --noEmit`: 0 errores.
+- Encoding: 0 BOM, 0 mojibake en archivos modificados/creados.
+- **Flujo piloto validado end-to-end** contra Supabase real:
+  - Luis María Delvalle Ramírez (`importjapanencar@gmail.com`, rol `propietario`).
+  - Empresa `Import Japan - Autorepuestos` (`adbcd23e-f296-435c-b835-e9ce837a9d95`).
+  - Cliente `María José Bitar Balletbo`.
+  - `audit_log`: `crear/empresa` + `crear/cliente`.
+
+### Removed
+- `supabase/migrations/001_clientes.sql` (movido a `_cuarentena/`, no pertenece a KuatiAuto).
+- `scripts/`, `blueprints/`, `.github/workflows/ci.yml` del repo del studio (movimiento de repos, no de KuatiAuto).
+
+### Pendiente
+- UI vehículos + layout dashboard (E2b1).
+- Órdenes + empleados (E2b2).
+- Prueba cruzada A/B (E1-cierre).
+- `RESEND_API_KEY` (E2b2, cuando haya cuenta).
+- `npm audit` 19 vulns (revisar al cerrar E2b).
+# CHANGELOG — KuatiAuto (provisional)
 
 ## [E2a] - 2026-10-31 - Gestion core: clientes + vehiculos backend
 

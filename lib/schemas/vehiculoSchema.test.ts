@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { vehiculoSchema, vehiculoIdSchema } from './vehiculoSchema';
 
 const UUID = '550e8400-e29b-41d4-a716-446655440000';
@@ -53,8 +53,14 @@ describe('vehiculoSchema', () => {
     expect(r.success).toBe(false);
   });
 
-  it('default km_actual a 0', () => {
+  it('km_actual es opcional: sin enviar queda undefined', () => {
     const r = vehiculoSchema.safeParse({ cliente_id: UUID, marca: 'Toyota', modelo: 'Corolla' });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.km_actual).toBeUndefined();
+  });
+
+  it('km_actual acepta 0 explicito', () => {
+    const r = vehiculoSchema.safeParse({ cliente_id: UUID, marca: 'Toyota', modelo: 'Corolla', km_actual: 0 });
     expect(r.success).toBe(true);
     if (r.success) expect(r.data.km_actual).toBe(0);
   });
