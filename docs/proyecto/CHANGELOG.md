@@ -1,5 +1,37 @@
-# CHANGELOG — KuatiAuto (provisional)
+﻿# CHANGELOG — KuatiAuto (provisional)
 
+## [E2a] - 2026-10-31 - Gestion core: clientes + vehiculos backend
+
+### Added
+- lib/schemas/clienteSchema.ts + clienteSchema.test.ts (12 tests).
+- lib/clientes-actions.ts + clientes-actions.test.ts (10 tests): listar, crear, editar, soft-delete.
+- lib/schemas/vehiculoSchema.ts + vehiculoSchema.test.ts (12 tests).
+- lib/vehiculos-actions.ts + vehiculos-actions.test.ts (11 tests): listar por cliente, crear, editar, soft-delete.
+- supabase/migrations/014_cliente_activo.sql: soft-delete en cliente.
+- supabase/migrations/015_vehiculo_activo.sql: soft-delete en vehiculo.
+- components/ClienteForm.tsx: formulario reescrito (objeto plano, no FormData).
+- app/(dashboard)/clientes/page.tsx, nuevo/page.tsx, [id]/page.tsx reescritos.
+- app/page.tsx: home real KuatiAuto (reemplaza blueprint).
+- app/directorio/page.tsx: directorio movido desde route group (resuelve colision /).
+
+### Changed
+- lib/schemas/vehiculoSchema.ts: km_actual de default(0) a optional().
+- .gitignore: docs/_*.txt (outputs de tests/tsc).
+
+### Removed
+- lib/cliente-actions.ts (viejo, pre-multiempresa).
+
+### Verified
+- tsc --noEmit: 0 errores.
+- vitest: 71/73 (2 tests desactualizados por cambio de schema).
+- App funcional end-to-end: login, directorio, CRUD clientes.
+
+### Pendiente
+- vehiculoSchema.test.ts: 1 test espera km_actual: 0, ahora es optional.
+- ClienteForm.test.tsx: test escrito para componente viejo, reescribir.
+- UI vehiculos: 3 paginas + VehiculoForm.tsx.
+- Layout dashboard con navegacion.
+- Links de clientes apuntan a /dashboard/clientes, ruta real es /clientes.
 ## [E1] - 2026-10-30 - Fundamentos (wip)
 
 ### Added
@@ -152,3 +184,4 @@ Ver `BITACORA.md` §Fase 1. Alcance MVP confirmado: gestión + directorio + port
 ## [F0] — 2026-10-30 — Punto de partida
 
 Ver `BITACORA.md` §Fase 0. Metodología, nombre provisional, repo único modular.
+

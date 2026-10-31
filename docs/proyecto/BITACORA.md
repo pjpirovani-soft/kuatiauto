@@ -1,4 +1,4 @@
-# BITACORA — KuatiAuto (provisional)
+﻿# BITACORA — KuatiAuto (provisional)
 
 ## 2026-10-30 — Fase 0: punto de partida arquitectónico
 
@@ -287,6 +287,48 @@
 - Gate de seguridad de 10 puntos: parcial (1-7 ok, 8-10 pendientes).
 
 **Commits:** (pendiente).
+## 2026-10-31 - E2a: Gestion core (clientes + vehiculos backend)
+
+**Codigo:**
+- lib/schemas/clienteSchema.ts + clienteSchema.test.ts (12 tests).
+- lib/clientes-actions.ts + clientes-actions.test.ts (10 tests): listar, crear, editar, soft-delete.
+- lib/schemas/vehiculoSchema.ts + vehiculoSchema.test.ts (12 tests).
+- lib/vehiculos-actions.ts + vehiculos-actions.test.ts (11 tests): listar por cliente, crear, editar, soft-delete.
+- supabase/migrations/014_cliente_activo.sql: soft-delete en cliente.
+- supabase/migrations/015_vehiculo_activo.sql: soft-delete en vehiculo.
+- components/ClienteForm.tsx reescrito (objeto plano, no FormData).
+- app/(dashboard)/clientes/page.tsx, nuevo/page.tsx, [id]/page.tsx reescritos.
+- app/page.tsx: home real KuatiAuto (reemplaza blueprint).
+- app/(directorio)/page.tsx -> app/directorio/page.tsx (resuelve colision de rutas /).
+- .gitignore: docs/_*.txt.
+
+**Verificacion:**
+- tsc --noEmit: 0 errores.
+- vitest: 71/73 (2 tests desactualizados por cambio de schema: km_actual optional, ClienteForm props nuevas).
+- App funcional end-to-end: login, directorio, CRUD clientes.
+
+**Decisiones por delegacion (2026-10-31):**
+- D-E2-1: soft-delete en cliente y vehiculo (campo activo). Ordenes no se borran, se anulan.
+- D-E2-2: proximo mantenimiento = fecha_orden + intervalo_km. Calculo en server action, no en BD.
+- D-E2-3: invitacion empleado = token en usuario + email con link. Sin tabla nueva.
+- D-E2-4: subdivision E2a (clientes+vehiculos) -> E2b (ordenes+empleados) desde el inicio.
+- D-E2-5: tests de E1 diferidos se escriben al final de E2a.
+
+**Lecciones:**
+- Zod v4: z.string().uuid() exige UUID v4 estricto (bloque 3 empieza con 4, bloque 4 con 8/9/a/b). Fixtures deben usar UUIDs v4 reales.
+- vi.mock se hoistea: usar vi.hoisted() para mocks compartidos.
+- Mock chainable de Supabase: agregar .then al chainable para que await sobre .eq() funcione.
+- PowerShell 5.x: -LiteralPath para paths con [id]; un comando por mensaje; no pegar PS> ni >>.
+
+**Deuda pendiente:**
+- vehiculoSchema.test.ts: 1 test espera km_actual: 0, ahora es optional.
+- ClienteForm.test.tsx: test escrito para componente viejo (FormData), reescribir.
+- UI vehiculos: 3 paginas + VehiculoForm.tsx.
+- Layout dashboard con navegacion (sidebar o menu).
+- Links de clientes apuntan a /dashboard/clientes pero ruta real es /clientes.
+- Fix encoding BITACORA aplicado en este commit.
+
+**Commits:** 4fa3185 (plan), 41fede8 (clientes backend), fd1d1cf (vehiculos backend), 7316326 (UI clientes), 62e3962 (fix rutas).
 ## Deuda técnica pendiente
 
 - Renombrar `clientes` a `establecimientos` en el scaffold (F3).
@@ -294,3 +336,4 @@
 - Verificar `@kuatiauto` en redes y DINAPI.
 - Registrar `kuatiauto.com.py` cuando el piloto lo justifique.
 - Definir contenido exacto del seed del catálogo global (~20-30 servicios/productos) (F6).
+

@@ -1,97 +1,75 @@
-# Session State — KuatiAuto (provisional)
+﻿# Session State — KuatiAuto (provisional)
 
-**Actualizado:** 2026-10-30
+**Actualizado:** 2026-10-31
 
 > Este archivo es el handoff entre sesiones. Leerlo primero al arrancar. Actualizarlo al cerrar.
 
 ## Estado actual (30 segundos)
 
-- **Fase:** E1 — Fundamentos (WIP 2026-10-30). F0-F14 COMPLETADAS.
-- **Trabajando en:** E1 Fundamentos (WIP). Hecho: auth completo, rate limiting, multiempresa, audit hooks, cableado empresa_id, route group (dashboard), .env.example, .gitignore, STATUS/BITACORA/CHANGELOG actualizados. Falta: commit de cierre E1, tests de rate-limit/empresa-actions (E2), prueba cruzada A/B (Supabase real).
-- **Falta E1:** commit de cierre. Tests diferidos a E2. Gate 10 puntos parcial (1-7 ok, 8-10 pendientes por Supabase real).
-- **Bloqueado por:** nada. Decisiones F14: D-F14-1..n en PROPUESTA (definir en F14-PLAN.md, aprobar al cierre).
-## Alcance MVP (confirmado 2026-10-30)
+- **Fase:** E2a — Gestión core: clientes + vehículos backend (WIP 2026-10-31). F0–F14 COMPLETADAS. E1 wip.
+- **Trabajando en:** E2a. Hecho: clientes CRUD end-to-end (schema, actions, tests, UI), vehículos backend (schema, actions, tests), fix de colisión de rutas, home real, migraciones 014/015.
+- **Tests:** 71/73 verdes. 2 desactualizados (vehiculoSchema.test.ts: `km_actual` optional; ClienteForm.test.tsx: props viejas).
+- **tsc --noEmit:** 0 errores.
+- **App funcional:** login, directorio, CRUD clientes. Verificado con `npm run dev`.
+- **Bloqueado por:** nada.
 
-Los 4 componentes del PROMPT MAESTRO entran en MVP:
-1. SaaS de gestión multiempresa (incluye inventario y movimientos de stock).
-2. Directorio público de establecimientos.
-3. Portal del conductor.
-4. Catálogo automotriz técnico completo (fabricantes, marcas, modelos, motores, especificaciones, fuentes).
+## Commits clave (main)
 
-## Open Loops (acciones sin verificar)
+| Hash | Contenido |
+|---|---|
+| `1042f2e` | E1 - fundamentos (wip) |
+| `4987fc3` | docs - sección E1 en ROADMAP |
+| `4fa3185` | E2a - plan de gestión core |
+| `41fede8` | E2a - clientes (schema, actions, tests) |
+| `fd1d1cf` | E2a - vehículos (schema, actions, tests, migración 015) |
+| `7316326` | E2a - UI clientes (form, lista, nuevo, editar) |
+| `62e3962` | E2a - fix colisión de rutas + home real |
 
-- [ ] Verificar `@kuatiauto` en Instagram, Facebook, TikTok.
-- [ ] Verificar `KuatiAuto` en DINAPI (clases 9, 35, 42).
-- [ ] Confirmar los 5 campos críticos del piloto en `CLIENTE.md`.
-- [ ] Confirmar si el catálogo completo es viable con datos reales del piloto (F6).
+## Próximos 3 pasos
 
-## Follow-ups (tareas diferidas)
+1. **Cerrar docs de E2a:** `STATUS.md` actualizado, commit `docs(kuatiauto): E2a - cierre` (BITACORA y CHANGELOG ya actualizados).
+2. **UI vehículos:** `VehiculoForm.tsx` + 3 páginas (`vehiculos/page.tsx`, `nuevo/page.tsx`, `[id]/page.tsx`). Backend listo.
+3. **Layout dashboard con navegación:** sidebar o menú que una clientes, vehículos, directorio, logout.
 
-- [ ] Registrar `kuatiauto.com.py` cuando el piloto justifique el costo (verificado disponible 2026-10-30).
-- [ ] Renombrar `clientes` a `establecimientos` en el scaffold (F3).
-- [ ] Decidir estructura final de `app/` con route groups (F3).
-- [ ] Definir fuentes y proceso de validación del catálogo automotriz (F6).
+## Deuda pendiente (E2a)
 
-## Decisiones de la sesión (2026-10-30)
+- `vehiculoSchema.test.ts`: 1 test espera `km_actual: 0`, ahora es `optional`.
+- `ClienteForm.test.tsx`: test escrito para componente viejo (FormData), reescribir.
+- Links de clientes apuntan a `/dashboard/clientes`, ruta real es `/clientes` (por route group).
+- `lib/empresa-actions.ts` está en una línea (reformatear).
 
-### Metodología y nombre
+## Deuda pendiente (E1)
 
-- **D-A:** alinear studio a metodología ENC. Aprobado.
-- **D-B:** seguridad integrada en ARCHITECTURE + SPEC + BITACORA + SESSION-STATE. Sin SEGURIDAD.md. Aprobado.
-- **D-C:** CLIENTE.md provisional con `[PENDIENTE]`. Aprobado.
-- **D-D:** `KuatiAuto` es nombre de trabajo, no comercial definitivo. Aprobado.
+- Tests de `rate-limit.ts` y `empresa-actions.ts` (diferidos a E2a, aún no escritos).
+- Prueba cruzada A/B contra Supabase real.
+- Gate de seguridad de 10 puntos: parcial (1-7 ok, 8-10 pendientes por Supabase real).
 
-### Producto (F1) — APROBADO 2026-10-30
+## Deuda pendiente (proyecto)
 
-- **P-Alcance-MVP:** los 4 componentes del PROMPT MAESTRO (gestión + directorio + portal + catálogo + inventario) son MVP. Directorio y portal no son v2.
-- **P-Catálogo:** catálogo completo desde MVP (fabricantes, marcas, modelos, años, versiones, motorizaciones, cilindradas, combustibles, SAE, API, ACEA, aprobaciones, capacidades, intervalos). Con fuentes y validación.
-- **P-Inventario:** inventario y movimientos de stock en MVP.
+- Verificar `@kuatiauto` en redes y DINAPI.
+- Registrar `kuatiauto.com.py` cuando el piloto lo justifique.
+- `SUPABASE_SERVICE_ROLE_KEY` y `RESEND_API_KEY` sin configurar (modo mock).
+- Tipos Supabase sin regenerar.
 
-### ADRs
+## Decisiones de E2a (por delegación, 2026-10-31)
 
-- **ADR-001:** repo único modular. Aprobado.
-- **ADR-002:** vehículo híbrido. Aprobado.
-- **ADR-003:** piloto provisional. Aprobado.
-- **ADR-004:** nombre KuatiAuto provisional. Aprobado.
-- **ADR-005:** catálogo híbrido global + local. Aprobado.
-- **ADR-006:** productos y servicios en tablas aparte. Aprobado.
+- **D-E2-1:** soft-delete en cliente y vehículo (campo `activo`). Órdenes no se borran, se anulan.
+- **D-E2-2:** próximo mantenimiento = `fecha_orden + intervalo_km`. Cálculo en server action.
+- **D-E2-3:** invitación empleado = token en `usuario` + email con link. Sin tabla nueva.
+- **D-E2-4:** subdivisión E2a (clientes+vehículos) → E2b (órdenes+empleados).
+- **D-E2-5:** tests de E1 diferidos se escriben al final de E2a.
 
-### Riesgos cerrados / abiertos
+## Protocolo de sesión (PowerShell 5.x)
 
-- **R5 (alcance MVP inflado):** cerrado por P-Alcance-MVP.
-- **R1, R2, R3, R4, R6-R14:** abiertos, con fase asignada.
+- Un comando por mensaje. Corto, pegado, verificado antes del siguiente.
+- `Set-Clipboard` al final de comandos con output útil. **Ctrl+V en el chat, no en la consola.**
+- Nunca pegar `PS C:\...>` ni `>>`. Nunca here-strings multilínea sin `@'...'@` bien cerrado.
+- `-LiteralPath` para paths con `[id]`.
+- Si un comando falla 2 veces → cambiar a VS Code.
 
-## Decisiones de F11 (2026-10-30, PROPUESTA)
+## Cómo retomar en conversación nueva
 
-- D-F11-1: mecanismo de envío = Vercel Cron.
-- D-F11-2: idempotencia = idempotency_key UNIQUE (tipo:refId:YYYY-MM-DD).
-- D-F11-3: rate limiting = check_rate_limit (20/día empresa, 100/día global).
-- D-F11-4: reintentos = 3, backoff 1m/5m/30m, luego fallido.
-- D-F11-5: trazabilidad = notificacion_log (siempre) + audit_log (solo manuales).
-- Estado: APROBADA (2026-10-30).
+Pegar este mensaje:
 
-## Proximos 3 pasos
+> Retomo KuatiAuto. Leé `docs/proyecto/SESSION-STATE.md` y `docs/proyecto/CONTINUACION.md`. Estado: F0–F14 cerradas, E1 wip, E2a funcional end-to-end (clientes CRUD + vehículos backend). 71/73 tests, tsc 0. Próximo: cerrar docs E2a, UI vehículos, layout dashboard. Protocolo: PowerShell 5.x, un comando por mensaje, Set-Clipboard al final, sin pegar PS> ni transcripts, -LiteralPath para [id], si falla 2 veces → VS Code.
 
-1. Commit de cierre E1 (STATUS, BITACORA, CHANGELOG, SESSION-STATE, ROADMAP + codigo).
-2. Arrancar E2 - Gestion core (clientes, vehiculos, ordenes, empleados).
-3. Tests de rate-limit/empresa-actions diferidos a E2. Prueba cruzada A/B cuando haya Supabase real.
-## Deuda F11 (anotada)
-
-- empresa_id: null en notificaciones-actions: TODO F12 (cablear al piloto).
-- SUPABASE_SERVICE_ROLE_KEY no seteada: notificacion_log no persiste hasta configurarla.
-- RESEND_API_KEY no seteada: sendEmail en modo mock.
-- Tipos Supabase no regenerados: regenerar con supabase gen types al aplicar 013.
-- Reintentos (D-F11-4) y cron (D-F11-1): disenados, no implementados en codigo (F12+).
-
-## Nota metodológica
-
-- Este proyecto heredó la metodología alineada del studio el 2026-10-30 (commit 72da08e).
-- Docs deprecados a NO generar: DECISIONES.md viejo, SEGURIDAD.md, TESTS.md, AUDITORIA.md, CONVENCIONES.md.
-- Doc nuevo: DECISIONES.md (registro A/B/C/D), PROMPT-MAESTRO.md (fuente de verdad), ROADMAP.md (hoja de ruta).
-## Deuda F13 (anotada)
-
-- D-F13-1..5 en estado PROPUESTA. Aprobar al cierre.
-- Sentry free tier: disenado, no configurado (D-F13-3).
-- Almacenamiento externo de exports: script manual documentado en MANTENIMIENTO.md, no automatizado.
-- Prueba de restauracion trimestral: proceso documentado, no ejecutado aun.
-- 2FA en gestor de contrasenas: requiere accion del propietario.
