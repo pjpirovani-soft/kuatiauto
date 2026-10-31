@@ -19,6 +19,7 @@
 
 | Hash | Contenido |
 |---|---|
+| 1dbcb0e | chore - upgrade vitest 5 (resuelve 2 critical + 12 moderate) |
 | b399b28 | feat - E3 catalogo local (CRUD servicios/productos) + seed marcas/modelos |
 | 64c6b23 | feat - E2b2 UI de ordenes (lista, nuevo, detalle, lineas, acciones) |
 | 326bd1c | feat - E2b2 backend de ordenes (schema + actions + tests) |
@@ -79,7 +80,7 @@
 ### Proyecto
 - SUPABASE_SERVICE_ROLE_KEY seteada OK.
 - RESEND_API_KEY sin configurar (modo mock) — E2b2.
-- npm audit: 19 vulnerabilidades (17 moderate, 2 critical). Revisar al cerrar E2b.
+- npm audit: 16 moderate (0 critical, 0 high) desde 2026-10-31. Todas en minimatch dev-only (cadena de ESLint), no explotables en produccion. Upgrade Vitest 5 resolvio las 2 critical + 12 moderate.
 - Sentry diseñado, no configurado — E5.
 - Backups automatizados, export semanal — v2.
 

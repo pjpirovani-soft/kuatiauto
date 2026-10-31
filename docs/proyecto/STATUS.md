@@ -61,7 +61,7 @@
 
 
 | Seed catálogo marcas `[PENDIENTE]` | F6a | E3 |
-| `npm audit` 19 vulns (17 moderate, 2 critical) | E2a-bis | Revisar al cerrar E2b |
+| `npm audit` 16 moderate (0 critical, 0 high) — todas en `minimatch` dev-only | E2a-bis | Resuelto 2026-10-31: upgrade Vitest 5 eliminó las 2 critical + 12 moderate. Las 16 restantes son dev-only en la cadena de ESLint, no explotables en producción |
 | Sentry diseñado, no configurado | F13 | E5 |
 | Export semanal de backups: script manual | F13 | v2 |
 | Prueba de restauración trimestral: no ejecutada | F13 | Post-E5 |
