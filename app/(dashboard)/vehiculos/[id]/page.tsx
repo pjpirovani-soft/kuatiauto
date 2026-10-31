@@ -35,6 +35,11 @@ export default async function VehiculoDetallePage({
         <h1 className="text-3xl font-bold mt-2">
           {vehiculo.marca} {vehiculo.modelo}
         </h1>
+        <div className="mt-3">
+          <Link href={"/ordenes/nuevo?vehiculo_id="} className="text-sm bg-black text-white px-4 py-2 rounded hover:bg-gray-800 inline-block">
+            Nueva orden para este vehículo
+          </Link>
+        </div>
       </header>
 
       <div className="bg-white rounded-xl border border-gray-200 p-6">
