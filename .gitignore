@@ -16,3 +16,6 @@ tsconfig.tsbuildinfo
 *.bak
 *.bak-template
 docs/_dump-continuacion.txt
+
+# Outputs temporales de tests/tsc (no commitear)
+docs/_*.txt
