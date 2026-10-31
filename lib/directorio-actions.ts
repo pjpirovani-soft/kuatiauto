@@ -14,9 +14,9 @@ export async function buscarEstablecimientos(input: unknown) {
     p_lat: parsed.data.lat,
     p_lng: parsed.data.lng,
     p_radio_km: parsed.data.radio_km,
-    p_ciudad: parsed.data.ciudad ?? null,
-    p_servicio: parsed.data.servicio ?? null,
-    p_texto: parsed.data.texto ?? null,
+    p_ciudad: parsed.data.ciudad ?? undefined,
+    p_servicio: parsed.data.servicio ?? undefined,
+    p_texto: parsed.data.texto ?? undefined,
   });
   if (error) return { error: error.message };
   return { data };

@@ -11,12 +11,20 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/login');
 
+  const { data: usuario } = await supabase
+    .from('usuario')
+    .select('empresa_id, rol')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  const tieneEmpresa = Boolean(usuario?.empresa_id);
+
   return (
     <main className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Panel de clientes</h1>
+            <h1 className="text-3xl font-bold">Panel</h1>
             <p className="text-gray-600 text-sm">Sesión iniciada como {user.email}</p>
           </div>
           <form action={logout}>
@@ -26,13 +34,25 @@ export default async function DashboardPage() {
           </form>
         </header>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-          <Link
-            href="/dashboard/clientes"
-            className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 inline-block"
-          >
-            Gestionar clientes
-          </Link>
+        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center space-y-4">
+          {tieneEmpresa ? (
+            <Link
+              href="/clientes"
+              className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 inline-block"
+            >
+              Gestionar clientes
+            </Link>
+          ) : (
+            <>
+              <p className="text-gray-600">Todavía no tenés una empresa creada.</p>
+              <Link
+                href="/crear-empresa"
+                className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 inline-block"
+              >
+                Crear empresa
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </main>

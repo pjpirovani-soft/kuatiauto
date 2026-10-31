@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { listarClientes } from '@/lib/clientes-actions';
@@ -23,7 +23,7 @@ export default async function ClientesPage() {
             <h1 className="text-3xl font-bold">Mis clientes</h1>
             <p className="text-gray-600 text-sm">Gestiona tu cartera de clientes.</p>
           </div>
-          <Link href="/dashboard/clientes/nuevo" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 text-sm">
+          <Link href="/clientes/nuevo" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 text-sm">
             + Nuevo cliente
           </Link>
         </header>
@@ -31,7 +31,7 @@ export default async function ClientesPage() {
         {clientes.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-500">
             <p>Todavia no tenes clientes cargados.</p>
-            <Link href="/dashboard/clientes/nuevo" className="text-blue-600 hover:underline mt-4 inline-block">
+            <Link href="/clientes/nuevo" className="text-blue-600 hover:underline mt-4 inline-block">
               Crear el primero
             </Link>
           </div>
@@ -53,7 +53,7 @@ export default async function ClientesPage() {
                     <td className="px-6 py-4 text-gray-600">{cliente.email ?? '-'}</td>
                     <td className="px-6 py-4 text-gray-600">{cliente.telefono ?? '-'}</td>
                     <td className="px-6 py-4 text-right">
-                      <Link href={`/dashboard/clientes/${cliente.id}`} className="text-blue-600 hover:underline text-sm">
+                      <Link href={`/clientes/${cliente.id}`} className="text-blue-600 hover:underline text-sm">
                         Editar
                       </Link>
                     </td>
@@ -65,7 +65,7 @@ export default async function ClientesPage() {
         )}
 
         <div className="mt-6">
-          <Link href="/dashboard" className="text-gray-500 hover:text-black text-sm">
+          <Link href="/" className="text-gray-500 hover:text-black text-sm">
             Volver al panel
           </Link>
         </div>

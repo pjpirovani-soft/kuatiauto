@@ -1,4 +1,4 @@
-﻿'use server';
+'use server';
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
@@ -79,8 +79,8 @@ export async function crearVehiculo(input: unknown): Promise<Result<{ id: string
     datosNuevos: { marca: parsed.data.marca, modelo: parsed.data.modelo, cliente_id: parsed.data.cliente_id },
   });
 
-  revalidatePath('/dashboard/vehiculos');
-  revalidatePath('/dashboard/clientes/' + parsed.data.cliente_id);
+  revalidatePath('/vehiculos');
+  revalidatePath('/clientes/' + parsed.data.cliente_id);
   return { ok: true, data: { id: data.id } };
 }
 
@@ -121,7 +121,7 @@ export async function editarVehiculo(input: unknown): Promise<Result<{ id: strin
     datosNuevos: { marca: parsed.data.marca, modelo: parsed.data.modelo },
   });
 
-  revalidatePath('/dashboard/vehiculos');
+  revalidatePath('/vehiculos');
   return { ok: true, data: { id: parsed.data.id } };
 }
 
@@ -153,6 +153,6 @@ export async function eliminarVehiculo(input: unknown): Promise<Result<{ id: str
     entidadId: parsed.data.id,
   });
 
-  revalidatePath('/dashboard/vehiculos');
+  revalidatePath('/vehiculos');
   return { ok: true, data: { id: parsed.data.id } };
 }

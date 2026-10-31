@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -18,7 +18,7 @@ interface ClienteFormProps {
   redirectTo?: string;
 }
 
-export function ClienteForm({ action, initialData, title, redirectTo = '/dashboard/clientes' }: ClienteFormProps) {
+export function ClienteForm({ action, initialData, title, redirectTo = '/clientes' }: ClienteFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 

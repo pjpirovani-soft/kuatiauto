@@ -1,4 +1,4 @@
-﻿import { ClienteForm } from '@/components/ClienteForm';
+import { ClienteForm } from '@/components/ClienteForm';
 import { editarCliente } from '@/lib/clientes-actions';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
@@ -21,7 +21,7 @@ export default async function EditarClientePage({ params }: { params: Promise<{ 
       <main className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-2xl mx-auto">
           <p className="text-red-600">Cliente no encontrado.</p>
-          <Link href="/dashboard/clientes" className="text-blue-600 hover:underline text-sm">Volver</Link>
+          <Link href="/clientes" className="text-blue-600 hover:underline text-sm">Volver</Link>
         </div>
       </main>
     );
@@ -31,7 +31,7 @@ export default async function EditarClientePage({ params }: { params: Promise<{ 
     <main className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto">
         <div className="mb-6">
-          <Link href="/dashboard/clientes" className="text-gray-500 hover:text-black text-sm">
+          <Link href="/clientes" className="text-gray-500 hover:text-black text-sm">
             Volver a clientes
           </Link>
         </div>

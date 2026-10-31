@@ -1,4 +1,4 @@
-﻿'use server';
+'use server';
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
@@ -69,7 +69,7 @@ export async function crearCliente(input: unknown): Promise<Result<{ id: string 
     datosNuevos: { nombre: parsed.data.nombre },
   });
 
-  revalidatePath('/dashboard/clientes');
+  revalidatePath('/clientes');
   return { ok: true, data: { id: data.id } };
 }
 
@@ -107,7 +107,7 @@ export async function editarCliente(input: unknown): Promise<Result<{ id: string
     datosNuevos: { nombre: parsed.data.nombre },
   });
 
-  revalidatePath('/dashboard/clientes');
+  revalidatePath('/clientes');
   return { ok: true, data: { id: parsed.data.id } };
 }
 
@@ -139,6 +139,6 @@ export async function eliminarCliente(input: unknown): Promise<Result<{ id: stri
     entidadId: parsed.data.id,
   });
 
-  revalidatePath('/dashboard/clientes');
+  revalidatePath('/clientes');
   return { ok: true, data: { id: parsed.data.id } };
 }
