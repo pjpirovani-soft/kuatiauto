@@ -19,3 +19,9 @@ docs/_dump-continuacion.txt
 
 # Outputs temporales de tests/tsc (no commitear)
 docs/_*.txt
+
+# Supabase CLI (config local, no compartir)
+supabase/.temp/
+
+# Cuarentena de migraciones (scaffold removido, se commitea con README)
+# (NO ignorar: se versiona con README explicativo)
