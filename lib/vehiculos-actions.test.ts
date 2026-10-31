@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
   mockGetUser: vi.fn(),
@@ -47,7 +47,7 @@ vi.mock('@/lib/rate-limit', () => ({
 
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
-import { listarVehiculos, crearVehiculo, editarVehiculo, eliminarVehiculo } from './vehiculos-actions';
+import { listarVehiculos, listarVehiculosEmpresa, crearVehiculo, editarVehiculo, eliminarVehiculo } from './vehiculos-actions';
 
 const EMPRESA_ID = '11111111-1111-1111-1111-111111111111';
 const CLIENTE_ID = '550e8400-e29b-41d4-a716-446655440000';
@@ -140,3 +140,35 @@ describe('eliminarVehiculo', () => {
 });
 
 
+
+
+describe('listarVehiculosEmpresa', () => {
+  it('rechaza sin autenticacion', async () => {
+    mocks.mockGetUser.mockResolvedValue({ data: { user: null } });
+    const r = await listarVehiculosEmpresa();
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error).toContain('autenticado');
+  });
+
+  it('rechaza sin empresa asociada', async () => {
+    mocks.mockMaybeSingle.mockResolvedValue({ data: null, error: null });
+    const r = await listarVehiculosEmpresa();
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error).toContain('empresa');
+  });
+
+  it('devuelve lista de la empresa', async () => {
+    mocks.mockOrder.mockResolvedValue({
+      data: [
+        { id: VEHICULO_ID, marca: 'Toyota', modelo: 'Corolla', anio: 2020, patente: 'ABC123', km_actual: 50000 },
+      ],
+      error: null,
+    });
+    const r = await listarVehiculosEmpresa();
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(Array.isArray(r.data)).toBe(true);
+      expect((r.data as unknown[]).length).toBe(1);
+    }
+  });
+});
