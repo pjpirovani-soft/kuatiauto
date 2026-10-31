@@ -204,6 +204,10 @@ Ver `BITACORA.md` §Fase 8. Free tier, único costo real: dominio `.com.py`.
 
 Ver `BITACORA.md` §Fase 7. Next.js 16, React 19, Tailwind 4, Supabase, Zod, Vitest, Vercel, Resend, Leaflet + OSM, Vercel Analytics, Sentry, GitHub Actions.
 
+## [E2b1] — 2026-10-31 — UI vehículos + layout dashboard
+
+Ver `BITACORA.md` §Cierre E2b1. Layout dashboard con sidebar, `VehiculoForm` crear/editar, 3 rutas de vehículos, `listarVehiculosEmpresa()` en backend. Panel logueado movido a `/dashboard`. Registro manda `nombre` a `raw_user_meta_data`.
+
 ## [F6a] — 2026-10-30 — Catálogo automotriz
 
 Ver `BITACORA.md` §Fase 6a. Fuentes aceptables niveles 1-3, validación por admin_general, alcance inicial acotado.

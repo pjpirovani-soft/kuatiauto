@@ -58,8 +58,8 @@
 | Prueba cruzada A/B contra Supabase real | E1 | E1-cierre (gate 8-10) |
 | 2FA en gestor de contraseñas | F13 | Acción del propietario |
 | `empresa_id: null` en `notificaciones-actions.ts` | F11 | Cuando se toque notificaciones (E5) |
-| Trigger `handle_new_user` asigna `empleado` + email como nombre | E1 | E2b1 |
-| Panel `/` mezclado con dashboard | E2a | E2b1 (mover panel a `/dashboard`, liberar `/`) |
+
+
 | Seed catálogo marcas `[PENDIENTE]` | F6a | E3 |
 | `npm audit` 19 vulns (17 moderate, 2 critical) | E2a-bis | Revisar al cerrar E2b |
 | Sentry diseñado, no configurado | F13 | E5 |
@@ -99,3 +99,9 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 **Deuda generada:** listarVehiculosEmpresa() sin tests (agregar 2 casos en próxima sesión).
 
 **Próximo:** tests de listarVehiculosEmpresa() + trigger handle_new_user, después E2b2 (órdenes + empleados).
+**Segunda pasada E2b1 (2026-10-31):**
+
+- Tests de `listarVehiculosEmpresa()` agregados: 3 casos, suite 89 → 92.
+- Registro manda `nombre` en `signUp` → `raw_user_meta_data.nombre`. Trigger `handle_new_user` no requirió migración SQL (ya leía con `coalesce`).
+- BITACORA.md y CHANGELOG.md actualizados con el cierre de E2b1.
+- Pendiente residual: test unitario para `auth-actions.ts` (register con nombre); cobertura por integración manual en el próximo registro real.

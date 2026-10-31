@@ -396,3 +396,36 @@
 - `@supabase/ssr@0.5.2` + `supabase-js` moderno → `never` en queries. Actualizar a `0.12.7`.
 - PowerShell: `Resolve-Path` falla con `[id]` (wildcards). Usar `Join-Path (Get-Location) $path` + `[System.IO.File]::ReadAllText($full)`.
 - Nunca pegar output de comandos en la consola. Nunca pegar TS en la consola.
+
+## Cierre E2b1 — 2026-10-31
+
+**Cerrado:**
+- `listarVehiculosEmpresa()` agregada a `lib/vehiculos-actions.ts` (lista global, filtro por empresa).
+- `app/(dashboard)/layout.tsx`: sidebar con Panel, Clientes, Vehículos, Directorio (externo) y Logout. Auth check server-side.
+- `components/VehiculoForm.tsx`: client component crear/editar con discriminated union (`modo`).
+- `/vehiculos` (lista), `/vehiculos/nuevo` (crear), `/vehiculos/[id]` (editar).
+- Panel logueado movido a `(dashboard)/dashboard/page.tsx`. `(dashboard)/page.tsx` borrado (colisión con landing `app/page.tsx`).
+- Tests de `listarVehiculosEmpresa()`: 3 casos (sin auth, sin empresa, ok). Suite 89 → 92.
+- Registro manda `nombre` en `signUp` → `raw_user_meta_data.nombre`. Trigger `handle_new_user` ya lo leía con `coalesce`, no requirió migración SQL.
+
+**Verificación:**
+- `npx tsc --noEmit`: 0 errores.
+- `npm run build`: OK (11 rutas, incluye las 3 nuevas).
+- `npx vitest run`: **92/92** tests verdes (11 archivos).
+- Encoding: 0 BOM, 0 mojibake en archivos nuevos y modificados.
+
+**Deuda pendiente:**
+- E1 gate 7/10: prueba cruzada A/B contra Supabase real, 2FA del propietario.
+- E2a: `empresa_id: null` en `notificaciones-actions.ts` (diferida a E5).
+- Sin tests para los cambios de `auth-actions.ts` (register con nombre) — cobertura por integración manual en el próximo registro real.
+- `VehiculoForm initialData` compila por structural typing; si crece el schema, ajustar tipo `VehiculoData`.
+
+**Commits:** `6143d08` (feat E2b1), `cbc6af3` (docs E2b1), pendientes al cierre: fix registro + docs cierre completa.
+
+**Lecciones:**
+- PowerShell 5.x: `npm test 2>&1` mató el pipeline con `NativeCommandError`. Solución: `cmd /c "npm test > file 2>&1"`.
+- `Set-Clipboard` puede fallar silenciosamente por bloqueo del portapapeles. Preferir `Write-Host` del output directo.
+- Heredocs `@"..."@` en PowerShell son frágiles con paste. Preferir `$lines = @(...) -join "`r`n"` + `WriteAllText`.
+- Nunca pegar TS/output en la consola. Se perdió ~40 min en esta sesión por eso.
+- La deuda del trigger `handle_new_user` era realmente del form de registro (no del SQL). Diagnosticar antes de migrar.
+- `.next/` cachea types generados. Si `tsc` falla en `.next/dev/types/validator.ts`, borrar `.next` y reintentar.
