@@ -27,6 +27,19 @@ export default function RegisterPage() {
 
         <form action={handleSubmit} className="space-y-4">
           <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="nombre">
+              Nombre
+            </label>
+            <input
+              id="nombre"
+              name="nombre"
+              type="text"
+              required
+              maxLength={100}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium mb-1" htmlFor="email">
               Email
             </label>

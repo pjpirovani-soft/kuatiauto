@@ -9,6 +9,7 @@ import { checkRateLimit, buildClave } from '@/lib/rate-limit';
 const authSchema = z.object({
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+  nombre: z.string().max(100, 'El nombre no puede superar 100 caracteres').optional(),
 });
 
 export async function login(formData: FormData) {
