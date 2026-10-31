@@ -6,12 +6,12 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** E3 cerrada (2026-10-31, catalogo local + seed de marcas/modelos). F0–F14 completas. E1 wip (gate 7/10). E2a-bis, E2b1, E2b2 (backend + UI de ordenes), E3 cerradas. Catalogo global con 15 fabricantes, 73 modelos, 10 servicios y 8 productos. Catalogo local CRUD funcional.
-- **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 17 migraciones aplicadas. .env.local cargado.
+- **Fase:** E4a cerrada (2026-10-31, directorio + establecimientos publicos). E4b pendiente (portal del conductor). F0–F14 completas. E1 wip (gate 9/10, falta 2FA del propietario). E2a-bis, E2b1, E2b2 (backend + UI de ordenes), E3, E4a cerradas.
+- **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 18 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehiculo → persistencia → audit_log.
 - **Piloto cargado:** Luis María Delvalle Ramírez (importjapanencar@gmail.com) como propietario de Import Japan - Autorepuestos (adbcd23e-f296-435c-b835-e9ce837a9d95). Cliente de prueba: María José Bitar Balletbo.
 - **CEO:** Pedro José Pirovani (pirovanipedrojose@gmail.com) como admin_general, empresa_id=null. Panel de admin real: Supabase Dashboard (UI /admin es E5).
-- **Tests:** 133/133 verdes (13 archivos). **tsc --noEmit:** 0 errores. **build:** OK.
+- **Tests:** 212/212 verdes (19 archivos). **tsc --noEmit:** 0 errores. **build:** OK (25 rutas).
 - **Repo:** C:\Users\Admin\proyectos\kuatiauto (movido fuera del studio). Remote: github.com/pjpirovani-soft/kuatiauto.
 - **Bloqueado por:** nada.
 

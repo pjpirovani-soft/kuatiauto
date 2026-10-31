@@ -1,3 +1,35 @@
+## [E4a] - 2026-10-31 - Directorio + establecimientos publicos
+
+### Added
+- `supabase/migrations/018_establecimiento_publico.sql`: revoke all from anon + grant select to anon.
+- `lib/schemas/establecimientoSchema.ts` + 16 tests.
+- `lib/establecimiento-actions.ts`: listar, obtener, crear, editar, publicarMiEstablecimiento. 20 tests.
+- `components/EstablecimientoForm.tsx`, `components/PublicarButton.tsx`.
+- `app/(dashboard)/establecimientos/page.tsx`, `nuevo/page.tsx`, `[id]/page.tsx`.
+- Link "Establecimientos" en sidebar de `(dashboard)/layout.tsx`.
+
+### Changed
+- `lib/schemas/directorioSchema.ts`: `establecimiento_id` -> `establecimiento_publico_id`.
+- `lib/directorio-actions.ts`: lee el campo renombrado.
+- `lib/establecimiento-actions.ts` `editarEstablecimiento`: usa `upsert` con `onConflict: "establecimiento_id"` para crear fila publica si no existe (H-E4a-3).
+- `lib/establecimiento-actions.ts` `obtenerEstablecimiento`: `limit(1)` + normalizacion de join (H-E4a-4).
+
+### Fixed
+- `app/(dashboard)/establecimientos/[id]/page.tsx`: `await params` (Next 16, H-E4a-4).
+- `app/directorio/page.tsx`: `await searchParams` (Next 16, H-E4a-8).
+- `lib/establecimiento-actions.test.ts`: `vi.resetAllMocks()` + re-setup en `beforeEach` (H-E4a-test).
+
+### Verified
+- `npx tsc --noEmit`: 0 errores.
+- `npm test`: 212/212 (19 archivos).
+- `npm run build`: OK (25 rutas).
+- Migracion 018 aplicada y verificada contra DB real: anon solo SELECT en establecimiento_publico.
+- Prueba cruzada A/B (7/7) contra DB real: aislamiento bidireccional verificado, directorio publico muestra solo publicados.
+
+### Deuda
+- H-E4a-2: `/establecimientos` no oculta "Nuevo" para admin_general (falla con "Sin empresa"). Diferido a E5.
+- H-E4a-7: directorio arranca en Asuncion sin selector de ciudad ni geolocalizacion. Diferido a E4b/E5.
+
 ## [E2a-bis] - 2026-10-31 - Saneamiento: Supabase real + flujo piloto end-to-end
 
 ### Added

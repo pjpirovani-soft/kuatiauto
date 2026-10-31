@@ -12,7 +12,7 @@ export const buscarEstablecimientosSchema = z.object({
 export type BuscarEstablecimientosInput = z.infer<typeof buscarEstablecimientosSchema>;
 
 export const publicarEstablecimientoSchema = z.object({
-  establecimiento_id: z.string().uuid(),
+  establecimiento_publico_id: z.string().uuid(),
   publicado: z.boolean(),
 });
 

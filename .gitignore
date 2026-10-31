@@ -25,3 +25,4 @@ supabase/.temp/
 
 # Cuarentena de migraciones (scaffold removido, se commitea con README)
 # (NO ignorar: se versiona con README explicativo)
+handoff-*.txt

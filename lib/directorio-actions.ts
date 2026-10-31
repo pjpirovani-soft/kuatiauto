@@ -29,7 +29,7 @@ export async function publicarEstablecimiento(input: unknown) {
   }
   const supabase = await createClient();
   const { error } = await supabase.rpc("publicar_establecimiento", {
-    p_establecimiento_id: parsed.data.establecimiento_id,
+    p_establecimiento_id: parsed.data.establecimiento_publico_id,
     p_publicado: parsed.data.publicado,
   });
   if (error) return { error: error.message };

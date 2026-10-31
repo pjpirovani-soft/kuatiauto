@@ -515,3 +515,51 @@ Pruebas ejecutadas:
 - La prueba cruzada real se hace en la UI (login A, login B, intentar acceder por URL), no con scripts que peleen con keys. Fue más rápido y confiable.
 - Crear usuarios de prueba: Auth Admin API (`POST /auth/v1/admin/users`) + SQL para vincular a empresa. Reutilizable para futuras pruebas cruzadas.
 - Password de Luis: `ImportJapan-2026`. Guardar en gestor de contraseñas del propietario.
+
+## Cierre E4a — 2026-10-31
+
+**Cerrado: directorio publico + establecimientos publicos. Gate 10/10.**
+
+- Migracion `018_establecimiento_publico.sql`: revoke all on establecimiento_publico from anon + grant select to anon (H-E4a-1).
+- `lib/schemas/establecimientoSchema.ts` + 16 tests.
+- `lib/establecimiento-actions.ts` (listar, obtener, crear, editar, publicarMiEstablecimiento) + 20 tests.
+- `components/EstablecimientoForm.tsx` + `components/PublicarButton.tsx`.
+- `app/(dashboard)/establecimientos/{page,nuevo/page,[id]/page}.tsx`.
+- Link "Establecimientos" en sidebar.
+- `lib/directorio-actions.ts` + `directorioSchema.ts`: rename establecimiento_id -> establecimiento_publico_id.
+- `app/directorio/page.tsx`: `await searchParams` (Next 16).
+
+**Hallazgos:**
+
+| ID | Severidad | Descripcion | Estado |
+|---|---|---|---|
+| H-E4a-1 | Alto | anon con GRANT ALL en establecimiento_publico | Corregido en 018 |
+| H-E4a-2 | Bajo | UI /establecimientos no oculta Nuevo para admin_general | Diferido a E5 |
+| H-E4a-3 | Medio | editarEstablecimiento no creaba fila publica si no existia | Corregido con upsert |
+| H-E4a-4 | Alto | params.id sin await en establecimientos/[id] -> 404 | Corregido |
+| H-E4a-5 | Alto | auditar params/searchParams en todas las paginas | Verificado: 8/8 con await |
+| H-E4a-6 | - | falsa alarma coordenadas con coma | Descartado |
+| H-E4a-7 | Medio | directorio arranca en Asuncion sin selector de ciudad | Diferido a E4b/E5 |
+| H-E4a-8 | Alto | searchParams sin await en /directorio -> defaults silenciosos | Corregido |
+
+**Prueba cruzada A/B (gate punto 9):**
+
+| # | Prueba | Resultado |
+|---|---|---|
+| 1 | A crea/edita establecimiento | OK |
+| 2 | A publica | OK |
+| 3 | B crea, no ve el de A | OK |
+| 4 | B -> URL de A -> 404 | OK |
+| 5 | A -> URL de B -> 404 | OK |
+| 6 | Directorio publico muestra A (publicado) | OK |
+| 7 | Despublicar A -> desaparece | OK |
+
+**Verificacion:** `tsc --noEmit` 0 errores, `npm test` 212/212, `npm run build` OK (25 rutas). Migracion 018 aplicada y verificada contra DB real (anon solo SELECT).
+
+**Lecciones:**
+
+- Next 16: `params` y `searchParams` son Promise. Sin `await`, dan error o defaults silenciosos. Cualquier pagina nueva debe `await params` / `await searchParams`.
+- `upsert` con `onConflict` es la forma correcta de asegurar fila hija cuando no existe. `update` afecta 0 filas y devuelve `ok: true` silenciosamente.
+- Vitest 5: `vi.clearAllMocks()` NO limpia las colas de `mockResolvedValueOnce`. Usar `vi.resetAllMocks()` + re-setear mocks base en `beforeEach`.
+- Supabase por defecto otorga GRANT ALL a `anon` en tablas nuevas. Toda migracion que cree tablas publicas debe revocar explicitamente.
+- El directorio publico necesita coordenadas; si `lat_aproximada` es NULL, la fila no aparece aunque este publicada.

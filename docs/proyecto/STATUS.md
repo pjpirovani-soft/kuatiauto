@@ -31,8 +31,8 @@
 | E3 | catálogo global (lectura) | wip (seed cargado) | — | 15 fabricantes, 73 modelos, 10 servicios, 8 productos |
 | E3 | catálogo local (CRUD) | wip (funcional) | — | commit b399b28 |
 | E3 | stock + movimientos | pendiente | — | columnas stock_actual/stock_minimo ya existen en producto_empresa; falta UI de movimientos |
-| E4 | directorio (búsqueda + mapa) | wip | — | página base en app/directorio |
-| E4 | publicación/moderación directorio | pendiente | E4-directorio | — |
+| E4 | directorio (búsqueda + mapa) | **completo** | — | E4a cerrada 2026-10-31, gate 10/10, prueba cruzada A/B 7/7 |
+| E4 | publicación/moderación directorio | wip | — | propietario publica/despublica OK; moderación admin_general va a E5 |
 | E4 | portal del conductor | pendiente | E1, E2b2 | — |
 | E5 | cron recordatorios + reintentos | pendiente | E2b2-órdenes | — |
 | E5 | panel admin | pendiente | E1 | reemplaza Supabase Dashboard como panel del CEO |
@@ -43,7 +43,7 @@
 | Item | Estado |
 |---|---|
 | Supabase proyecto `kuatiauto` | ✅ Activo (free tier, us-east-1) |
-| 16 migraciones aplicadas | ✅ 2026-10-31 |
+| 18 migraciones aplicadas | ✅ 2026-10-31 |
 | `lib/supabase/types.ts` (27 tablas, 12 funciones) | ✅ Generado |
 | `@supabase/ssr@0.12.7` | ✅ Bug `never` resuelto |
 | `.env.local` | ✅ Cargado (URL, anon, service_role) |
@@ -175,3 +175,20 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 - A (Luis) → URL directa a cliente de B → "Cliente no encontrado".
 
 **Resultado:** RLS aísla correctamente. Gate E1 cruzado cerrado. E1 pasa de gate 7/10 a gate 9/10 (falta solo 2FA del propietario para el 10/10).
+
+## Nota de cierre E4a (2026-10-31)
+
+**Directorio + establecimientos públicos cerrados. Gate 10/10.**
+
+- Migración `018`: endurece GRANT de `anon` en `establecimiento_publico` (H-E4a-1).
+- Backend: `lib/schemas/establecimientoSchema.ts` + `lib/establecimiento-actions.ts` (listar, obtener, crear, editar, publicarMiEstablecimiento). 36 tests nuevos.
+- UI: `/establecimientos` (lista + nuevo + editar) + `EstablecimientoForm` + `PublicarButton`. Link en sidebar.
+- `/directorio`: `await searchParams` (H-E4a-8).
+- Fix `upsert` en `editarEstablecimiento` (H-E4a-3): crea fila pública si no existe.
+- Fix `await params` en `/establecimientos/[id]` (H-E4a-4).
+- Prueba cruzada A/B 7/7 contra DB real. Aislamiento bidireccional verificado. Directorio muestra solo publicados.
+- Verificación: 212/212 tests, tsc 0, build OK (25 rutas).
+
+**Deuda diferida:** H-E4a-2 (UI admin_general en `/establecimientos` → E5), H-E4a-7 (default geográfico del directorio → E4b/E5).
+
+**Próximo:** E4b (portal del conductor: `/mi-garage`, `vehiculo_conductor`, `historial_compartido`, invitación por token).
