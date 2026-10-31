@@ -40,6 +40,23 @@ export async function listarVehiculos(input: unknown): Promise<Result<unknown[]>
   return { ok: true, data: data ?? [] };
 }
 
+export async function listarVehiculosEmpresa(): Promise<Result<unknown[]>> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'No autenticado' };
+
+  const empresaId = await getEmpresaId();
+  if (!empresaId) return { ok: false, error: 'Sin empresa asociada' };
+
+  const { data, error } = await supabase
+    .from('vehiculo')
+    .select('id, cliente_id, marca, modelo, anio, patente, km_actual, notas, activo, created_at')
+    .eq('activo', true)
+    .eq('empresa_id', empresaId)
+    .order('created_at', { ascending: false });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true, data: data ?? [] };
+}
 export async function crearVehiculo(input: unknown): Promise<Result<{ id: string }>> {
   const parsed = vehiculoSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? 'Datos invalidos' };
