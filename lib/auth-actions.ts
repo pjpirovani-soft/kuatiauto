@@ -33,6 +33,16 @@ export async function login(formData: FormData) {
   if (error) return { error: error.message };
 
   revalidatePath('/', 'layout');
+  
+  // Redirigir según el rol del usuario
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { data: conductor } = await supabase.from('conductor').select('id').eq('id', user.id).maybeSingle();
+    if (conductor) {
+      redirect('/mi-garage');
+    }
+  }
+  
   redirect('/clientes');
 }
 
@@ -79,4 +89,20 @@ export async function logout() {
   await supabase.auth.signOut();
   revalidatePath('/', 'layout');
   redirect('/login');
+}
+
+export async function registerConductor(formData: FormData) {
+  const supabase = await createClient();
+  const data = Object.fromEntries(formData);
+  const parsed = authSchema.safeParse(data);
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const rl = await checkRateLimit({ clave: buildClave(['register_conductor', parsed.data.email]), max: 3, ventanaSegundos: 60 });
+  if (!rl.ok) return { error: 'Demasiados intentos. Intentá de nuevo en ' + rl.retryAfterSeconds + 's.' };
+  const { error } = await supabase.auth.signUp({
+    email: parsed.data.email,
+    password: parsed.data.password,
+    options: { data: { tipo: 'conductor', nombre: parsed.data.nombre } }
+  });
+  if (error) return { error: error.message };
+  return { success: 'Revisa tu email para confirmar la cuenta.' };
 }
