@@ -37,9 +37,20 @@ export async function login(formData: FormData) {
   // Redirigir según el rol del usuario
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
+    const { data: usuario } = await supabase
+      .from('usuario')
+      .select('rol, empresa_id')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (usuario?.rol === 'admin_general') {
+      redirect('/admin');
+    }
     const { data: conductor } = await supabase.from('conductor').select('id').eq('id', user.id).maybeSingle();
     if (conductor) {
       redirect('/mi-garage');
+    }
+    if (!usuario?.empresa_id) {
+      redirect('/crear-empresa');
     }
   }
   

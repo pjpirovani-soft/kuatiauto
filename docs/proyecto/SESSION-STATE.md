@@ -6,7 +6,7 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. E5b/E5c pendientes.
+- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. **E5b wip (dashboard funcional 2026-11-02, faltan listas)**. E5c pendiente.
 - **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 19 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehículo → crear orden → catálogo → establecimientos → directorio → portal del conductor (mi-garage).
 - **Tests:** 212/212 verdes (19 archivos). **tsc --noEmit:** 0 errores. **build:** OK (25 rutas).
@@ -24,7 +24,7 @@
 
 ## Próximos 3 pasos
 
-1. **E5b (panel admin).** UI /admin para que el CEO no dependa del dashboard de Supabase.
+1. **E5b-futuro (listas del panel admin).** /admin/empresas, /admin/usuarios, /admin/catalogo. Hoy solo dashboard con contadores.
 2. **E5c (Sentry + Vercel Analytics + backups automatizados).**
 3. **Cierre formal de gates de E2a-bis y E2b1** (no bloqueante, solo papeleo).
 
@@ -70,3 +70,10 @@ Pegar el PROMPT DE CONTINUACION del dump actualizado.
 - Vercel no configurado: cuando se deploye, replicar RESEND_API_KEY y RESEND_FROM en env vars del proyecto.
 - Cron de recordatorios automaticos no implementado: hoy solo se envia al completar orden manualmente.
 - Fire-and-forget: los 3 envios usan void ... .catch(...). Aceptado en MVP.
+
+### E5b (wip 2026-11-02, dashboard funcional)
+- /admin/empresas pendiente: lista de empresas + detalle con contadores por empresa.
+- /admin/usuarios pendiente: lista de usuarios + cambio de rol / desactivacion.
+- /admin/catalogo pendiente: moderacion de servicio_global y producto_global.
+- Links del sidebar admin: hoy solo Panel. Agregar los demas cuando existan las paginas.
+

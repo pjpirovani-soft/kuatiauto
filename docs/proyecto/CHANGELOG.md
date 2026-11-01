@@ -1,3 +1,19 @@
+## [E5b-wip] - 2026-11-02 - Panel admin (dashboard funcional)
+
+### Added
+- app/(admin)/layout.tsx: auth check server-side. notFound() si no es admin_general.
+- app/(admin)/admin/page.tsx: dashboard con contadores (empresas, usuarios, establecimientos publicados, ordenes).
+- lib/admin-actions.ts: obtenerContadoresAdmin().
+
+### Changed
+- lib/auth-actions.ts: redirect post-login con orden admin -> conductor -> sin-empresa -> clientes. Fix: usuarios sin empresa ahora van a /crear-empresa.
+
+### Verified
+- Login admin -> /admin con contadores reales. tsc 0, build OK (26 rutas).
+
+### Pendiente
+- /admin/empresas, /admin/usuarios, /admin/catalogo. Links del sidebar.
+
 ## [E5a] - 2026-11-02 - Notificaciones reales cableadas
 
 ### Added

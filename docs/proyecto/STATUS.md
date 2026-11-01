@@ -37,7 +37,7 @@
 | E4 | portal del conductor | pendiente | E1, E2b2 | — |
 | E5 | notificaciones reales (bienvenida + historial + recordatorio) | **completo (con deuda de dominio)** | dominio verificado en Resend | cableado 2026-11-02; envio real OK contra API Resend. Deuda: RESEND_FROM usa onboarding@resend.dev (solo tests a email propio) hasta verificar dominio |
 | E5 | cron recordatorios + reintentos | pendiente | dominio Resend + deploy | — |
-| E5 | panel admin | pendiente | E1 | reemplaza Supabase Dashboard como panel del CEO |
+| E5 | panel admin | wip | — | dashboard funcional 2026-11-02 (contadores: empresas, usuarios, establecimientos publicados, ordenes). Redirect post-login (admin -> /admin). Faltan /admin/empresas, /admin/usuarios, /admin/catalogo |
 | E5 | Sentry + Vercel Analytics | pendiente | E1 | — |
 
 ## Infraestructura
@@ -234,4 +234,23 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 - RESEND_FROM usa onboarding@resend.dev (solo permite enviar al email de la cuenta Resend). Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
 - Vercel no configurado; cuando se deploye, replicar RESEND_API_KEY y RESEND_FROM en env vars del proyecto.
 - Cron de recordatorios automaticos no implementado (solo envio manual al completar orden).
+
+
+## Nota de cierre E5b (2026-11-02, wip)
+
+**Panel admin: dashboard funcional. Wip, faltan listas de entidades.**
+
+**Hecho:**
+- lib/auth-actions.ts: redirect post-login. Orden de checks: admin_general -> /admin, conductor -> /mi-garage, sin empresa -> /crear-empresa, con empresa -> /clientes. Fix adicional: usuarios sin empresa ahora van a /crear-empresa (antes caian en /clientes).
+- app/(admin)/layout.tsx: auth check server-side. notFound() si no es admin_general. Sidebar con link Panel + logout via server action.
+- app/(admin)/admin/page.tsx: dashboard con 4 contadores (empresas, usuarios, establecimientos publicados, ordenes).
+- lib/admin-actions.ts: obtenerContadoresAdmin(). Usa createClient() (RLS permite SELECT a admin_general via is_admin_general() en las policies de empresa y usuario).
+
+**Verificacion:** login como pirovanipedrojose@gmail.com -> /admin, contadores reales (Empresas: 2, Usuarios: 5). tsc 0, build OK (26 rutas).
+
+**Pendiente (E5b-futuro):**
+- /admin/empresas: lista + detalle con contadores por empresa.
+- /admin/usuarios: lista + cambiar rol / desactivar.
+- /admin/catalogo: moderacion de servicio_global y producto_global.
+- Links del sidebar correspondientes (hoy solo Panel).
 

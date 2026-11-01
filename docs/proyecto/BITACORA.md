@@ -707,3 +707,17 @@ Pruebas ejecutadas:
 - Add-Content -Encoding UTF8 en PS 5.x no agrega BOM; WriteAllText con UTF8Encoding(false) es mas confiable.
 - tsx como devDependency: util para scripts sueltos (envio directo contra API).
 - process.exit en tsx/Windows genera Assertion failed al cerrar, pero el proceso termino OK.
+
+## Cierre E5b (wip) — 2026-11-02
+
+**Panel admin: dashboard funcional. Wip, faltan listas de entidades.**
+
+- lib/auth-actions.ts: redirect post-login. Orden: admin_general -> /admin, conductor -> /mi-garage, sin empresa -> /crear-empresa, con empresa -> /clientes. Fix adicional: usuarios sin empresa ahora van a /crear-empresa (antes caian en /clientes).
+- app/(admin)/layout.tsx: auth check server-side. notFound() si no es admin_general. Sidebar con link Panel + logout via server action. Links Empresas/Usuarios/Catalogo retirados del sidebar (rutas no existentes) con TODO para E5b-futuro.
+- app/(admin)/admin/page.tsx: dashboard con 4 contadores (empresas, usuarios, establecimientos publicados, ordenes).
+- lib/admin-actions.ts: obtenerContadoresAdmin(). Usa createClient() con RLS: is_admin_general() ya esta en las policies de empresa y usuario, no hizo falta service_role.
+
+**Verificacion:** login como pirovanipedrojose@gmail.com -> /admin. Contadores reales: Empresas 2, Usuarios 5, Establecimientos publicados 0, Ordenes 0. tsc 0, build OK (26 rutas, incluye /admin).
+
+**Pendiente (E5b-futuro):** /admin/empresas, /admin/usuarios, /admin/catalogo, links del sidebar.
+
