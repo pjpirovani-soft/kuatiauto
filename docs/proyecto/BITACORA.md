@@ -573,3 +573,14 @@ Pruebas ejecutadas:
 - No hubo cambios de codigo en este cierre: solo se cumplio la accion externa pendiente.
 
 **Estado final E1:** 212/212 tests, tsc 0, build OK (25 rutas). Prueba cruzada A/B 7/7.
+
+## Cierre E3 — 2026-11-01
+
+**E3 (Catálogo global + local) cerrada. Gate 10/10.**
+
+- Prueba cruzada A/B: Empresa A creó "Servicio Test A" y Empresa B "Servicio Test B".
+- Listado en UI: A solo ve su servicio, B no aparece en la lista.
+- Acceso directo por URL (IDOR) a `/catalogo/servicios/<id-de-B>` estando como A: devuelve 404. Aislamiento RLS correcto.
+- Datos de prueba eliminados de la DB tras la validación.
+
+**Estado final E3:** 212/212 tests, tsc 0, build OK. RLS validada en UI y DB.

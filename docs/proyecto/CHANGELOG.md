@@ -1,3 +1,13 @@
+## [E3] - 2026-11-01 - Cierre formal (gate 10/10)
+
+### Verified
+- Prueba cruzada A/B contra DB real (catálogo local): aislamiento RLS confirmado en listado y en acceso directo por URL (404).
+- `STATUS.md`: filas de catálogo global y local actualizadas a `completo`.
+
+### Notas
+- No hubo cambios de código. Cierre administrativo del gate de E3.
+- Datos de prueba insertados para la prueba cruzada fueron eliminados.
+
 ## [E1] - 2026-11-01 - Cierre formal (gate 10/10)
 
 ### Changed
