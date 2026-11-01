@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { auditLog } from '@/lib/audit';
+import { enviarRecordatorioMantenimiento } from "@/lib/notificaciones-actions";
 import { checkRateLimit, buildClave } from '@/lib/rate-limit';
 import {
   crearOrdenSchema,
@@ -379,6 +380,25 @@ export async function completarOrden(input: unknown): Promise<Result<{ id: strin
     datosNuevos: { estado: 'completada', importe_total: total, proximo_mantenimiento_km: prox.km },
   });
 
+  if (prox.fecha && actual.vehiculo_id) {
+    const { data: vehData } = await supabase
+      .from('vehiculo')
+      .select('marca, modelo, cliente:cliente_id(nombre, email), empresa:empresa_id(nombre)')
+      .eq('id', actual.vehiculo_id)
+      .maybeSingle();
+    const veh = vehData as any;
+    if (veh?.cliente?.email) {
+      void enviarRecordatorioMantenimiento({
+        vehiculo_id: actual.vehiculo_id,
+        cliente_email: veh.cliente.email,
+        cliente_nombre: veh.cliente.nombre || 'Cliente',
+        vehiculo_descripcion: [veh.marca, veh.modelo].filter(Boolean).join(' ') || 'vehiculo',
+        proximo_mantenimiento: prox.fecha,
+        establecimiento_nombre: veh.empresa?.nombre || 'Establecimiento',
+        fecha_objetivo: new Date().toISOString().slice(0, 10),
+      }).catch((e: unknown) => console.warn('[completarOrden] notif fallo:', e));
+    }
+  }
   revalidatePath('/ordenes');
   revalidatePath('/ordenes/' + parsed.data.id);
   revalidatePath('/vehiculos/' + actual.vehiculo_id);

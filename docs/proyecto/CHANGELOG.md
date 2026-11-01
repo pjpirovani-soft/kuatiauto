@@ -1,3 +1,23 @@
+## [E5a] - 2026-11-02 - Notificaciones reales cableadas
+
+### Added
+- enviarBienvenida cableada en lib/empresa-actions.ts (crearEmpresa, fire-and-forget).
+- enviarHistorialCompartido cableada en lib/conductor-actions.ts (revocarHistorial, fire-and-forget).
+- enviarRecordatorioMantenimiento cableada en lib/ordenes-actions.ts (completarOrden, fire-and-forget).
+- tsx (devDependency) para scripts sueltos.
+
+### Changed
+- .env.local: RESEND_API_KEY y RESEND_FROM configuradas (RESEND_FROM usa onboarding@resend.dev para tests a email propio).
+
+### Verified
+- Envio real contra API Resend: OK (mock=false, id devuelto por la API).
+- 212/212 tests, tsc 0, build OK (25 rutas).
+
+### Deudas
+- RESEND_FROM usa onboarding@resend.dev (solo tests al email de la cuenta). Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
+- Vercel no configurado; replicar RESEND_API_KEY y RESEND_FROM en env vars cuando se deploye.
+- Cron de recordatorios automaticos no implementado.
+
 ## [E4b] - 2026-11-01 - Portal del conductor (gate 10/10)
 
 ### Added

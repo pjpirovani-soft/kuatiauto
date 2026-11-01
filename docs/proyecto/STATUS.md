@@ -35,7 +35,8 @@
 | E4 | publicación/moderación directorio | wip | — | propietario publica/despublica OK; moderación admin_general va a E5 |
 | E4 | portal del conductor | **completo** | — | gate 10/10 cerrado 2026-11-01; prueba cruzada A/B OK (proponer/aceptar/revocar). H-E4b-2 resuelto 2026-11-01 con RPC SECURITY DEFINER (migracion 020) |
 | E4 | portal del conductor | pendiente | E1, E2b2 | — |
-| E5 | cron recordatorios + reintentos | pendiente | E2b2-órdenes | — |
+| E5 | notificaciones reales (bienvenida + historial + recordatorio) | **completo (con deuda de dominio)** | dominio verificado en Resend | cableado 2026-11-02; envio real OK contra API Resend. Deuda: RESEND_FROM usa onboarding@resend.dev (solo tests a email propio) hasta verificar dominio |
+| E5 | cron recordatorios + reintentos | pendiente | dominio Resend + deploy | — |
 | E5 | panel admin | pendiente | E1 | reemplaza Supabase Dashboard como panel del CEO |
 | E5 | Sentry + Vercel Analytics | pendiente | E1 | — |
 
@@ -64,6 +65,8 @@
 | Seed catálogo marcas `[PENDIENTE]` | F6a | E3 |
 | `npm audit` 16 moderate (0 critical, 0 high) — todas en `minimatch` dev-only | E2a-bis | Resuelto 2026-10-31: upgrade Vitest 5 eliminó las 2 critical + 12 moderate. Las 16 restantes son dev-only en la cadena de ESLint, no explotables en producción |
 | Sentry diseñado, no configurado | F13 | E5 |
+| RESEND_FROM con onboarding@resend.dev (solo tests propios) | E5a | cuando se registre y verifique dominio |
+| Vercel no configurado (solo .env.local por ahora) | E5a | cuando se deploye |
 | Export semanal de backups: script manual | F13 | v2 |
 | Prueba de restauración trimestral: no ejecutada | F13 | Post-E5 |
 
@@ -216,3 +219,19 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 - **D-E4b-1** (deuda UX): precargar email del cliente dueño en `ProponerHistorialForm` si existe. E5/v2.
 
 **Verificacion:** 212/212 tests, tsc 0, build OK (25 rutas). Encoding limpio.
+
+## Nota de cierre E5a (2026-11-02)
+
+**Notificaciones reales cableadas y verificadas contra Resend.**
+
+- enviarBienvenida cableada en crearEmpresa (fire-and-forget).
+- enviarHistorialCompartido cableada en revocarHistorial (fire-and-forget).
+- enviarRecordatorioMantenimiento cableada en completarOrden (fire-and-forget).
+- RESEND_API_KEY configurada en .env.local. Envio de prueba a pirovanipedrojose@gmail.com: OK (id real de Resend, mock=false).
+- tsx agregado como devDependency para scripts sueltos.
+
+**Deudas:**
+- RESEND_FROM usa onboarding@resend.dev (solo permite enviar al email de la cuenta Resend). Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
+- Vercel no configurado; cuando se deploye, replicar RESEND_API_KEY y RESEND_FROM en env vars del proyecto.
+- Cron de recordatorios automaticos no implementado (solo envio manual al completar orden).
+

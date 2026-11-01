@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { auditLog } from '@/lib/audit';
+import { enviarBienvenida } from '@/lib/notificaciones-actions';
 import { z } from 'zod';
 
 const crearEmpresaSchema = z.object({
@@ -43,6 +44,16 @@ export async function crearEmpresa(input: unknown): Promise<CrearEmpresaResult> 
     entidadId: empresaId,
     datosNuevos: { nombre: parsed.data.nombre, ruc: parsed.data.ruc ?? null },
   });
+
+  const nombreUsuario = (user.user_metadata?.nombre as string | undefined) ?? user.email?.split('@')[0] ?? 'usuario';
+  if (user.email) {
+    void enviarBienvenida({
+      establecimiento_id: empresaId,
+      email: user.email,
+      nombre: nombreUsuario,
+      establecimiento_nombre: parsed.data.nombre,
+    }).catch((e) => console.warn('[crearEmpresa] enviarBienvenida fallo:', e));
+  }
 
   return { ok: true, empresaId };
 }

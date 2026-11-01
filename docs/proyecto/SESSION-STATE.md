@@ -6,7 +6,7 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). E5 pendiente.
+- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. E5b/E5c pendientes.
 - **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 19 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehículo → crear orden → catálogo → establecimientos → directorio → portal del conductor (mi-garage).
 - **Tests:** 212/212 verdes (19 archivos). **tsc --noEmit:** 0 errores. **build:** OK (25 rutas).
@@ -24,9 +24,9 @@
 
 ## Próximos 3 pasos
 
-1. **E5 (notificaciones reales + panel admin + Sentry + backups).** Requiere RESEND_API_KEY.
-2. **Cierre formal de gates de E2a-bis y E2b1** (no bloqueante, solo papeleo).
-3. **Deuda E4b (opcional, sesión corta):** fix H-E4b-2 (denormalizar nombre_empresa/vehiculo en historial_compartido o RPC con SECURITY DEFINER).
+1. **E5b (panel admin).** UI /admin para que el CEO no dependa del dashboard de Supabase.
+2. **E5c (Sentry + Vercel Analytics + backups automatizados).**
+3. **Cierre formal de gates de E2a-bis y E2b1** (no bloqueante, solo papeleo).
 
 ## Deuda pendiente
 
@@ -64,3 +64,9 @@ Pegar el PROMPT DE CONTINUACION del dump actualizado.
 - Propietario: Pedro J. Pirovani (pjpirovani-soft en GitHub).
 - Piloto: Luis María Delvalle Ramírez — Import Japan - Autorepuestos (Encarnación).
 
+
+### E5a (cerrada 2026-11-02, con deudas de dominio)
+- RESEND_FROM usa onboarding@resend.dev: solo permite enviar al email de la cuenta Resend. Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
+- Vercel no configurado: cuando se deploye, replicar RESEND_API_KEY y RESEND_FROM en env vars del proyecto.
+- Cron de recordatorios automaticos no implementado: hoy solo se envia al completar orden manualmente.
+- Fire-and-forget: los 3 envios usan void ... .catch(...). Aceptado en MVP.

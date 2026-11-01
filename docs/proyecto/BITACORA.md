@@ -682,3 +682,28 @@ Pruebas ejecutadas:
 - supabase gen types > file en PS 5.x produce UTF-16 LE con BOM. Re-guardar con ReadAllText + WriteAllText + UTF8Encoding(false) para normalizar.
 - List.Add con backticks dobles () los comen: en PS el backtick es escape, asi que doble backtick = un backtick literal. Para CHANGELOG/BITACORA con code inline, mejor evitar backticks o usar [char]96.
 
+
+## Cierre E5a — 2026-11-02
+
+**Notificaciones reales cableadas y verificadas contra Resend.**
+
+- enviarBienvenida cableada en crearEmpresa (fire-and-forget).
+- enviarHistorialCompartido cableada en revocarHistorial (fire-and-forget).
+- enviarRecordatorioMantenimiento cableada en completarOrden (fire-and-forget).
+- RESEND_API_KEY configurada en .env.local. Envio de prueba a pirovanipedrojose@gmail.com: OK (id real de Resend, mock=false).
+- tsx agregado como devDependency para scripts sueltos.
+
+**Deudas:**
+
+- RESEND_FROM usa onboarding@resend.dev (solo permite enviar al email de la cuenta Resend). Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
+- Vercel no configurado; cuando se deploye, replicar RESEND_API_KEY y RESEND_FROM en env vars del proyecto.
+- Cron de recordatorios automaticos no implementado (solo envio manual al completar orden).
+
+**Verificacion:** 212/212 tests, tsc 0, build OK (25 rutas). Envio real OK (mock=false).
+
+**Lecciones:**
+
+- PS 5.x: comandos con ReadAllText + regex anidados rompen el parser; usar variables intermedias.
+- Add-Content -Encoding UTF8 en PS 5.x no agrega BOM; WriteAllText con UTF8Encoding(false) es mas confiable.
+- tsx como devDependency: util para scripts sueltos (envio directo contra API).
+- process.exit en tsx/Windows genera Assertion failed al cerrar, pero el proceso termino OK.

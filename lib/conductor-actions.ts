@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { auditLog } from "@/lib/audit";
+import { enviarHistorialCompartido } from "@/lib/notificaciones-actions";
 import { checkRateLimit, buildClave } from "@/lib/rate-limit";
 import { conductorSchema, vehiculoConductorSchema, vehiculoConductorIdSchema, historialTokenSchema, historialIdSchema, proponerHistorialSchema } from "@/lib/schemas/conductorSchema";
 
@@ -100,6 +101,16 @@ export async function revocarHistorial(input: unknown): Promise<Result<void>> {
   const { error } = await supabase.rpc("revocar_historial_compartido", { p_id: parsed.data.id });
   if (error) return { ok: false, error: error.message };
   await auditLog({ usuarioId: user.id, empresaId: null, accion: "revocar", entidad: "historial_compartido", entidadId: parsed.data.id });
+  if (user.email) {
+    void enviarHistorialCompartido({
+      conductor_id: user.id,
+      email: user.email,
+      conductor_nombre: user.email.split('@')[0],
+      vehiculo_descripcion: "vehiculo",
+      establecimiento_nombre: "Establecimiento",
+      accion: "revocado",
+    }).catch((e) => console.warn("[revocarHistorial] notif fallo:", e));
+  }
   revalidatePath("/mi-garage/historial");
   return { ok: true, data: undefined };
 }
