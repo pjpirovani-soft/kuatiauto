@@ -33,6 +33,7 @@
 | E3 | stock + movimientos | pendiente | — | columnas stock_actual/stock_minimo ya existen en producto_empresa; falta UI de movimientos |
 | E4 | directorio (búsqueda + mapa) | **completo** | — | E4a cerrada 2026-10-31, gate 10/10, prueba cruzada A/B 7/7 |
 | E4 | publicación/moderación directorio | wip | — | propietario publica/despublica OK; moderación admin_general va a E5 |
+| E4 | portal del conductor | wip | Supabase 502 | backend + UI listos, falta prueba cruzada A/B |
 | E4 | portal del conductor | pendiente | E1, E2b2 | — |
 | E5 | cron recordatorios + reintentos | pendiente | E2b2-órdenes | — |
 | E5 | panel admin | pendiente | E1 | reemplaza Supabase Dashboard como panel del CEO |

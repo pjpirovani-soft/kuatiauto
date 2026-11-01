@@ -1,3 +1,17 @@
+## [E4b-wip] - 2026-11-01 - Portal del conductor (en progreso)
+
+### Added
+- `supabase/migrations/019_historial_compartido_consentimiento.sql`.
+- `lib/conductor-actions.ts`, `lib/schemas/conductorSchema.ts`.
+- `app/(portal)/layout.tsx`, `/mi-garage/*`, `app/register-conductor/page.tsx`.
+- `components/VehiculoConductorForm.tsx`, `components/ProponerHistorialForm.tsx`.
+
+### Fixed
+- `lib/auth-actions.ts`: login redirige a `/mi-garage` si es conductor.
+
+### Pendiente
+- Prueba cruzada A/B (bloqueada por Supabase 502).
+
 ## [E2b2] - 2026-11-01 - Cierre formal (gate 10/10)
 
 ### Verified

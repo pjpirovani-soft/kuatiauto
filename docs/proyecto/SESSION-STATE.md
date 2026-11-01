@@ -6,8 +6,8 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** E4a cerrada (2026-10-31, directorio + establecimientos publicos). E4b pendiente (portal del conductor). F0–F14 completas. E1 cerrada (gate 10/10, 2FA del propietario activada 2026-11-01). E2a-bis, E2b1, E2b2 (backend + UI de ordenes), E3, E4a cerradas.
-- **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 18 migraciones aplicadas. .env.local cargado.
+- **Fase:** E4a cerrada (2026-10-31, directorio + establecimientos publicos). E4b wip (portal del conductor: backend + UI listos, pendiente prueba cruzada por caida 502 de Supabase). F0–F14 completas. E1 cerrada (gate 10/10, 2FA del propietario activada 2026-11-01). E2a-bis, E2b1, E2b2 (backend + UI de ordenes), E3, E4a cerradas.
+- **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 19 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehiculo → persistencia → audit_log.
 - **Piloto cargado:** Luis María Delvalle Ramírez (importjapanencar@gmail.com) como propietario de Import Japan - Autorepuestos (adbcd23e-f296-435c-b835-e9ce837a9d95). Cliente de prueba: María José Bitar Balletbo.
 - **CEO:** Pedro José Pirovani (pirovanipedrojose@gmail.com) como admin_general, empresa_id=null. Panel de admin real: Supabase Dashboard (UI /admin es E5).

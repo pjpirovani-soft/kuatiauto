@@ -599,3 +599,18 @@ Pruebas ejecutadas:
 - Inmutabilidad de orden `completada` bloqueada solo en UI, no en backend.
 
 **Estado final E2b2:** 212/212 tests, tsc 0, build OK (25 rutas).
+
+## E4b (wip) — 2026-11-01
+
+**Portal del conductor: backend + UI creados. Pendiente prueba cruzada por caida de Supabase (502).**
+
+- Migracion `019_historial_compartido_consentimiento.sql`: autorizado default false + 3 funciones SECURITY DEFINER (proponer, aceptar, revocar).
+- Backend: `lib/conductor-actions.ts` + `conductorSchema.ts`.
+- UI: `(portal)/layout.tsx` + `/mi-garage`, `/mi-garage/vehiculos`, `/mi-garage/historial`, `register-conductor`.
+- Componentes: `VehiculoConductorForm`, `ProponerHistorialForm`.
+- Fix: login redirige a `/mi-garage` si el usuario es conductor (antes caia en `/clientes`).
+
+**Lecciones:**
+- Supabase API keys nuevas (`sb_secret_`) van solo en `apikey`, sin `Authorization: Bearer`.
+- Crear usuarios con contraseña por Auth Admin API (`/auth/v1/admin/users`). SQL directo no hashea bien.
+- Supabase free tier puede dar 502 temporal. Reintentar.
