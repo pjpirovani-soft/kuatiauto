@@ -1,3 +1,16 @@
+## [E1] - 2026-11-01 - Cierre formal (gate 10/10)
+
+### Changed
+- `SESSION-STATE.md`: E1 pasa de `wip (gate 9/10)` a `cerrada (gate 10/10)`.
+- `STATUS.md`: fila E1 auth pasa a `completo`.
+
+### Verified
+- 2FA activada en el gestor de contrasenas del propietario (Bitwarden).
+- Prueba cruzada A/B (2026-10-31) sigue vigente: aislamiento bidireccional verificado.
+
+### Notas
+- No hubo cambios de codigo. Cierre administrativo del gate de E1.
+
 ## [E4a] - 2026-10-31 - Directorio + establecimientos publicos
 
 ### Added

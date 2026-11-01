@@ -563,3 +563,13 @@ Pruebas ejecutadas:
 - Vitest 5: `vi.clearAllMocks()` NO limpia las colas de `mockResolvedValueOnce`. Usar `vi.resetAllMocks()` + re-setear mocks base en `beforeEach`.
 - Supabase por defecto otorga GRANT ALL a `anon` en tablas nuevas. Toda migracion que cree tablas publicas debe revocar explicitamente.
 - El directorio publico necesita coordenadas; si `lat_aproximada` es NULL, la fila no aparece aunque este publicada.
+
+## Cierre E1 — 2026-11-01
+
+**E1 (auth completo + multiempresa + shell + rate limit + audit) cerrada. Gate 10/10.**
+
+- Prueba cruzada A/B completada el 2026-10-31 (aislamiento RLS verificado).
+- Punto 10 del gate: 2FA activada en el gestor de contrasenas del propietario (Bitwarden, 2026-11-01).
+- No hubo cambios de codigo en este cierre: solo se cumplio la accion externa pendiente.
+
+**Estado final E1:** 212/212 tests, tsc 0, build OK (25 rutas). Prueba cruzada A/B 7/7.

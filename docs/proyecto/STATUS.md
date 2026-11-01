@@ -15,7 +15,7 @@
 
 | Etapa | Módulo | Estado | Bloqueantes | Hallazgos |
 |---|---|---|---|---|
-| E1 | auth completo (registro/login/reset/confirmación) | wip (gate 9/10) | — | prueba cruzada A/B ✅ 2026-10-31; 2FA pendiente (acción del propietario) |
+| E1 | auth completo (registro/login/reset/confirmación) | **completo** | — | prueba cruzada A/B ✅ 2026-10-31; 2FA en Bitwarden activada 2026-11-01 |
 | E1 | multiempresa (crear empresa + establecimiento) | wip | — | validado end-to-end (Luis) |
 | E1 | shell + route groups + layout base | wip | — | layout dashboard es E2b1 |
 | E1 | middleware rate limiting | wip | — | tests 8/8 verdes |
