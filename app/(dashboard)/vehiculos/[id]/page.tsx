@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import VehiculoForm from '@/components/VehiculoForm';
+import ProponerHistorialForm from '@/components/ProponerHistorialForm';
 import { listarClientes } from '@/lib/clientes-actions';
 import { createClient } from '@/lib/supabase/server';
 
@@ -30,13 +31,13 @@ export default async function VehiculoDetallePage({
     <div className="max-w-4xl mx-auto">
       <header className="mb-6">
         <Link href="/vehiculos" className="text-sm text-gray-600 hover:text-black underline">
-          ← Volver a vehículos
+          Volver a vehículos
         </Link>
         <h1 className="text-3xl font-bold mt-2">
           {vehiculo.marca} {vehiculo.modelo}
         </h1>
         <div className="mt-3">
-          <Link href={"/ordenes/nuevo?vehiculo_id="} className="text-sm bg-black text-white px-4 py-2 rounded hover:bg-gray-800 inline-block">
+          <Link href={"/ordenes/nuevo?vehiculo_id=" + vehiculo.id} className="text-sm bg-black text-white px-4 py-2 rounded hover:bg-gray-800 inline-block">
             Nueva orden para este vehículo
           </Link>
         </div>
@@ -44,6 +45,10 @@ export default async function VehiculoDetallePage({
 
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <VehiculoForm modo="editar" clientes={clientes} initialData={vehiculo} />
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mt-6">
+        <ProponerHistorialForm vehiculoId={vehiculo.id} />
       </div>
     </div>
   );

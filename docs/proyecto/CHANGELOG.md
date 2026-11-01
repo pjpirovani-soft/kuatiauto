@@ -1,3 +1,28 @@
+## [E4b] - 2026-11-01 - Portal del conductor (gate 10/10)
+
+### Added
+- supabase/migrations/020_listar_historial_compartido.sql: RPC SECURITY DEFINER para que el conductor vea nombre de empresa y datos del vehiculo sin que RLS bloquee los joins anidados de PostgREST (H-E4b-2).
+- components/HistorialAccionesClient.tsx: botones Aceptar/Revocar en el portal del conductor.
+
+### Changed
+- app/(dashboard)/vehiculos/[id]/page.tsx: ProponerHistorialForm importado y renderizado. Fix del href de /ordenes/nuevo?vehiculo_id= (perdia vehiculo.id desde E2b2).
+- app/(portal)/mi-garage/historial/page.tsx: HistorialAccionesClient integrado; campos a nombre_empresa / vehiculo_marca / vehiculo_modelo (planos del RPC).
+- lib/conductor-actions.ts: listarHistorialCompartido() usa la RPC en lugar de joins anidados.
+- lib/supabase/types.ts: regenerado desde Supabase (incluye la funcion nueva). Normalizado a UTF-8 sin BOM (supabase gen types produce UTF-16 LE con BOM en PS 5.x).
+
+### Verified
+- Prueba cruzada A/B: Luis propone -> token generado -> conductor2 acepta -> revoca -> re-acepta. Estado reversible, DB consistente.
+- /mi-garage/historial muestra nombre del taller y datos del vehiculo (fix H-E4b-2 confirmado en UI).
+- 212/212 tests, tsc --noEmit 0 errores, npm run build OK (25 rutas).
+- Encoding limpio: 0 mojibake, 0 BOM en archivos nuevos/modificados.
+
+### Hallazgos
+- **H-E4b-1** (bajo, UX): form de login deja el boton sin feedback ~3s durante el server action. Diferido a E5.
+- **H-E4b-2** (medio, cosmetico): RESUELTO. Causa: RLS bloqueaba joins anidados en PostgREST; conductor no pertenece a empresa. Fix: RPC SECURITY DEFINER con search_path controlado, GRANT EXECUTE solo a authenticated.
+
+### Deuda
+- **D-E4b-1** (UX): precargar email del cliente dueño en ProponerHistorialForm si existe. E5/v2.
+
 ## [E4b-wip] - 2026-11-01 - Portal del conductor (en progreso)
 
 ### Added

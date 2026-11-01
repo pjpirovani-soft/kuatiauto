@@ -33,7 +33,7 @@
 | E3 | stock + movimientos | pendiente | — | columnas stock_actual/stock_minimo ya existen en producto_empresa; falta UI de movimientos |
 | E4 | directorio (búsqueda + mapa) | **completo** | — | E4a cerrada 2026-10-31, gate 10/10, prueba cruzada A/B 7/7 |
 | E4 | publicación/moderación directorio | wip | — | propietario publica/despublica OK; moderación admin_general va a E5 |
-| E4 | portal del conductor | wip | Supabase 502 | backend + UI listos, falta prueba cruzada A/B |
+| E4 | portal del conductor | **completo** | — | gate 10/10 cerrado 2026-11-01; prueba cruzada A/B OK (proponer/aceptar/revocar). H-E4b-2 resuelto 2026-11-01 con RPC SECURITY DEFINER (migracion 020) |
 | E4 | portal del conductor | pendiente | E1, E2b2 | — |
 | E5 | cron recordatorios + reintentos | pendiente | E2b2-órdenes | — |
 | E5 | panel admin | pendiente | E1 | reemplaza Supabase Dashboard como panel del CEO |
@@ -193,3 +193,26 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 **Deuda diferida:** H-E4a-2 (UI admin_general en `/establecimientos` → E5), H-E4a-7 (default geográfico del directorio → E4b/E5).
 
 **Próximo:** E4b (portal del conductor: `/mi-garage`, `vehiculo_conductor`, `historial_compartido`, invitación por token).
+
+## Nota de cierre E4b (2026-11-01)
+
+**Portal del conductor cerrado. Gate 10/10.**
+
+- Backend: `lib/conductor-actions.ts` + `lib/schemas/conductorSchema.ts` (E4b sesion anterior).
+- Migracion `019_historial_compartido_consentimiento.sql` (3 funciones SECURITY DEFINER: proponer, aceptar, revocar).
+- UI: `(portal)/layout.tsx`, `/mi-garage`, `/mi-garage/vehiculos`, `/mi-garage/historial`, `/register-conductor`.
+- Componentes: `VehiculoConductorForm`, `ProponerHistorialForm`, `HistorialAccionesClient` (nuevo).
+- Integracion: `ProponerHistorialForm` en `/vehiculos/[id]` (empresa propone); `HistorialAccionesClient` en `/mi-garage/historial` (conductor acepta/revoca).
+- Fix E2b2: `href` de `/ordenes/nuevo?vehiculo_id=` perdió `{vehiculo.id}`. Corregido.
+
+**Prueba cruzada A/B (Luis -> conductor2):**
+- Proponer historial: token generado, fila en DB con `autorizado=false`.
+- Conductor2 recarga `/mi-garage/historial` -> ve propuesta pendiente -> Aceptar -> `autorizado=true`.
+- Conductor2 Revocar -> `autorizado=false`. Reversible.
+
+**Hallazgos:**
+- **H-E4b-1** (bajo, UX): form de login deja el botón sin feedback ~3s durante el server action. E5.
+- **H-E4b-2** (medio, cosmetico): RESUELTO 2026-11-01. Causa: RLS bloqueaba joins anidados en PostgREST. Fix: RPC `listar_historial_compartido()` SECURITY DEFINER (migracion 020). Datos de taller y vehiculo ahora se ven en `/mi-garage/historial`.
+- **D-E4b-1** (deuda UX): precargar email del cliente dueño en `ProponerHistorialForm` si existe. E5/v2.
+
+**Verificacion:** 212/212 tests, tsc 0, build OK (25 rutas). Encoding limpio.

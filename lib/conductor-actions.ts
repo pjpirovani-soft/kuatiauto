@@ -71,10 +71,7 @@ export async function listarHistorialCompartido(): Promise<Result<unknown[]>> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "No autenticado" };
-  const { data, error } = await supabase
-    .from("historial_compartido")
-    .select("id, autorizado, token_propuesta, vehiculo_empresa_id, empresa:empresa_id(nombre), vehiculo:vehiculo_empresa_id(marca, modelo)")
-    .eq("conductor_id", user.id);
+  const { data, error } = await supabase.rpc("listar_historial_compartido");
   if (error) return { ok: false, error: error.message };
   return { ok: true, data: data ?? [] };
 }

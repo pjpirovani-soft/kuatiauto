@@ -614,3 +614,71 @@ Pruebas ejecutadas:
 - Supabase API keys nuevas (`sb_secret_`) van solo en `apikey`, sin `Authorization: Bearer`.
 - Crear usuarios con contraseña por Auth Admin API (`/auth/v1/admin/users`). SQL directo no hashea bien.
 - Supabase free tier puede dar 502 temporal. Reintentar.
+
+## Cierre E4b — 2026-11-01
+
+**Portal del conductor cerrado. Gate 10/10.**
+
+- **Integracion UI cerrada en esta sesion:**
+  - `ProponerHistorialForm` importado y renderizado en `/vehiculos/[id]` (empresa propone historial al conductor).
+  - `HistorialAccionesClient` (nuevo componente) con botones Aceptar/Revocar, integrado en `/mi-garage/historial`.
+- **Fix de paso:** el `href` de `/ordenes/nuevo?vehiculo_id=` en `/vehiculos/[id]` habia perdido el `{vehiculo.id}` en E2b2. Corregido.
+- **Bug de escritura resuelto durante la sesion:** `Set-Content`/`WriteAllLines` con strings de comillas simples en un array multilinea puede perder la **primera** comilla simple del archivo (caso real: `'use client';` se escribio como `use client`;). Workaround: detectar con `.StartsWith('use client')` y reparar con `[char]39`.
+
+**Prueba cruzada A/B (2026-11-01, DB real):**
+
+| # | Paso | Resultado |
+|---|---|---|
+| 1 | Login conductor2 -> redirige a /mi-garage (no /clientes) | OK |
+| 2 | `/mi-garage/vehiculos` muestra Fiat Uno (2015) TEST-CON2 | OK |
+| 3 | `/mi-garage/historial` muestra 'Ningun taller ha solicitado acceso' (vacio) | OK |
+| 4 | Luis propone via `ProponerHistorialForm` -> token generado | OK |
+| 5 | DB: fila en `historial_compartido` con `autorizado=false` | OK |
+| 6 | Conductor2 recarga -> ve 'Pendiente de autorizacion' + boton 'Aceptar' | OK |
+| 7 | Conductor2 Aceptar -> estado 'Autorizado' + boton 'Revocar'; DB `autorizado=true` | OK |
+| 8 | Conductor2 Revocar -> vuelve a 'Pendiente'; DB `autorizado=false` | OK |
+
+**Hallazgos:**
+
+| ID | Severidad | Descripcion | Estado |
+|---|---|---|---|
+| H-E4b-1 | Bajo (UX) | Form de login deja el boton sin feedback ~3s durante server action | Diferido a E5 |
+| H-E4b-2 | Medio (cosmetico) | `/mi-garage/historial` muestra 'Taller' y 'Vehiculo:' vacios. Causa: RLS bloquea join anidado `empresa:empresa_id(nombre)` en PostgREST (conductor no pertenece a empresa). Datos criticos (autorizado, token) OK. Fix: migracion 020 con denormalizacion o RPC `listar_historial_compartido()` SECURITY DEFINER | A sesion corta posterior |
+| D-E4b-1 | Deuda UX | Precargar email del cliente dueño en `ProponerHistorialForm` si existe | E5/v2 |
+
+**Verificacion:** 212/212 tests, tsc 0, build OK (25 rutas). Encoding limpio.
+
+**Lecciones:**
+
+- **RLS en joins anidados de PostgREST falla silenciosamente:** si el usuario autenticado no puede SELECT en la tabla relacionada, el join devuelve `null` sin error. No es un bug de PostgREST, es RLS haciendo su trabajo. Los datos que el usuario necesita ver deben estar denormalizados en la tabla puente o accederse via SECURITY DEFINER.
+- **`supabase db query --linked` con UNION ALL funciona** para chequear dos tablas en una query (usado para verificar `conductor` + `usuario` en un solo paso).
+- **`[System.IO.File]::ReadAllBytes(C:\Users\Admin\proyectos\kuatiauto\docs\proyecto\BITACORA.md)[0..2]` es el chequeo de BOM mas confiable** en PS 5.x (`Get-Content` miente sobre encoding, como ya documentado en E2b2).
+- **`[char]39`** es la forma segura de meter una comilla simple en strings de PowerShell sin pelear con el parser.
+
+## Fix H-E4b-2 — 2026-11-01
+
+**Fix del display vacio de taller/vehiculo en /mi-garage/historial.**
+
+**Causa:** el select() con joins anidados (empresa:empresa_id(nombre), vehiculo:vehiculo_empresa_id(marca, modelo)) devolvia null silenciosamente. PostgREST aplica RLS del usuario actual a los joins anidados, y el conductor no pertenece a la empresa, asi que las policies de empresa y vehiculo bloquean la lectura sin tirar error.
+
+**Fix:**
+
+- Migracion 020_listar_historial_compartido.sql: RPC SECURITY DEFINER con search_path controlado. Solo devuelve los campos necesarios (nombre_empresa, vehiculo_marca, vehiculo_modelo, vehiculo_anio, vehiculo_patente). GRANT EXECUTE solo a authenticated, revoke de public.
+- lib/conductor-actions.ts: listarHistorialCompartido() usa la RPC en lugar de joins anidados.
+- app/(portal)/mi-garage/historial/page.tsx: campos cambiados a nombre_empresa, vehiculo_marca, vehiculo_modelo.
+- lib/supabase/types.ts: regenerado (incluye la funcion nueva). En PS 5.x, supabase gen types produce UTF-16 LE con BOM al redirigir; re-guardado a UTF-8 sin BOM con WriteAllText.
+
+**Verificacion:**
+
+- Funcion creada con security_type = DEFINER (query a information_schema.routines).
+- UI: /mi-garage/historial muestra 'Import Japan - Autorepuestos' y 'Vehículo: Toyota Ractis' correctamente.
+- Flujo aceptar -> revocar sigue funcionando tras el cambio a RPC.
+- 212/212 tests, tsc 0, build OK (25 rutas).
+
+**Lecciones:**
+
+- RLS bloquea joins anidados en PostgREST silenciosamente. Si necesitas datos de tablas donde el usuario autenticado no tiene SELECT, la solucion es SECURITY DEFINER con search_path controlado (no desactivar RLS).
+- Set-Content / WriteAllLines con strings de comillas simples en array multilinea puede perder la PRIMERA comilla simple del archivo. Patron para reescribir archivos: WriteAllText con heredoc simple (comillas simples).
+- supabase gen types > file en PS 5.x produce UTF-16 LE con BOM. Re-guardar con ReadAllText + WriteAllText + UTF8Encoding(false) para normalizar.
+- List.Add con backticks dobles () los comen: en PS el backtick es escape, asi que doble backtick = un backtick literal. Para CHANGELOG/BITACORA con code inline, mejor evitar backticks o usar [char]96.
+
