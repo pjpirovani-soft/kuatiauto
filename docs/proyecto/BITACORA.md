@@ -584,3 +584,18 @@ Pruebas ejecutadas:
 - Datos de prueba eliminados de la DB tras la validación.
 
 **Estado final E3:** 212/212 tests, tsc 0, build OK. RLS validada en UI y DB.
+
+## Cierre E2b2 — 2026-11-01
+
+**E2b2 (Órdenes de trabajo + UI) cerrada. Gate 10/10.**
+
+- Prueba cruzada A/B: se crearon órdenes de prueba para Empresa A y B.
+- Listado en UI: Luis solo ve la orden de su empresa (Orden Test A).
+- Acceso directo por URL (IDOR) a la orden de B: devuelve 404.
+- Datos de prueba eliminados tras la validación.
+
+**Deudas aceptadas (no bloquean el gate):**
+- `editarOrden` y `crearOrden` sin transacción SQL real (delete + insert). Mitigado con audit_log. Se migrará a RPC en futura sesión si hay bug.
+- Inmutabilidad de orden `completada` bloqueada solo en UI, no en backend.
+
+**Estado final E2b2:** 212/212 tests, tsc 0, build OK (25 rutas).

@@ -26,7 +26,7 @@
 | E2a | vehículos UI (form, lista, nuevo, editar) | pendiente | E2a-vehículos backend | E2b1 |
 | E2a | layout dashboard con navegación | pendiente | — | E2b1 |
 | E2b1 | UI vehículos + layout dashboard | pendiente | E2a | próxima sesión |
-| E2b2 | órdenes (CRUD + líneas) | wip (UI completa, falta gate) | — | UI cerrada commit 64c6b23 |
+| E2b2 | órdenes (CRUD + líneas) | **completo** | — | gate 10/10 cerrado 2026-11-01; prueba cruzada A/B OK |
 | E2b2 | empleados (invitación Resend) | pendiente | RESEND_API_KEY | sacado de E2b2 |
 | E3 | catálogo global (lectura) | **completo** | — | gate 10/10 cerrado 2026-11-01; 15 fabricantes, 73 modelos |
 | E3 | catálogo local (CRUD) | **completo** | — | gate 10/10 cerrado 2026-11-01; prueba cruzada A/B OK |

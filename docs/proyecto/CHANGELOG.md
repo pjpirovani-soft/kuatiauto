@@ -1,3 +1,14 @@
+## [E2b2] - 2026-11-01 - Cierre formal (gate 10/10)
+
+### Verified
+- Prueba cruzada A/B contra DB real (órdenes): aislamiento RLS confirmado en listado y acceso por URL (404).
+- `STATUS.md`: fila de órdenes actualizada a `completo`.
+
+### Notas
+- No hubo cambios de código. Cierre administrativo del gate.
+- Deudas aceptadas: transacciones no atómicas, inmutabilidad de completadas (UI only).
+- Datos de prueba eliminados.
+
 ## [E3] - 2026-11-01 - Cierre formal (gate 10/10)
 
 ### Verified
