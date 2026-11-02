@@ -11,13 +11,13 @@ export default function Home() {
     <div className='min-h-screen bg-kuati-fondo flex flex-col'>
       
       {/* Navbar simple */}
-      <header className='bg-kuati-petroleo text-kuati-blanco p-4 md:px-8 flex justify-between items-center'>
+      <header className='bg-kuati-petroleo text-kuati-blanco p-4 md:px-8 flex justify-between items-center shadow-md'>
         <div className='text-2xl font-bold tracking-wider'>KuatiAuto</div>
         <div className='flex gap-4'>
           <Link href='/login' className='px-4 py-2 text-sm font-medium hover:text-kuati-lima transition-colors'>
             Iniciar Sesión
           </Link>
-          <Link href='/register' className='bg-kuati-lima text-kuati-petroleo px-4 py-2 rounded-lg text-sm font-bold hover:bg-kuati-lima/90 transition-colors'>
+          <Link href='/register' className='bg-kuati-lima text-kuati-petroleo px-4 py-2 rounded-lg text-sm font-bold hover:bg-kuati-lima/90 transition-colors shadow-[0_0_10px_rgba(163,217,0,0.4)] hover:shadow-[0_0_15px_rgba(163,217,0,0.6)]'>
             Registrarse
           </Link>
         </div>
@@ -28,16 +28,16 @@ export default function Home() {
         <section className='bg-kuati-petroleo text-kuati-blanco py-20 px-4 text-center'>
           <div className='max-w-3xl mx-auto'>
             <h1 className='text-4xl md:text-6xl font-bold mb-6 tracking-tight'>
-              El sistema definitivo para tu <span className='text-kuati-lima'>Lubricentro</span>
+              El sistema definitivo para tu <span className='text-kuati-lima drop-shadow-[0_0_15px_rgba(163,217,0,0.4)]'>Lubricentro</span>
             </h1>
             <p className='text-lg md:text-xl text-kuati-blanco/80 mb-10 max-w-2xl mx-auto'>
               Gestioná clientes, vehículos y órdenes de trabajo. Conectá con tus clientes a través del portal del conductor y potenciá tu negocio en Paraguay.
             </p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-              <Link href='/register' className='bg-kuati-lima text-kuati-petroleo font-bold px-8 py-3 rounded-lg text-lg hover:bg-kuati-lima/90 transition-all shadow-[0_0_15px_rgba(163,217,0,0.3)] hover:shadow-[0_0_25px_rgba(163,217,0,0.5)]'>
+              <Link href='/register' className='bg-kuati-lima text-kuati-petroleo font-bold px-8 py-3 rounded-lg text-lg hover:bg-kuati-lima/90 transition-all shadow-[0_0_15px_rgba(163,217,0,0.3)] hover:shadow-[0_0_25px_rgba(163,217,0,0.6)] hover:-translate-y-1'>
                 Comenzar ahora
               </Link>
-              <Link href='/directorio' className='border border-kuati-blanco/30 px-8 py-3 rounded-lg text-lg hover:bg-kuati-blanco/10 transition-colors'>
+              <Link href='/directorio' className='border border-kuati-blanco/30 px-8 py-3 rounded-lg text-lg hover:bg-kuati-blanco/10 transition-all hover:-translate-y-1'>
                 Ver Directorio
               </Link>
             </div>
@@ -53,9 +53,9 @@ export default function Home() {
 
           <div className='grid md:grid-cols-3 gap-8'>
             {/* Card 1 */}
-            <div className='bg-kuati-blanco p-8 rounded-xl border border-kuati-borde shadow-sm hover:shadow-md transition-shadow'>
-              <div className='w-12 h-12 bg-kuati-petroleo/5 rounded-lg flex items-center justify-center mb-6 text-kuati-petroleo'>
-                <IconTool size={28} />
+            <div className='group bg-kuati-blanco p-8 rounded-xl border border-kuati-borde shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2'>
+              <div className='w-12 h-12 bg-kuati-petroleo/5 rounded-lg flex items-center justify-center mb-6 text-kuati-petroleo group-hover:text-kuati-lima group-hover:bg-kuati-petroleo/10 transition-colors duration-300'>
+                <IconTool size={28} className='group-hover:drop-shadow-[0_0_10px_rgba(163,217,0,0.7)] transition-all duration-300' />
               </div>
               <h3 className='text-xl font-bold text-kuati-petroleo mb-2'>Gestión Integral</h3>
               <p className='text-kuati-grafito/70 text-sm leading-relaxed'>
@@ -64,9 +64,9 @@ export default function Home() {
             </div>
 
             {/* Card 2 */}
-            <div className='bg-kuati-blanco p-8 rounded-xl border border-kuati-borde shadow-sm hover:shadow-md transition-shadow'>
-              <div className='w-12 h-12 bg-kuati-petroleo/5 rounded-lg flex items-center justify-center mb-6 text-kuati-petroleo'>
-                <IconMapPin size={28} />
+            <div className='group bg-kuati-blanco p-8 rounded-xl border border-kuati-borde shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2'>
+              <div className='w-12 h-12 bg-kuati-petroleo/5 rounded-lg flex items-center justify-center mb-6 text-kuati-petroleo group-hover:text-kuati-lima group-hover:bg-kuati-petroleo/10 transition-colors duration-300'>
+                <IconMapPin size={28} className='group-hover:drop-shadow-[0_0_10px_rgba(163,217,0,0.7)] transition-all duration-300' />
               </div>
               <h3 className='text-xl font-bold text-kuati-petroleo mb-2'>Directorio Público</h3>
               <p className='text-kuati-grafito/70 text-sm leading-relaxed'>
@@ -75,9 +75,9 @@ export default function Home() {
             </div>
 
             {/* Card 3 */}
-            <div className='bg-kuati-blanco p-8 rounded-xl border border-kuati-borde shadow-sm hover:shadow-md transition-shadow'>
-              <div className='w-12 h-12 bg-kuati-petroleo/5 rounded-lg flex items-center justify-center mb-6 text-kuati-petroleo'>
-                <IconCar size={28} />
+            <div className='group bg-kuati-blanco p-8 rounded-xl border border-kuati-borde shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2'>
+              <div className='w-12 h-12 bg-kuati-petroleo/5 rounded-lg flex items-center justify-center mb-6 text-kuati-petroleo group-hover:text-kuati-lima group-hover:bg-kuati-petroleo/10 transition-colors duration-300'>
+                <IconCar size={28} className='group-hover:drop-shadow-[0_0_10px_rgba(163,217,0,0.7)] transition-all duration-300' />
               </div>
               <h3 className='text-xl font-bold text-kuati-petroleo mb-2'>Portal del Conductor</h3>
               <p className='text-kuati-grafito/70 text-sm leading-relaxed'>
@@ -91,7 +91,7 @@ export default function Home() {
       {/* Footer */}
       <footer className='border-t border-kuati-borde py-8 text-center text-sm text-kuati-grafito/60'>
         <p className='flex items-center justify-center gap-2'>
-          <IconShieldCheck size={16} />
+          <IconShieldCheck size={16} className='drop-shadow-[0_0_5px_rgba(18,60,70,0.3)]' />
           KuatiAuto &copy; {new Date().getFullYear()} - Plataforma SaaS para el sector automotor.
         </p>
       </footer>
