@@ -4,12 +4,13 @@ import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
 import pkg from '@/package.json';
 import { usePathname, useRouter } from 'next/navigation';
-import { IconCar, IconHistory, IconLogout } from '@tabler/icons-react';
+import { IconCar, IconHistory, IconHelpCircle, IconLogout } from '@tabler/icons-react';
 import { createClient } from '@/lib/supabase/client';
 
 const menuItems = [
   { name: 'Mis Vehículos', href: '/mi-garage/vehiculos', icon: IconCar },
   { name: 'Historial', href: '/mi-garage/historial', icon: IconHistory },
+  { name: 'Ayuda', href: '/ayuda/conductor', icon: IconHelpCircle },
 ];
 
 export default function SidebarConductor() {

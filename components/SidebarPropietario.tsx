@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
 import pkg from '@/package.json';
 import { usePathname, useRouter } from 'next/navigation';
-import { IconLayoutDashboard, IconUsers, IconCar, IconClipboardList, IconBox, IconBuildingStore, IconLogout } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconUsers, IconCar, IconClipboardList, IconBox, IconBuildingStore, IconBolt, IconHelpCircle, IconLogout } from '@tabler/icons-react';
 import { createClient } from '@/lib/supabase/client';
 
 const menuItems = [
@@ -14,6 +14,8 @@ const menuItems = [
   { name: 'Órdenes', href: '/ordenes', icon: IconClipboardList },
   { name: 'Catálogo', href: '/catalogo', icon: IconBox, exact: true },
   { name: 'Establecimientos', href: '/establecimientos', icon: IconBuildingStore },
+  { name: 'Recepción rápida', href: '/recepcion', icon: IconBolt },
+  { name: 'Ayuda', href: '/ayuda/propietario', icon: IconHelpCircle },
 ];
 
 export default function SidebarPropietario() {
