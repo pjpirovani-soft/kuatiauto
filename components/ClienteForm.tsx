@@ -1,7 +1,8 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { IconLoader2 } from '@tabler/icons-react';
 
 type ActionResult = { ok: true; data: { id: string } } | { ok: false; error: string };
 
@@ -50,37 +51,79 @@ export function ClienteForm({ action, initialData, title, redirectTo = '/cliente
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
-      <h2 className="text-2xl font-bold mb-6">{title}</h2>
+    <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm'>
+      <h2 className='text-2xl font-bold text-kuati-petroleo mb-6'>{title}</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className='space-y-4'>
         <div>
-          <label htmlFor="nombre" className="block text-sm font-medium mb-1">Nombre *</label>
-          <input id="nombre" name="nombre" type="text" required defaultValue={initialData?.nombre ?? ''} className="w-full border rounded px-3 py-2" />
+          <label htmlFor='nombre' className='block text-sm font-semibold text-kuati-grafito mb-1.5'>
+            Nombre *
+          </label>
+          <input
+            id='nombre'
+            name='nombre'
+            type='text'
+            required
+            defaultValue={initialData?.nombre ?? ''}
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+          />
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
-          <input id="email" name="email" type="email" defaultValue={initialData?.email ?? ''} className="w-full border rounded px-3 py-2" />
+          <label htmlFor='email' className='block text-sm font-semibold text-kuati-grafito mb-1.5'>
+            Email
+          </label>
+          <input
+            id='email'
+            name='email'
+            type='email'
+            defaultValue={initialData?.email ?? ''}
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+          />
         </div>
 
         <div>
-          <label htmlFor="telefono" className="block text-sm font-medium mb-1">Telefono</label>
-          <input id="telefono" name="telefono" type="text" defaultValue={initialData?.telefono ?? ''} className="w-full border rounded px-3 py-2" />
+          <label htmlFor='telefono' className='block text-sm font-semibold text-kuati-grafito mb-1.5'>
+            Teléfono
+          </label>
+          <input
+            id='telefono'
+            name='telefono'
+            type='text'
+            defaultValue={initialData?.telefono ?? ''}
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+          />
         </div>
 
         <div>
-          <label htmlFor="notas" className="block text-sm font-medium mb-1">Notas</label>
-          <textarea id="notas" name="notas" rows={3} defaultValue={initialData?.notas ?? ''} className="w-full border rounded px-3 py-2" />
+          <label htmlFor='notas' className='block text-sm font-semibold text-kuati-grafito mb-1.5'>
+            Notas
+          </label>
+          <textarea
+            id='notas'
+            name='notas'
+            rows={3}
+            defaultValue={initialData?.notas ?? ''}
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all min-h-[100px] resize-y'
+          />
         </div>
 
-        {error && <p className="text-red-600 text-sm">{error}</p>}
+        {error && (
+          <div className='text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3'>{error}</div>
+        )}
 
-        <div className="flex items-center gap-3 pt-4">
-          <button type="submit" disabled={loading} className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 disabled:opacity-50">
+        <div className='flex flex-col sm:flex-row items-center gap-3 pt-4'>
+          <button
+            type='submit'
+            disabled={loading}
+            className='w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-petroleo/90 disabled:opacity-70 transition-colors'
+          >
+            {loading && <IconLoader2 size={18} className='animate-spin' />}
             {loading ? 'Guardando...' : 'Guardar'}
           </button>
-          <Link href={redirectTo} className="text-gray-600 hover:underline text-sm">Cancelar</Link>
+          <Link href={redirectTo} className='w-full sm:w-auto text-center text-kuati-grafito/60 hover:text-kuati-petroleo transition-colors font-medium text-sm py-2'>
+            Cancelar
+          </Link>
         </div>
       </form>
     </div>

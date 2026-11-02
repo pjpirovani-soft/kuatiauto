@@ -1,8 +1,9 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { crearVehiculo, editarVehiculo } from '@/lib/vehiculos-actions';
+import { IconLoader2 } from '@tabler/icons-react';
 
 type Cliente = { id: string; nombre: string };
 
@@ -59,16 +60,16 @@ export default function VehiculoForm({ modo, clientes, initialData }: Props) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 max-w-xl">
+    <form onSubmit={onSubmit} className='space-y-5'>
       <div>
-        <label className="block text-sm font-medium mb-1">Cliente</label>
+        <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Cliente</label>
         <select
-          name="cliente_id"
+          name='cliente_id'
           required
           defaultValue={initialData?.cliente_id ?? ''}
-          className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito bg-kuati-blanco focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
         >
-          <option value="" disabled>
+          <option value='' disabled>
             Elegí un cliente
           </option>
           {clientes.map((c) => (
@@ -79,91 +80,96 @@ export default function VehiculoForm({ modo, clientes, initialData }: Props) {
         </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
         <div>
-          <label className="block text-sm font-medium mb-1">Marca</label>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Marca</label>
           <input
-            name="marca"
+            name='marca'
             required
             maxLength={60}
             defaultValue={initialData?.marca ?? ''}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            placeholder='Ej. Toyota'
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Modelo</label>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Modelo</label>
           <input
-            name="modelo"
+            name='modelo'
             required
             maxLength={60}
             defaultValue={initialData?.modelo ?? ''}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            placeholder='Ej. Corolla'
           />
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
         <div>
-          <label className="block text-sm font-medium mb-1">Año</label>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Año</label>
           <input
-            name="anio"
-            type="number"
+            name='anio'
+            type='number'
             min={1900}
             max={2100}
             defaultValue={initialData?.anio ?? ''}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            placeholder='2020'
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Patente</label>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Patente</label>
           <input
-            name="patente"
+            name='patente'
             maxLength={20}
             defaultValue={initialData?.patente ?? ''}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all uppercase'
+            placeholder='ABC123'
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Km actual</label>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Km actual</label>
           <input
-            name="km_actual"
-            type="number"
+            name='km_actual'
+            type='number'
             min={0}
             defaultValue={initialData?.km_actual ?? ''}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            placeholder='120000'
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Notas</label>
+        <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Notas</label>
         <textarea
-          name="notas"
+          name='notas'
           maxLength={500}
           rows={3}
           defaultValue={initialData?.notas ?? ''}
-          className="w-full border border-gray-300 rounded px-3 py-2"
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all min-h-[100px] resize-y'
+          placeholder='Detalles adicionales del vehículo...'
         />
       </div>
 
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
-          {error}
-        </div>
+        <div className='text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3'>{error}</div>
       )}
 
-      <div className="flex gap-3">
+      <div className='flex flex-col sm:flex-row items-center gap-3 pt-2'>
         <button
-          type="submit"
+          type='submit'
           disabled={pending}
-          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 disabled:opacity-50"
+          className='w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-petroleo/90 disabled:opacity-70 transition-colors'
         >
+          {pending && <IconLoader2 size={18} className='animate-spin' />}
           {pending ? 'Guardando...' : modo === 'crear' ? 'Crear vehículo' : 'Guardar cambios'}
         </button>
         <button
-          type="button"
+          type='button'
           onClick={() => router.back()}
-          className="border border-gray-300 px-6 py-2 rounded hover:bg-gray-100"
+          className='w-full sm:w-auto text-center border border-kuati-borde text-kuati-grafito px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-fondo transition-colors'
         >
           Cancelar
         </button>
