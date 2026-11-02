@@ -1,10 +1,13 @@
 ﻿import SidebarAdmin from '@/components/SidebarAdmin';
+import MobileSidebarWrapper from '@/components/MobileSidebarWrapper';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className='flex min-h-screen bg-kuati-fondo'>
-      <SidebarAdmin />
-      <main className='flex-1 p-8 overflow-y-auto'>
+      <MobileSidebarWrapper>
+        <SidebarAdmin />
+      </MobileSidebarWrapper>
+      <main className='flex-1 p-4 md:p-8 overflow-y-auto w-full'>
         {children}
       </main>
     </div>
