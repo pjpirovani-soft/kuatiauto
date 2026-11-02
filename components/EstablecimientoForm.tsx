@@ -1,9 +1,10 @@
-﻿'use client';
+'use client';
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { crearEstablecimiento, editarEstablecimiento } from "@/lib/establecimiento-actions";
 import { IconLoader2 } from "@tabler/icons-react";
+import LocationPicker from "./establecimiento/LocationPicker";
 
 export type Publico = {
   id: string;
@@ -50,6 +51,12 @@ export default function EstablecimientoForm({ modo, initialData }: Props) {
     ? (pub!.servicios_ofrecidos as string[]).join(", ")
     : "";
 
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
+    pub && pub.lat_aproximada !== null && pub.lng_aproximada !== null
+      ? { lat: pub.lat_aproximada, lng: pub.lng_aproximada }
+      : null
+  );
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -61,8 +68,8 @@ export default function EstablecimientoForm({ modo, initialData }: Props) {
       ? serviciosRaw.split(",").map((s) => s.trim()).filter(Boolean)
       : null;
 
-    const lat = fd.get("lat_aproximada") ? Number(fd.get("lat_aproximada")) : null;
-    const lng = fd.get("lng_aproximada") ? Number(fd.get("lng_aproximada")) : null;
+    const lat = coords?.lat ?? (fd.get("lat_aproximada") ? Number(fd.get("lat_aproximada")) : null);
+    const lng = coords?.lng ?? (fd.get("lng_aproximada") ? Number(fd.get("lng_aproximada")) : null);
 
     const payload = {
       nombre: String(fd.get("nombre") ?? ""),
@@ -209,6 +216,15 @@ export default function EstablecimientoForm({ modo, initialData }: Props) {
           />
         </div>
 
+        <div>
+          <label className={labelClass}>Ubicación en el mapa</label>
+          <LocationPicker
+            lat={coords?.lat ?? null}
+            lng={coords?.lng ?? null}
+            onChange={setCoords}
+          />
+        </div>
+
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
           <div>
             <label className={labelClass}>Latitud aproximada</label>
@@ -218,7 +234,13 @@ export default function EstablecimientoForm({ modo, initialData }: Props) {
               step='0.00001'
               min={-90}
               max={90}
-              defaultValue={pub?.lat_aproximada ?? ""}
+              value={coords?.lat ?? ""}
+              onChange={(e) => {
+                const v = e.target.value ? Number(e.target.value) : null;
+                if (v !== null && coords?.lng !== undefined) {
+                  setCoords({ lat: v, lng: coords.lng });
+                }
+              }}
               className={inputClass}
               placeholder='-25.28646'
             />
@@ -231,7 +253,13 @@ export default function EstablecimientoForm({ modo, initialData }: Props) {
               step='0.00001'
               min={-180}
               max={180}
-              defaultValue={pub?.lng_aproximada ?? ""}
+              value={coords?.lng ?? ""}
+              onChange={(e) => {
+                const v = e.target.value ? Number(e.target.value) : null;
+                if (v !== null && coords?.lat !== undefined) {
+                  setCoords({ lat: coords.lat, lng: v });
+                }
+              }}
               className={inputClass}
               placeholder='-57.64700'
             />
