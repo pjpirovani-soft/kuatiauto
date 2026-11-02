@@ -456,3 +456,23 @@ Ver `BITACORA.md` §Cierre E3. CRUD de servicios y productos propios de la empre
 
 ### Pending
 - /admin/catalogo/productos: CRUD completo (marca, tipo, viscosidad).
+## [E5b-wip5] - 2026-11-02 - Catalogo global: productos (CRUD) + cierre E5b-futuro
+
+### Added
+- `lib/schemas/catalogoGlobalSchema.ts`: schemas de productos (crear/editar/id).
+- `lib/admin-actions.ts`: `listarProductosGlobalesAdmin`, `obtenerProductoGlobalAdmin`, `crearProductoGlobal`, `editarProductoGlobal`, `eliminarProductoGlobal`.
+- `components/ProductoGlobalForm.tsx`, `components/EliminarProductoGlobalButton.tsx`.
+- `app/(admin)/admin/catalogo/productos/page.tsx` + `nuevo/page.tsx` + `[id]/page.tsx`.
+- Tests: +9 schema, +11 actions.
+
+### Verified
+- 277/277 tests verdes (24 archivos, +20 nuevos).
+- `tsc --noEmit`: exit 0.
+- `npm run build`: OK (7 rutas de catalogo).
+
+### Estado E5b-futuro
+Cerrado funcionalmente: `/admin/empresas`, `/admin/usuarios`, `/admin/catalogo/servicios`, `/admin/catalogo/productos`. Todos con tests, tsc y build verde.
+
+### Pending
+- Smoke test manual del panel admin en navegador.
+- E5c: Sentry + Vercel Analytics + backups automatizados.

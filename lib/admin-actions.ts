@@ -499,3 +499,121 @@ export async function obtenerServicioGlobalAdmin(id: string): Promise<
   if (!data) return { ok: false, error: "Servicio no encontrado", notFound: true };
   return { ok: true, data };
 }
+// ─── Catalogo global: productos ──────────────────────────────────────────
+
+export type ProductoGlobalRow = {
+  id: string;
+  nombre: string;
+  marca: string | null;
+  tipo: string | null;
+  viscosidad: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ListarProductosGlobalesResult =
+  | { ok: true; data: ProductoGlobalRow[] }
+  | { ok: false; error: string };
+
+export type ProductoGlobalActionResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+export async function listarProductosGlobalesAdmin(): Promise<ListarProductosGlobalesResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("producto_global")
+    .select("id, nombre, marca, tipo, viscosidad, created_at, updated_at")
+    .order("nombre", { ascending: true });
+
+  if (error) return { ok: false, error: "Error al listar productos" };
+  return { ok: true, data: data ?? [] };
+}
+
+export async function crearProductoGlobal(input: {
+  nombre: string;
+  marca?: string;
+  tipo?: string;
+  viscosidad?: string;
+}): Promise<ProductoGlobalActionResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  const nombre = input.nombre?.trim() ?? "";
+  if (nombre.length < 2 || nombre.length > 120) {
+    return { ok: false, error: "Nombre invalido (2 a 120 caracteres)" };
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin.from("producto_global").insert({
+    nombre,
+    marca: input.marca?.trim() || null,
+    tipo: input.tipo?.trim() || null,
+    viscosidad: input.viscosidad?.trim() || null,
+  });
+  if (error) return { ok: false, error: "Error al crear producto" };
+  return { ok: true };
+}
+
+export async function editarProductoGlobal(input: {
+  id: string;
+  nombre: string;
+  marca?: string;
+  tipo?: string;
+  viscosidad?: string;
+}): Promise<ProductoGlobalActionResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  if (!input.id) return { ok: false, error: "ID invalido" };
+  const nombre = input.nombre?.trim() ?? "";
+  if (nombre.length < 2 || nombre.length > 120) {
+    return { ok: false, error: "Nombre invalido (2 a 120 caracteres)" };
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("producto_global")
+    .update({
+      nombre,
+      marca: input.marca?.trim() || null,
+      tipo: input.tipo?.trim() || null,
+      viscosidad: input.viscosidad?.trim() || null,
+    })
+    .eq("id", input.id);
+  if (error) return { ok: false, error: "Error al editar producto" };
+  return { ok: true };
+}
+
+export async function eliminarProductoGlobal(id: string): Promise<ProductoGlobalActionResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+  if (!id) return { ok: false, error: "ID invalido" };
+
+  const admin = createAdminClient();
+  const { error } = await admin.from("producto_global").delete().eq("id", id);
+  if (error) return { ok: false, error: "Error al eliminar producto" };
+  return { ok: true };
+}
+
+export async function obtenerProductoGlobalAdmin(id: string): Promise<
+  | { ok: true; data: ProductoGlobalRow }
+  | { ok: false; error: string; notFound?: boolean }
+> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+  if (!id) return { ok: false, error: "ID invalido" };
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("producto_global")
+    .select("id, nombre, marca, tipo, viscosidad, created_at, updated_at")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) return { ok: false, error: "Error al leer producto" };
+  if (!data) return { ok: false, error: "Producto no encontrado", notFound: true };
+  return { ok: true, data };
+}

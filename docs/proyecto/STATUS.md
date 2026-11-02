@@ -37,7 +37,7 @@
 | E4 | portal del conductor | pendiente | E1, E2b2 | — |
 | E5 | notificaciones reales (bienvenida + historial + recordatorio) | **completo (con deuda de dominio)** | dominio verificado en Resend | cableado 2026-11-02; envio real OK contra API Resend. Deuda: RESEND_FROM usa onboarding@resend.dev (solo tests a email propio) hasta verificar dominio |
 | E5 | cron recordatorios + reintentos | pendiente | dominio Resend + deploy | — |
-| E5 | panel admin | wip | — | dashboard funcional 2026-11-02 (contadores corregidos con service_role, H-E5b-2). /admin/empresas CERRADA (lista + filtro por estado + detalle con contadores, usuarios, establecimientos). /admin/usuarios CERRADA (lista + filtro por rol + cambio de rol + activar/desactivar con check del ultimo admin). Redirect post-login (admin -> /admin). /admin/catalogo/servicios CERRADO (CRUD de servicios globales). Falta /admin/catalogo/productos |
+| E5 | panel admin | wip | — | dashboard funcional 2026-11-02 (contadores corregidos con service_role, H-E5b-2). /admin/empresas CERRADA (lista + filtro por estado + detalle con contadores, usuarios, establecimientos). /admin/usuarios CERRADA (lista + filtro por rol + cambio de rol + activar/desactivar con check del ultimo admin). Redirect post-login (admin -> /admin). /admin/catalogo/servicios CERRADO (CRUD). /admin/catalogo/productos CERRADO (CRUD con marca/tipo/viscosidad). Panel admin completo funcionalmente; falta smoke test manual en navegador |
 | E5 | Sentry + Vercel Analytics | pendiente | E1 | — |
 
 ## Infraestructura

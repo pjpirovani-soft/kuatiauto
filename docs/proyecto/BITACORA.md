@@ -812,3 +812,29 @@ Pruebas ejecutadas:
 - `supabase gen types` con `Test-Path`/`Select-String` sin `-LiteralPath` falla con `[id]` como wildcard. Usar `-LiteralPath` siempre en paths con corchetes.
 - Test-Path con paths `[id]` retorna False aunque el directorio exista. Usar `[System.IO.Directory]::Exists` para verificar.
 - `confirm()` y `alert()` en client components funcionan sin configuración extra (solo en handler, no en render).
+## E5b-futuro parte 3b — 2026-11-02
+
+**Catalogo global: productos (CRUD). E5b-futuro completo.**
+
+**Codigo nuevo:**
+- lib/schemas/catalogoGlobalSchema.ts extendido: crearProductoGlobalSchema, editarProductoGlobalSchema, productoGlobalIdSchema (nombre 2-120, marca/tipo 80, viscosidad 40, todos opcionales salvo nombre).
+- lib/admin-actions.ts extendido: listarProductosGlobalesAdmin, obtenerProductoGlobalAdmin, crearProductoGlobal, editarProductoGlobal, eliminarProductoGlobal. Tipo ProductoGlobalRow.
+- components/ProductoGlobalForm.tsx: client form crear/editar con marca, tipo, viscosidad.
+- components/EliminarProductoGlobalButton.tsx: client boton con confirm.
+- app/(admin)/admin/catalogo/productos/page.tsx + nuevo/page.tsx + [id]/page.tsx.
+- lib/schemas/catalogoGlobalSchema.test.ts extendido (+9 tests de productos, total 20).
+- lib/admin-catalogo-productos-actions.test.ts: 11 tests.
+
+**Verificacion:**
+- 277/277 tests verdes (24 archivos, +20 nuevos).
+- tsc --noEmit: exit 0.
+- npm run build: OK (7 rutas de catalogo, panel admin completo).
+
+**Estado E5b-futuro:** CERRADO. /admin/empresas, /admin/usuarios, /admin/catalogo/servicios, /admin/catalogo/productos. Todos con tests y build verde.
+
+**Pendiente inmediato:** smoke test manual del panel admin en navegador (crear/editar/eliminar servicio y producto, verificar el flujo end-to-end con pirovanipedrojose@gmail.com). Después: E5c (Sentry + Vercel Analytics + backups).
+
+**Lecciones:**
+- Replicar un patron (CRUD servicio -> CRUD producto) es mecanico, pero conviene escribir el segundo archivo completo en vez de "adaptar" el primero con replace. El riesgo de tipeo silencioso es bajo y el diff es mas legible.
+- El patron de mock de Supabase con `makeChain` y flags `insert/update/delete/order/maybeSingle` escala bien para CRUD. Reutilizar entre archivos de test.
+- `confirm()`/`alert()` requieren que el handler este en un client component, pero no bloquean el `useTransition`. Si el usuario cancela, no hay state change.
