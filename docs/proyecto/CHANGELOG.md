@@ -520,3 +520,16 @@ Cerrado funcionalmente: `/admin/empresas`, `/admin/usuarios`, `/admin/catalogo/s
 ### Fixed
 - Scroll horizontal en tablas del panel de admin para celular.
 - Corrección de validación de datos en el panel de métricas.
+
+## [0.2.0] - 2026-11-02
+### Added
+- Design System aplicado al 100% (Landing, Login, Registro, Legales, Ayuda, Sidebars, Tablas, Formularios y Métricas).
+- Panel de métricas globales para el CEO (/admin/analytics) y métricas del Propietario en el Dashboard.
+- Formularios responsive (Cliente, Vehículo, Establecimiento, Servicio, Producto, Orden).
+- Barra superior mobile (MobileTopBar) para evitar superposición del menú.
+- Páginas legales (/terminos, /privacidad) y Centro de Ayuda (/ayuda).
+
+### Fixed
+- Scroll horizontal en tablas del panel de admin para celular.
+- Sidebar responsive con menú hamburguesa y cierre en celular.
+- Corrección de validación de datos en el panel de métricas.

@@ -112,3 +112,12 @@ Pegar el PROMPT DE CONTINUACION del dump actualizado.
 - **Legal y Soporte:** Páginas `/terminos`, `/privacidad` (Ley 6534/2020) y `/ayuda`.
 - **PWA:** Service Worker v2 con botón de "Nueva versión disponible". Versión de la app (`NEXT_PUBLIC_APP_VERSION`) visible en los sidebars.
 - **Calidad:** 279 tests verdes, `tsc` limpio, build OK (25 rutas).
+
+---
+## Actualización 2026-11-02 — CIERRE FASE E8 (Cosmética, UX y Responsive)
+- **Versión:** App actualizada a `v0.2.0`.
+- **Design System:** Aplicado al 100% en toda la app (Landing, Login, Registro, Legales, Ayuda, Sidebars, Tablas, Formularios y Métricas).
+- **Responsive:** Sidebars con barra superior en celular. Tablas de Clientes, Vehículos, Órdenes y Catálogo con vista de tarjetas. Formularios con grids responsive.
+- **PWA:** Service Worker desactivado temporalmente para evitar caché obsoleto. Versión visible en sidebars.
+- **Métricas:** Panel del CEO (`/admin/analytics`) y Dashboard del Propietario.
+- **Calidad:** 279 tests verdes, `tsc` limpio, build OK (25 rutas).
