@@ -6,6 +6,7 @@ import { logout } from "@/lib/auth-actions";
 const NAV = [
   { href: "/admin", label: "Panel" },
   { href: "/admin/empresas", label: "Empresas" },
+  { href: "/admin/usuarios", label: "Usuarios"},
   // TODO E5b-futuro: Usuarios, Catalogo global.
 ];
 

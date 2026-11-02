@@ -6,7 +6,7 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. **E5b wip (dashboard + /admin/empresas 2026-11-02, faltan /admin/usuarios y /admin/catalogo)**. E5c pendiente.
+- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. **E5b wip (dashboard + /admin/empresas + /admin/usuarios 2026-11-02, falta /admin/catalogo)**. E5c pendiente.
 - **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 19 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehículo → crear orden → catálogo → establecimientos → directorio → portal del conductor (mi-garage).
 - **Tests:** 212/212 verdes (19 archivos). **tsc --noEmit:** 0 errores. **build:** OK (25 rutas).
@@ -24,7 +24,7 @@
 
 ## Próximos 3 pasos
 
-1. **E5b-futuro (listas del panel admin).** /admin/usuarios, /admin/catalogo. /admin/empresas ya cerrada (lista + detalle).
+1. **E5b-futuro (listas del panel admin).** /admin/catalogo (moderacion de servicio_global y producto_global). /admin/empresas y /admin/usuarios ya cerradas.
 2. **E5c (Sentry + Vercel Analytics + backups automatizados).**
 3. **Cierre formal de gates de E2a-bis y E2b1** (no bloqueante, solo papeleo).
 

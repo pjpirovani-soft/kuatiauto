@@ -410,3 +410,29 @@ Ver `BITACORA.md` §Cierre E3. CRUD de servicios y productos propios de la empre
 - /admin/usuarios: lista + cambio de rol / desactivacion.
 - /admin/catalogo: moderacion de servicio_global y producto_global.
 - Link "Usuarios" y "Catalogo" en el sidebar admin.
+## [E5b-wip3] - 2026-11-02 - Panel admin: /admin/usuarios
+
+### Added
+- `lib/admin-actions.ts`: `listarUsuariosAdmin(filtroRol?)`, `cambiarRolUsuario(userId, nuevoRol)`, `desactivarUsuario(userId, activo)`. Tipos `UsuarioAdminRow`, `RolAsignable`.
+- `components/UsuarioAccionesClient.tsx`: client component con select de rol + activar/desactivar. Excluye auto-modificacion y admin_general.
+- `app/(admin)/admin/usuarios/page.tsx`: tabla con filtro por rol, badge activo/inactivo, link a empresa.
+- `lib/admin-usuarios-actions.test.ts`: 12 tests.
+- Link "Usuarios" en `app/(admin)/layout.tsx`.
+
+### Business rules
+- No auto-cambio de rol.
+- No cambio de rol de admin_general desde UI (solo SQL).
+- No auto-desactivacion.
+- No desactivar al ultimo admin_general activo.
+
+### Verified
+- 233/233 tests verdes (21 archivos, +12 nuevos).
+- `tsc --noEmit`: exit 0.
+- `npm run build`: OK (incluye /admin/usuarios).
+
+### Fixed (tooling)
+- Bug de protocolo PS: `` `r`n `` en strings de comillas simples no se interpreta. Usar comillas dobles con escape de comillas internas.
+
+### Pending
+- /admin/catalogo: moderacion de servicio_global y producto_global.
+- Link "Catalogo" en el sidebar.

@@ -37,7 +37,7 @@
 | E4 | portal del conductor | pendiente | E1, E2b2 | — |
 | E5 | notificaciones reales (bienvenida + historial + recordatorio) | **completo (con deuda de dominio)** | dominio verificado en Resend | cableado 2026-11-02; envio real OK contra API Resend. Deuda: RESEND_FROM usa onboarding@resend.dev (solo tests a email propio) hasta verificar dominio |
 | E5 | cron recordatorios + reintentos | pendiente | dominio Resend + deploy | — |
-| E5 | panel admin | wip | — | dashboard funcional 2026-11-02 (contadores corregidos con service_role, H-E5b-2). /admin/empresas CERRADA (lista + filtro por estado + detalle con contadores, usuarios, establecimientos). Redirect post-login (admin -> /admin). Faltan /admin/usuarios, /admin/catalogo |
+| E5 | panel admin | wip | — | dashboard funcional 2026-11-02 (contadores corregidos con service_role, H-E5b-2). /admin/empresas CERRADA (lista + filtro por estado + detalle con contadores, usuarios, establecimientos). /admin/usuarios CERRADA (lista + filtro por rol + cambio de rol + activar/desactivar con check del ultimo admin). Redirect post-login (admin -> /admin). Falta /admin/catalogo |
 | E5 | Sentry + Vercel Analytics | pendiente | E1 | — |
 
 ## Infraestructura
@@ -250,6 +250,7 @@ Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptaci
 
 **Pendiente (E5b-futuro):**
 - /admin/empresas: CERRADA. Lista con filtro por estado + detalle con contadores, usuarios y establecimientos. Fix H-E5b-2 (contadores del dashboard usaban RLS y devolvian 0).
+- /admin/usuarios: CERRADA. Lista con filtro por rol, cambio de rol (propietario/empleado/conductor), activar/desactivar con guardas (no auto-modificacion, no dejar sin admin_general activo).
 - /admin/usuarios: lista + cambiar rol / desactivar.
 - /admin/catalogo: moderacion de servicio_global y producto_global.
 - Links del sidebar correspondientes (hoy solo Panel).

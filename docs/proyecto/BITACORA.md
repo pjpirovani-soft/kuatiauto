@@ -752,3 +752,31 @@ Pruebas ejecutadas:
 - Promise.all con chains mockeados: el orden de invocacion no es determinista. Para mocks de chains duales (count vs list), distinguir por el primer arg de `select()` (string `*` = count), no por contador de invocaciones.
 - `order()` tambien debe respetar el dual-chain: si el codigo hace `.select(...).eq(...).order(...)`, el resultado final viene de `order`, no de `then`.
 - select() como vi.fn que captura el primer arg permite discriminar entre count y list en el mismo chain.
+## E5b-futuro parte 2 — 2026-11-02
+
+**Panel admin: /admin/usuarios (lista + cambio de rol + activar/desactivar).**
+
+**Codigo nuevo:**
+- lib/admin-actions.ts extendido: `listarUsuariosAdmin(filtroRol?)`, `cambiarRolUsuario(userId, nuevoRol)`, `desactivarUsuario(userId, activo)`. Tipos `UsuarioAdminRow`, `RolAsignable` (propietario/empleado/conductor; admin_general excluido de la UI).
+- components/UsuarioAccionesClient.tsx: client component con select de rol + boton desactivar/reactivar. `useTransition` + manejo de error inline. Excluye al propio usuario y a admin_general.
+- app/(admin)/admin/usuarios/page.tsx: tabla con filtro por rol (Todos/Admin general/Propietario/Empleado/Conductor), badge activo/inactivo, link a /admin/empresas/[id] en la columna empresa.
+- app/(admin)/layout.tsx: link "Usuarios" agregado.
+
+**Reglas de negocio implementadas:**
+- No se puede cambiar el propio rol (auto-modificacion bloqueada).
+- No se puede cambiar el rol de un admin_general desde la UI (solo SQL).
+- No se puede desactivar la propia cuenta.
+- No se puede desactivar al ultimo admin_general activo (count check).
+
+**Verificacion:**
+- 233/233 tests verdes (21 archivos, +12 nuevos en lib/admin-usuarios-actions.test.ts).
+- tsc --noEmit: exit 0.
+- npm run build: OK, incluye /admin/usuarios.
+
+**Pendiente (E5b-futuro parte 3):**
+- /admin/catalogo: moderacion de servicio_global y producto_global.
+- Link "Catalogo" en el sidebar.
+
+**Lecciones:**
+- PowerShell: backticks de escape (\`r\`n) NO se interpretan en strings con comillas simples, solo en comillas dobles. Para construir lineas con salto embebido, usar comillas dobles y escapar las internas con backtick.
+- Tests aislados en archivo propio (admin-usuarios-actions.test.ts) en vez de extender admin-actions.test.ts: evita riesgo de romper tests verdes y permite iterar sin tocar el mock base.

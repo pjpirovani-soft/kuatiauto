@@ -218,3 +218,160 @@ export async function obtenerEmpresaAdmin(
 
   return { ok: true, data };
 }
+// ─── Usuarios admin ──────────────────────────────────────────────────────
+
+export type UsuarioAdminRow = {
+  id: string;
+  nombre: string | null;
+  email: string;
+  rol: string;
+  activo: boolean;
+  empresa_id: string | null;
+  empresa_nombre: string | null;
+  created_at: string;
+};
+
+export type ListarUsuariosResult =
+  | { ok: true; data: UsuarioAdminRow[] }
+  | { ok: false; error: string };
+
+export type CambiarRolResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+export type DesactivarUsuarioResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+const ROLES_ASIGNABLES = ["propietario", "empleado", "conductor"] as const;
+export type RolAsignable = (typeof ROLES_ASIGNABLES)[number];
+
+export async function listarUsuariosAdmin(
+  filtroRol?: string
+): Promise<ListarUsuariosResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  const admin = createAdminClient();
+
+  let q = admin
+    .from("usuario")
+    .select("id, nombre, email, rol, activo, empresa_id, created_at")
+    .order("created_at", { ascending: false });
+  if (filtroRol && filtroRol !== "todos") q = q.eq("rol", filtroRol);
+
+  const { data: usuarios, error } = await q;
+  if (error) return { ok: false, error: "Error al listar usuarios" };
+  if (!usuarios || usuarios.length === 0) return { ok: true, data: [] };
+
+  const empresaIds = Array.from(
+    new Set(usuarios.map((u) => u.empresa_id).filter((x): x is string => !!x))
+  );
+  const empresaMap = new Map<string, string>();
+  if (empresaIds.length > 0) {
+    const { data: empresas } = await admin
+      .from("empresa")
+      .select("id, nombre")
+      .in("id", empresaIds);
+    for (const e of empresas ?? []) empresaMap.set(e.id, e.nombre);
+  }
+
+  const data: UsuarioAdminRow[] = usuarios.map((u) => ({
+    id: u.id,
+    nombre: u.nombre,
+    email: u.email,
+    rol: u.rol,
+    activo: u.activo,
+    empresa_id: u.empresa_id,
+    empresa_nombre: u.empresa_id ? empresaMap.get(u.empresa_id) ?? null : null,
+    created_at: u.created_at,
+  }));
+
+  return { ok: true, data };
+}
+
+export async function cambiarRolUsuario(
+  userId: string,
+  nuevoRol: string
+): Promise<CambiarRolResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  if (!ROLES_ASIGNABLES.includes(nuevoRol as RolAsignable)) {
+    return { ok: false, error: "Rol no valido" };
+  }
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "No autenticado" };
+  if (user.id === userId) {
+    return { ok: false, error: "No podes cambiar tu propio rol" };
+  }
+
+  const admin = createAdminClient();
+  const { data: target, error: errRead } = await admin
+    .from("usuario")
+    .select("id, rol")
+    .eq("id", userId)
+    .maybeSingle();
+  if (errRead) return { ok: false, error: "Error al leer usuario" };
+  if (!target) return { ok: false, error: "Usuario no encontrado" };
+  if (target.rol === "admin_general") {
+    return { ok: false, error: "No se puede cambiar el rol de un admin_general desde esta UI" };
+  }
+
+  const { error: errUpdate } = await admin
+    .from("usuario")
+    .update({ rol: nuevoRol })
+    .eq("id", userId);
+  if (errUpdate) return { ok: false, error: "Error al actualizar rol" };
+
+  return { ok: true };
+}
+
+export async function desactivarUsuario(
+  userId: string,
+  activo: boolean
+): Promise<DesactivarUsuarioResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "No autenticado" };
+  if (user.id === userId) {
+    return { ok: false, error: "No podes desactivar tu propia cuenta" };
+  }
+
+  const admin = createAdminClient();
+  const { data: target, error: errRead } = await admin
+    .from("usuario")
+    .select("id, rol, activo")
+    .eq("id", userId)
+    .maybeSingle();
+  if (errRead) return { ok: false, error: "Error al leer usuario" };
+  if (!target) return { ok: false, error: "Usuario no encontrado" };
+  if (target.activo === activo) {
+    return { ok: true };
+  }
+
+  // Si vamos a desactivar un admin_general, verificar que quede al menos uno activo.
+  if (!activo && target.rol === "admin_general") {
+    const { count } = await admin
+      .from("usuario")
+      .select("*", { count: "exact", head: true })
+      .eq("rol", "admin_general")
+      .eq("activo", true);
+    if ((count ?? 0) <= 1) {
+      return { ok: false, error: "No se puede desactivar al ultimo admin_general activo" };
+    }
+  }
+
+  const { error: errUpdate } = await admin
+    .from("usuario")
+    .update({ activo })
+    .eq("id", userId);
+  if (errUpdate) return { ok: false, error: "Error al actualizar estado" };
+
+  return { ok: true };
+}
