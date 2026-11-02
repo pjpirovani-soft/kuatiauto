@@ -1,7 +1,4 @@
-// Líneas de servicio y producto de una orden.
-// Schema real: orden_servicio { servicio_global_id XOR servicio_empresa_id, precio? }
-//              orden_producto { producto_global_id XOR producto_empresa_id, cantidad, precio_unitario? }
-// No hay descripcion ni cantidad en servicios. La UI respeta eso.
+﻿// Líneas de servicio y producto de una orden.
 
 type ServicioOpcion = { id: string; nombre: string; origen: "global" | "empresa" };
 type ProductoOpcion = { id: string; nombre: string; origen: "global" | "empresa" };
@@ -29,6 +26,8 @@ type Props = {
   onChange: (next: { servicios: ServicioLineaUI[]; productos: ProductoLineaUI[] }) => void;
   disabled?: boolean;
 };
+
+const inputClass = "w-full border border-kuati-borde rounded-lg px-4 py-2 text-kuati-grafito bg-kuati-blanco focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all text-sm disabled:opacity-60";
 
 function nuevaKey(): string {
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
@@ -94,104 +93,148 @@ export default function OrdenLineas(props: Props) {
   }
 
   return (
-    <div className="space-y-8">
+    <div className='space-y-8'>
+      {/* SERVICIOS */}
       <section>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold">Servicios</h3>
-          <button type="button" onClick={addServicio} disabled={disabled} className="text-sm px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50">+ Agregar servicio</button>
+        <div className='flex items-center justify-between mb-3'>
+          <h3 className='text-lg font-bold text-kuati-petroleo'>Servicios</h3>
+          <button 
+            type='button' 
+            onClick={addServicio} 
+            disabled={disabled} 
+            className='text-sm px-3 py-1.5 rounded-lg bg-kuati-petroleo/10 text-kuati-petroleo font-semibold hover:bg-kuati-petroleo/20 disabled:opacity-50 transition-colors'
+          >
+            + Agregar servicio
+          </button>
         </div>
+        
         {servicioOpciones.length === 0 && servicios.length > 0 && (
-          <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mb-2">
+          <p className='text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3'>
             Catálogo de servicios vacío: el servicio se identifica por UUID. El seed del catálogo es deuda de E3.
           </p>
         )}
-        <ul className="space-y-2">
+        
+        <ul className='space-y-3'>
           {servicios.map((s, i) => (
-            <li key={s.key} className="grid grid-cols-12 gap-2 items-center border rounded p-2">
-              <select
-                className="col-span-7 border rounded px-2 py-1"
-                value={valorActual(s.servicio_global_id, s.servicio_empresa_id)}
-                disabled={disabled}
-                onChange={(e) => {
-                  const { globalId, empresaId } = parseValor(e.target.value);
-                  updateServicio(i, { servicio_global_id: globalId, servicio_empresa_id: empresaId });
-                }}
+            <li key={s.key} className='flex flex-col md:flex-row gap-3 items-start md:items-center bg-kuati-fondo p-3 rounded-lg border border-kuati-borde'>
+              <div className='w-full md:flex-1'>
+                <select
+                  className={inputClass}
+                  value={valorActual(s.servicio_global_id, s.servicio_empresa_id)}
+                  disabled={disabled}
+                  onChange={(e) => {
+                    const { globalId, empresaId } = parseValor(e.target.value);
+                    updateServicio(i, { servicio_global_id: globalId, servicio_empresa_id: empresaId });
+                  }}
+                >
+                  <option value=''>— Servicio (UUID o catálogo) —</option>
+                  {servicioOpciones.map((o) => {
+                    const { valor, seleccionado } = opcionesParaServicio(o, s.servicio_global_id, s.servicio_empresa_id);
+                    return (
+                      <option key={valor} value={valor} selected={seleccionado}>
+                        {o.origen === "global" ? "[G] " : "[E] "}{o.nombre}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div className='w-full md:w-32'>
+                <input
+                  className={inputClass}
+                  type='number' step='0.01' min='0' placeholder='Precio'
+                  value={s.precio}
+                  disabled={disabled}
+                  onChange={(e) => updateServicio(i, { precio: e.target.value })}
+                />
+              </div>
+              <button 
+                type='button' 
+                onClick={() => removeServicio(i)} 
+                disabled={disabled} 
+                className='w-full md:w-auto text-sm px-4 py-2 rounded-lg bg-red-50 text-red-600 font-semibold hover:bg-red-100 disabled:opacity-50 transition-colors'
               >
-                <option value="">— Servicio (UUID o catálogo) —</option>
-                {servicioOpciones.map((o) => {
-                  const { valor, seleccionado } = opcionesParaServicio(o, s.servicio_global_id, s.servicio_empresa_id);
-                  return (
-                    <option key={valor} value={valor} selected={seleccionado}>
-                      {o.origen === "global" ? "[G] " : "[E] "}{o.nombre}
-                    </option>
-                  );
-                })}
-              </select>
-              <input
-                className="col-span-3 border rounded px-2 py-1"
-                type="number" step="0.01" min="0" placeholder="Precio (opcional)"
-                value={s.precio}
-                disabled={disabled}
-                onChange={(e) => updateServicio(i, { precio: e.target.value })}
-              />
-              <button type="button" onClick={() => removeServicio(i)} disabled={disabled} className="col-span-2 text-sm px-2 py-1 rounded bg-red-600 text-white disabled:opacity-50">Quitar</button>
+                Quitar
+              </button>
             </li>
           ))}
         </ul>
-        {servicios.length === 0 && <p className="text-sm text-gray-500">Sin servicios cargados.</p>}
+        {servicios.length === 0 && <p className='text-sm text-kuati-grafito/50 mt-2'>Sin servicios cargados.</p>}
       </section>
 
+      {/* PRODUCTOS */}
       <section>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold">Productos</h3>
-          <button type="button" onClick={addProducto} disabled={disabled} className="text-sm px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50">+ Agregar producto</button>
+        <div className='flex items-center justify-between mb-3'>
+          <h3 className='text-lg font-bold text-kuati-petroleo'>Productos</h3>
+          <button 
+            type='button' 
+            onClick={addProducto} 
+            disabled={disabled} 
+            className='text-sm px-3 py-1.5 rounded-lg bg-kuati-petroleo/10 text-kuati-petroleo font-semibold hover:bg-kuati-petroleo/20 disabled:opacity-50 transition-colors'
+          >
+            + Agregar producto
+          </button>
         </div>
+        
         {productoOpciones.length === 0 && productos.length > 0 && (
-          <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mb-2">
+          <p className='text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3'>
             Catálogo de productos vacío: el producto se identifica por UUID. El seed del catálogo es deuda de E3.
           </p>
         )}
-        <ul className="space-y-2">
+        
+        <ul className='space-y-3'>
           {productos.map((p, i) => (
-            <li key={p.key} className="grid grid-cols-12 gap-2 items-center border rounded p-2">
-              <select
-                className="col-span-5 border rounded px-2 py-1"
-                value={valorActual(p.producto_global_id, p.producto_empresa_id)}
-                disabled={disabled}
-                onChange={(e) => {
-                  const { globalId, empresaId } = parseValor(e.target.value);
-                  updateProducto(i, { producto_global_id: globalId, producto_empresa_id: empresaId });
-                }}
+            <li key={p.key} className='flex flex-col md:flex-row gap-3 items-start md:items-center bg-kuati-fondo p-3 rounded-lg border border-kuati-borde'>
+              <div className='w-full md:flex-1'>
+                <select
+                  className={inputClass}
+                  value={valorActual(p.producto_global_id, p.producto_empresa_id)}
+                  disabled={disabled}
+                  onChange={(e) => {
+                    const { globalId, empresaId } = parseValor(e.target.value);
+                    updateProducto(i, { producto_global_id: globalId, producto_empresa_id: empresaId });
+                  }}
+                >
+                  <option value=''>— Producto (UUID o catálogo) —</option>
+                  {productoOpciones.map((o) => {
+                    const { valor, seleccionado } = opcionesParaProducto(o, p.producto_global_id, p.producto_empresa_id);
+                    return (
+                      <option key={valor} value={valor} selected={seleccionado}>
+                        {o.origen === "global" ? "[G] " : "[E] "}{o.nombre}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div className='w-full md:w-24'>
+                <input
+                  className={inputClass}
+                  type='number' step='1' min='1' placeholder='Cant.'
+                  value={p.cantidad}
+                  disabled={disabled}
+                  onChange={(e) => updateProducto(i, { cantidad: e.target.value })}
+                />
+              </div>
+              <div className='w-full md:w-32'>
+                <input
+                  className={inputClass}
+                  type='number' step='0.01' min='0' placeholder='P. unit.'
+                  value={p.precio_unitario}
+                  disabled={disabled}
+                  onChange={(e) => updateProducto(i, { precio_unitario: e.target.value })}
+                />
+              </div>
+              <button 
+                type='button' 
+                onClick={() => removeProducto(i)} 
+                disabled={disabled} 
+                className='w-full md:w-auto text-sm px-4 py-2 rounded-lg bg-red-50 text-red-600 font-semibold hover:bg-red-100 disabled:opacity-50 transition-colors'
               >
-                <option value="">— Producto (UUID o catálogo) —</option>
-                {productoOpciones.map((o) => {
-                  const { valor, seleccionado } = opcionesParaProducto(o, p.producto_global_id, p.producto_empresa_id);
-                  return (
-                    <option key={valor} value={valor} selected={seleccionado}>
-                      {o.origen === "global" ? "[G] " : "[E] "}{o.nombre}
-                    </option>
-                  );
-                })}
-              </select>
-              <input
-                className="col-span-2 border rounded px-2 py-1"
-                type="number" step="1" min="1" placeholder="Cant."
-                value={p.cantidad}
-                disabled={disabled}
-                onChange={(e) => updateProducto(i, { cantidad: e.target.value })}
-              />
-              <input
-                className="col-span-3 border rounded px-2 py-1"
-                type="number" step="0.01" min="0" placeholder="P. unit. (opcional)"
-                value={p.precio_unitario}
-                disabled={disabled}
-                onChange={(e) => updateProducto(i, { precio_unitario: e.target.value })}
-              />
-              <button type="button" onClick={() => removeProducto(i)} disabled={disabled} className="col-span-2 text-sm px-2 py-1 rounded bg-red-600 text-white disabled:opacity-50">Quitar</button>
+                Quitar
+              </button>
             </li>
           ))}
         </ul>
-        {productos.length === 0 && <p className="text-sm text-gray-500">Sin productos cargados.</p>}
+        {productos.length === 0 && <p className='text-sm text-kuati-grafito/50 mt-2'>Sin productos cargados.</p>}
       </section>
     </div>
   );
