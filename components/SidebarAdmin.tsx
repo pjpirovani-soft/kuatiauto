@@ -6,7 +6,7 @@ import {
   IconLayoutDashboard, 
   IconBuilding, 
   IconUsers, 
-  IconBox,
+  IconBox, IconChartBar,
   IconLogout 
 } from '@tabler/icons-react';
 import { createClient } from '@/lib/supabase/client'; // Asegurate de que esta ruta sea correcta
@@ -16,6 +16,7 @@ const menuItems = [
   { name: 'Empresas', href: '/admin/empresas', icon: IconBuilding },
   { name: 'Usuarios', href: '/admin/usuarios', icon: IconUsers },
   { name: 'Catálogo', href: '/admin/catalogo', icon: IconBox },
+  { name: 'Métricas', href: '/admin/analytics', icon: IconChartBar },
 ];
 
 export default function SidebarAdmin() {
@@ -74,3 +75,4 @@ export default function SidebarAdmin() {
     </aside>
   );
 }
+
