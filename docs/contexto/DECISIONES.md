@@ -243,3 +243,28 @@ Detectadas durante la lectura de docs para iniciar fase D:
 **Conclusión:** los WARN restantes son **aceptados por diseño** y **documentados**. No representan vulnerabilidades explotables. El WARN naranja del dashboard de Supabase va a seguir visible, pero ahora es **ruido conocido** y no un problema sin analizar.
 
 **Revisión:** reevaluar en cada release minor (o si el producto pasa a plan Pro).
+## ADR-010: Centro de Ayuda con contenido por rol (2026-11-03)
+
+**Contexto:** KuatiAuto tiene 3 roles distintos (propietario, conductor, admin_general) con flujos de trabajo completamente diferentes. Una guía genérica no sirve: el propietario necesita saber cómo crear órdenes, el conductor cómo ver su historial, el admin cómo moderar el catálogo.
+
+**Decisión:** Implementar un Centro de Ayuda con arquitectura de contenido por rol.
+
+| ID | Decisión | Estado |
+|---|---|---|
+| ADR-010 | Centro de Ayuda con 4 páginas: hub + 3 guías por rol. Contenido modelado como datos (`lib/ayuda/*.ts`) consumidos por componentes reutilizables (`components/ayuda/*.tsx`). | APROBADA |
+| D-AYUDA-1 | Separar contenido (data) de presentación (componentes). Razón: facilita mantenimiento, traducción a otros idiomas, y permite agregar capturas de pantalla sin tocar el renderizado. | APROBADA |
+| D-AYUDA-2 | Hub con 12 FAQs generales (plan, seguridad, soporte) + 3 tarjetas de rol. El propietario tiene tarjeta destacada (es el usuario principal del MVP). | APROBADA |
+| D-AYUDA-3 | Guía del propietario con 15 secciones (la más completa). Cubre todo el ciclo de vida: onboarding, dashboard, CRUDs, recepción rápida, catálogo, directorio, portal del conductor, notificaciones, troubleshooting. | APROBADA |
+| D-AYUDA-4 | Guía del conductor con 8 secciones (más corta). El conductor solo necesita saber: registrarse, ver su garage, agregar vehículos, ver historial, autorizar/revocar, privacidad. | APROBADA |
+| D-AYUDA-5 | Guía del admin con 6 secciones. Cubre: rol, dashboard, empresas, usuarios, catálogo global, analytics. | APROBADA |
+| D-AYUDA-6 | Sin capturas de pantalla en MVP. El componente `AyudaBloque` tiene tipo `captura` preparado, pero no se usa. Se agregan en una segunda pasada. | APROBADA |
+| D-AYUDA-7 | Índice lateral sticky en desktop + drawer en mobile. `scroll-mt-24` en cada `<section>` para que los anchors no queden tapados por el header. | APROBADA |
+| D-AYUDA-8 | Links "Ayuda" en los 3 sidebars (propietario, conductor, admin). Apuntan a la guía específica de cada rol, no al hub. | APROBADA |
+| D-AYUDA-9 | Test E2E en CI (`e2e/smoke/ayuda.spec.ts`). Verifica que las 4 páginas cargan y tienen al menos un `<h2>` de sección. | APROBADA |
+
+**Lecciones:**
+- **Contenido como datos > JSX inline.** El `AyudaSeccion.tsx` renderiza 9 tipos de bloque (parrafo, lista, pasos, tip, advertencia, tabla, faq, captura, link) sin saber nada del contenido específico. Agregar una sección nueva es solo agregar un objeto al array.
+- **Playwright y timing en CI.** Los tests de ayuda corren contra prod (Vercel). Si el CI corre antes de que Vercel deploye, fallan por 404. La solución fue esperar a que Vercel esté "Ready" antes de push. **Para futuros deploys, considerar `waitForURL` con retry o un step de "wait for deploy" en el workflow.**
+- **Selectores de Playwright.** `getByRole('link', { name: /^Conductor$/ })` es demasiado estricto si el link tiene texto adicional (descripción adentro del `<a>`). Mejor regex sin ancla + `.first()`.
+
+**Estado:** implementado y deployado en prod. CI verde con 11/11 tests.

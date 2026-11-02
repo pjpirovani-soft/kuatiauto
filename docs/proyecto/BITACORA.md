@@ -1018,3 +1018,81 @@ Ejecutado `npx supabase db advisors --linked --type security` (2026-11-02). ~30 
 - Etapa III (recepción rápida de vehículos).
 - Etapa V (libreta digital del conductor).
 - Deuda menor: `package.json` dice `version: "0.4.0"` pero el tag es `v0.4.3`.
+---
+
+## 2026-11-03 — Etapa III (Recepción rápida) + Centro de Ayuda completo
+
+**Dos features grandes cerradas: wizard de recepción unificado y Centro de Ayuda con guías por rol.**
+
+### Etapa III — Recepción rápida (commit `1662360`)
+
+Wizard de 3 pasos en `/recepcion` que unifica el flujo cliente → vehículo → orden en una sola pantalla. Antes el flujo requería navegar por 3 pantallas separadas (`/clientes/nuevo`, `/vehiculos/nuevo`, `/ordenes/nuevo`).
+
+**Archivos nuevos:**
+- `app/(dashboard)/recepcion/page.tsx` — Server Component que pre-carga clientes, vehículos, servicios y productos.
+- `components/recepcion/RecepcionWizard.tsx` — contenedor con state machine (paso 1/2/3).
+- `components/recepcion/PasoIndicador.tsx` — UI del progreso (1 → 2 → 3).
+- `components/recepcion/PasoCliente.tsx` — búsqueda + creación inline de cliente.
+- `components/recepcion/PasoVehiculo.tsx` — búsqueda + creación inline de vehículo.
+- `components/recepcion/PasoOrden.tsx` — km, servicios, productos, observaciones, submit.
+
+**Archivos modificados (retrocompatibles):**
+- `components/ClienteForm.tsx` — agregado `onSuccess?: (data: { id: string; nombre: string }) => void` opcional.
+- `components/VehiculoForm.tsx` — agregado `onSuccess?: (data: { id: string }) => void` opcional.
+- `components/SidebarPropietario.tsx` — agregado link "Recepción rápida".
+
+**Verificación:** tsc 0 errores, 279/279 tests Vitest, 7/7 smokes Playwright.
+
+### Centro de Ayuda completo (commits `33b66a8`, `529fe07`, `5ce1c37`)
+
+Sistema de documentación in-app con 4 páginas y contenido real por rol.
+
+**Hub `/ayuda`:**
+- 3 tarjetas de rol (Propietario destacado, Conductor, Admin).
+- 12 preguntas frecuentes (accordion nativo con `<details>`).
+- Sección de contacto (email, WhatsApp, horario).
+
+**Guías por rol:**
+
+| Guía | Secciones | Contenido |
+|---|---|---|
+| **Propietario** | 15 | Primeros pasos, dashboard, clientes, vehículos, recepción rápida, órdenes, catálogo servicios/productos, inventario, establecimientos, directorio, portal conductor, notificaciones, consejos, solución de problemas (10 FAQs). |
+| **Conductor** | 8 | Qué es KuatiAuto, crear cuenta, mi garage, agregar vehículo, ver historial, autorizar/revocar, privacidad, solución de problemas (7 FAQs). |
+| **Admin** | 6 | Rol admin, dashboard, empresas, usuarios, catálogo global, analytics. |
+
+**Arquitectura de contenido:**
+- `lib/ayuda/types.ts` — contrato de datos (union discriminada `AyudaBloque`).
+- `lib/ayuda/hub.ts` — datos del hub.
+- `lib/ayuda/propietario-parte1.ts` + `propietario-parte2.ts` — contenido del propietario (dividido por tamaño).
+- `lib/ayuda/conductor.ts` — contenido del conductor.
+- `lib/ayuda/admin.ts` — contenido del admin.
+
+**Componentes reutilizables:**
+- `AyudaSeccion.tsx` — renderiza bloques (parrafo, lista, pasos, tip, advertencia, tabla, faq, captura, link).
+- `AyudaIndiceLateral.tsx` — sidebar sticky en desktop + drawer en mobile.
+- `AyudaBreadcrumb.tsx` — navegación contextual.
+- `AyudaRolCard.tsx` — tarjeta de rol en el hub.
+
+**Links en sidebars:** agregados en `SidebarPropietario`, `SidebarConductor`, `SidebarAdmin`.
+
+**Verificación:** tsc 0 errores, 279/279 tests Vitest, 11/11 smokes Playwright (4 nuevos de ayuda).
+
+**Lecciones:**
+- **Playwright + timing en CI:** los tests de ayuda se deployan en Vercel, pero el CI de GitHub Actions corre en paralelo. Si el CI corre antes de que Vercel deploye, los tests fallan. Solución: esperar a Vercel o usar `waitForURL` con timeout generoso.
+- **Selectores de Playwright:** `getByRole('link', { name: /^Conductor$/ })` falla si el link tiene texto adicional (descripción adentro). Usar regex sin ancla o `.first()`.
+- **Contenido como datos:** separar el contenido de los componentes (`lib/ayuda/*.ts` + `components/ayuda/*.tsx`) hace el mantenimiento y la traducción mucho más fáciles.
+
+### Estado final
+
+- **Commit HEAD:** `5ce1c37` (`fix(e2e): ajustar selectores del smoke del Centro de Ayuda`).
+- **Tag:** `v0.4.3` (del 2026-11-02, no bumpeado en esta sesión).
+- **CI:** verde con 11 tests.
+- **Tests:** 279/279 Vitest, 11/11 Playwright smokes.
+
+### Deuda pendiente
+
+- Bumping de `package.json` a `0.4.3` (sigue en `0.4.0`).
+- Actualizar Supabase CLI v2.122 → v3.0.0.
+- Etapa IV (cierre de orden con catálogo integrado) — pendiente.
+- Etapa V (libreta digital del conductor) — parcialmente cubierta por la guía del conductor.
+- Flows E2E de escritura contra Supabase local — pendiente.
