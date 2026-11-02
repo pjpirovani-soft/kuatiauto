@@ -103,3 +103,12 @@ Pegar el PROMPT DE CONTINUACION del dump actualizado.
 - **Variables:** Cargadas `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_DSN`, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`.
 - **Estado:** App funcionando en producción. Sentry y Analytics reportando.
 - **Deuda:** Dominio `.com.py` pendiente de DNS.
+
+---
+## Actualización 2026-11-02 — Fase E8 (Diseño, UX, Métricas y Legal) COMPLETADA
+- **Design System:** Paleta corporativa aplicada en toda la app (Landing, Login, Registro, Sidebars, Tablas, Métricas).
+- **Responsive:** Sidebars con menú hamburguesa en celular. Tablas de Clientes/Vehículos/Órdenes con vista de tarjetas. Panel de admin con scroll horizontal.
+- **Métricas:** Panel del CEO (`/admin/analytics`) con métricas globales. Dashboard del Propietario (`/dashboard`) con métricas propias (clientes, vehículos, órdenes).
+- **Legal y Soporte:** Páginas `/terminos`, `/privacidad` (Ley 6534/2020) y `/ayuda`.
+- **PWA:** Service Worker v2 con botón de "Nueva versión disponible". Versión de la app (`NEXT_PUBLIC_APP_VERSION`) visible en los sidebars.
+- **Calidad:** 279 tests verdes, `tsc` limpio, build OK (25 rutas).

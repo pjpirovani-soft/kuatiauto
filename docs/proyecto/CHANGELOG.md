@@ -505,3 +505,18 @@ Cerrado funcionalmente: `/admin/empresas`, `/admin/usuarios`, `/admin/catalogo/s
 
 ### Fixed
 - Deploy inicial en Vercel: configuradas las variables de entorno de producción que faltaban para Supabase y Sentry.
+
+## [E8] - 2026-11-02
+### Added
+- Landing Page rediseñada (Hero, tarjetas, efectos neón).
+- Login y Registro con toggle de contraseña, spinner y Design System.
+- Sidebars responsive (Admin, Propietario, Conductor) con menú hamburguesa, logout y versión visible.
+- Tablas responsive con vista de tarjetas en celular.
+- Panel de métricas globales para el CEO (/admin/analytics).
+- Dashboard del Propietario con métricas propias.
+- Páginas legales (/terminos, /privacidad) y Centro de Ayuda (/ayuda).
+- Actualización automática de la PWA y versión de la app visible.
+
+### Fixed
+- Scroll horizontal en tablas del panel de admin para celular.
+- Corrección de validación de datos en el panel de métricas.
