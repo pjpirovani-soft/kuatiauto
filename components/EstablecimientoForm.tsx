@@ -1,8 +1,9 @@
-'use client';
+﻿'use client';
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { crearEstablecimiento, editarEstablecimiento } from "@/lib/establecimiento-actions";
+import { IconLoader2 } from "@tabler/icons-react";
 
 export type Publico = {
   id: string;
@@ -35,6 +36,9 @@ function normalizarPublico(p: EstablecimientoData["establecimiento_publico"]): P
   if (Array.isArray(p)) return p[0] ?? null;
   return p;
 }
+
+const inputClass = "w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all";
+const labelClass = "block text-sm font-semibold text-kuati-grafito mb-1.5";
 
 export default function EstablecimientoForm({ modo, initialData }: Props) {
   const router = useRouter();
@@ -92,154 +96,166 @@ export default function EstablecimientoForm({ modo, initialData }: Props) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6 max-w-2xl">
-      <fieldset className="space-y-4">
-        <legend className="text-lg font-semibold">Datos del establecimiento</legend>
+    <form onSubmit={onSubmit} className='space-y-8 max-w-3xl'>
+      {/* Datos del establecimiento */}
+      <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm space-y-4'>
+        <h2 className='text-xl font-bold text-kuati-petroleo mb-4'>Datos del establecimiento</h2>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Nombre</label>
+          <label className={labelClass}>Nombre *</label>
           <input
-            name="nombre"
+            name='nombre'
             required
             maxLength={120}
             defaultValue={initialData?.nombre ?? ""}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className={inputClass}
+            placeholder='Ej. Lubricentro Central'
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
           <div>
-            <label className="block text-sm font-medium mb-1">Dirección</label>
+            <label className={labelClass}>Dirección</label>
             <input
-              name="direccion"
+              name='direccion'
               maxLength={300}
               defaultValue={initialData?.direccion ?? ""}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className={inputClass}
+              placeholder='Av. Principal 123'
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Teléfono</label>
+            <label className={labelClass}>Teléfono</label>
             <input
-              name="telefono"
+              name='telefono'
               maxLength={40}
               defaultValue={initialData?.telefono ?? ""}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className={inputClass}
+              placeholder='+595 981 123 456'
             />
           </div>
         </div>
-      </fieldset>
+      </div>
 
-      <fieldset className="space-y-4 border-t pt-4">
-        <legend className="text-lg font-semibold">Datos públicos del directorio</legend>
-        <p className="text-sm text-gray-600">
-          Estos datos aparecen en el directorio público cuando el establecimiento esté publicado. Las coordenadas son aproximadas (~1 km).
-        </p>
+      {/* Datos públicos del directorio */}
+      <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm space-y-4'>
+        <div>
+          <h2 className='text-xl font-bold text-kuati-petroleo'>Datos públicos del directorio</h2>
+          <p className='text-sm text-kuati-grafito/70 mt-1'>
+            Estos datos aparecen en el directorio público cuando el establecimiento esté publicado. Las coordenadas son aproximadas (~1 km).
+          </p>
+        </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Descripción</label>
+          <label className={labelClass}>Descripción</label>
           <textarea
-            name="descripcion"
+            name='descripcion'
             maxLength={1000}
             rows={3}
             defaultValue={pub?.descripcion ?? ""}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className={`${inputClass} min-h-[100px] resize-y`}
+            placeholder='Especialistas en lubricación y mantenimiento preventivo...'
           />
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
           <div>
-            <label className="block text-sm font-medium mb-1">Barrio</label>
+            <label className={labelClass}>Barrio</label>
             <input
-              name="barrio"
+              name='barrio'
               maxLength={120}
               defaultValue={pub?.barrio ?? ""}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Ciudad</label>
+            <label className={labelClass}>Ciudad</label>
             <input
-              name="ciudad"
+              name='ciudad'
               maxLength={120}
               defaultValue={pub?.ciudad ?? ""}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Departamento</label>
+            <label className={labelClass}>Departamento</label>
             <input
-              name="departamento"
+              name='departamento'
               maxLength={120}
               defaultValue={pub?.departamento ?? ""}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className={inputClass}
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Teléfono público</label>
+          <label className={labelClass}>Teléfono público</label>
           <input
-            name="telefono_publico"
+            name='telefono_publico'
             maxLength={40}
             defaultValue={pub?.telefono ?? ""}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className={inputClass}
+            placeholder='+595 981 123 456'
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Servicios ofrecidos (separados por coma)</label>
+          <label className={labelClass}>Servicios ofrecidos (separados por coma)</label>
           <input
-            name="servicios_ofrecidos"
-            placeholder="cambio de aceite, frenos, alineación"
+            name='servicios_ofrecidos'
+            placeholder='cambio de aceite, frenos, alineación'
             defaultValue={serviciosIniciales}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className={inputClass}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
           <div>
-            <label className="block text-sm font-medium mb-1">Latitud aproximada</label>
+            <label className={labelClass}>Latitud aproximada</label>
             <input
-              name="lat_aproximada"
-              type="number"
-              step="0.00001"
+              name='lat_aproximada'
+              type='number'
+              step='0.00001'
               min={-90}
               max={90}
               defaultValue={pub?.lat_aproximada ?? ""}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className={inputClass}
+              placeholder='-25.28646'
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Longitud aproximada</label>
+            <label className={labelClass}>Longitud aproximada</label>
             <input
-              name="lng_aproximada"
-              type="number"
-              step="0.00001"
+              name='lng_aproximada'
+              type='number'
+              step='0.00001'
               min={-180}
               max={180}
               defaultValue={pub?.lng_aproximada ?? ""}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className={inputClass}
+              placeholder='-57.64700'
             />
           </div>
         </div>
-      </fieldset>
+      </div>
 
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>
+        <div className='text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3'>{error}</div>
       )}
 
-      <div className="flex gap-3">
+      <div className='flex flex-col sm:flex-row items-center gap-3'>
         <button
-          type="submit"
+          type='submit'
           disabled={pending}
-          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 disabled:opacity-50"
+          className='w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-petroleo/90 disabled:opacity-70 transition-colors'
         >
+          {pending && <IconLoader2 size={18} className='animate-spin' />}
           {pending ? "Guardando..." : modo === "crear" ? "Crear establecimiento" : "Guardar cambios"}
         </button>
         <button
-          type="button"
+          type='button'
           onClick={() => router.back()}
-          className="border border-gray-300 px-6 py-2 rounded hover:bg-gray-100"
+          className='w-full sm:w-auto text-center border border-kuati-borde text-kuati-grafito px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-fondo transition-colors'
         >
           Cancelar
         </button>
