@@ -7,7 +7,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <MobileSidebarWrapper>
         <SidebarPropietario />
       </MobileSidebarWrapper>
-      <main className='flex-1 p-4 md:p-8 overflow-y-auto w-full'>
+      <main className='flex-1 pt-16 md:pt-0 p-4 md:p-8 overflow-y-auto w-full'>
         {children}
       </main>
     </div>
