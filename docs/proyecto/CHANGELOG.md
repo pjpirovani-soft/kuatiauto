@@ -1,3 +1,23 @@
+## [E5b] - 2026-11-02 - Panel admin completo (smoke test + fix H-E5b-3)
+
+### Verified
+- Smoke test manual en navegador: A (login/nav), B (/admin/empresas), C (/admin/usuarios), D (/admin/catalogo/servicios), E (/admin/catalogo/productos), F (logout/re-login/console/network). Todos verdes.
+- 279/279 tests, tsc --noEmit 0 errores, build OK.
+
+### Fixed
+- **H-E5b-3 (alto, integridad de datos):** conductores con rol='empleado' en DB por bug del select. Fix en DB (UPDATE), cliente (UsuarioAccionesClient no renderea select si empresaId=null), backend (cambiarRolUsuario valida invariantes empresa_id/rol), tests (+2).
+- Mojibake de em-dash en app/(admin)/admin/usuarios/page.tsx.
+
+### Added
+- 2 tests nuevos en lib/admin-usuarios-actions.test.ts (rechazo propietario/empleado sin empresa, rechazo conductor con empresa).
+
+### Deuda aceptada
+- H-E5b-4 (bajo): HTML min="1" vs Zod min(0) en intervalos. Backlog.
+
+### Changed
+- components/UsuarioAccionesClient.tsx: nueva prop empresaId. Si es null, muestra texto "conductor (sin empresa)" en lugar de select.
+- lib/admin-actions.ts: cambiarRolUsuario lee empresa_id y valida invariantes.
+- app/(admin)/admin/usuarios/page.tsx: pasa empresaId al cliente.
 ## [E5b-wip] - 2026-11-02 - Panel admin (dashboard funcional)
 
 ### Added

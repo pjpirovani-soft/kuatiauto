@@ -11,12 +11,14 @@ export function UsuarioAccionesClient({
   activo,
   esPropio,
   esAdminGeneral,
+  empresaId,
 }: {
   userId: string;
   rolActual: string;
   activo: boolean;
   esPropio: boolean;
   esAdminGeneral: boolean;
+  empresaId: string | null;
 }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +30,11 @@ export function UsuarioAccionesClient({
   if (esAdminGeneral) {
     return <span className="text-xs text-gray-400">admin_general</span>;
   }
+
+  // Si no tiene empresa, no se puede asignar ningun rol de empresa.
+  // Se muestra texto plano en lugar del selector.
+  const bloqueado = empresaId === null;
+  const opcionesValidas = ROLES.filter(() => empresaId !== null);
 
   const onCambiarRol = (nuevoRol: string) => {
     setRolSel(nuevoRol);
@@ -52,18 +59,24 @@ export function UsuarioAccionesClient({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-2">
-        <select
-          value={rolSel}
-          disabled={pending}
-          onChange={(e) => onCambiarRol(e.target.value)}
-          className="text-xs border border-gray-300 rounded px-2 py-1 bg-white disabled:opacity-50"
-        >
-          {ROLES.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
+        {bloqueado ? (
+          <span className="text-xs text-gray-500 italic">
+            {rolActual} (sin empresa)
+          </span>
+        ) : (
+          <select
+            value={rolSel}
+            disabled={pending}
+            onChange={(e) => onCambiarRol(e.target.value)}
+            className="text-xs border border-gray-300 rounded px-2 py-1 bg-white disabled:opacity-50"
+          >
+            {opcionesValidas.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+        )}
         <button
           type="button"
           onClick={onToggleActivo}

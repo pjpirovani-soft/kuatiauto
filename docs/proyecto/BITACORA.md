@@ -838,3 +838,34 @@ Pruebas ejecutadas:
 - Replicar un patron (CRUD servicio -> CRUD producto) es mecanico, pero conviene escribir el segundo archivo completo en vez de "adaptar" el primero con replace. El riesgo de tipeo silencioso es bajo y el diff es mas legible.
 - El patron de mock de Supabase con `makeChain` y flags `insert/update/delete/order/maybeSingle` escala bien para CRUD. Reutilizar entre archivos de test.
 - `confirm()`/`alert()` requieren que el handler este en un client component, pero no bloquean el `useTransition`. Si el usuario cancela, no hay state change.
+
+## Cierre E5b  2026-11-02
+
+**Panel admin cerrado. Smoke test manual completo en navegador.**
+
+**Pasos del smoke test (todos verdes):**
+- A (login/nav): A1 redirect a /admin, A2 sidebar completo, A3 contadores reales, A4 logo.
+- B (/admin/empresas): B1 lista 2 empresas, B2 filtro por estado, B3 badges, B4 detalle con contadores + usuarios + establecimientos, B5 404 con UUID inexistente, B6 filtro se resetea al volver.
+- C (/admin/usuarios): C1 lista 5 usuarios, C2 filtro por rol, C3 auto-mod bloqueada, C4 admin_general bloqueado, C5 cambio de rol persiste.
+- D (/admin/catalogo/servicios): D1 listar 10 servicios, D2 crear, D3 editar, D4 eliminar con confirm, D5 validacion HTML5 nombre <2, D6 validacion HTML5 intervalo <1.
+- E (/admin/catalogo/productos): E1 listar 8 productos, E2 crear con marca/tipo/viscosidad, E3 editar marca, E4 eliminar, E5 validacion HTML5, E6 404 con UUID inexistente.
+- F (cierre): F1 logout, F2 re-login redirect a /admin, F3 console sin errores rojos, F4 network sin 4xx/5xx inesperados.
+
+**Hallazgo H-E5b-3 (alto, integridad de datos) - detectado y resuelto en sesion:**
+- Sintoma: conductor2@example.com y conductor-test@example.com aparecian con rol='empleado' en la DB y empresa_id=null (estado inconsistente: empleado sin empresa rompe RLS y redirects post-login).
+- Causa raiz: el select de roles en /admin/usuarios caia a "empleado" (primera opcion) cuando el rol actual no matcheaba ninguna opcion. Alguna sesion previa persistio ese cambio.
+- Fix en 4 piezas:
+  1. DB: UPDATE usuario SET rol='conductor' WHERE email IN ('conductor2@example.com','conductor-test@example.com'). Verificado con SELECT.
+  2. Cliente (UsuarioAccionesClient.tsx): si empresaId === null, NO se renderea select; se muestra texto plano "conductor (sin empresa)".
+  3. Backend (cambiarRolUsuario en lib/admin-actions.ts): se agrega lectura de empresa_id en el SELECT y se valida invariante - propietario/empleado requieren empresa_id; conductor requiere empresa_id=null. Errores explicitos.
+  4. Tests: +2 tests en lib/admin-usuarios-actions.test.ts (rechazo propietario/empleado sin empresa, rechazo conductor con empresa). Total 279/279 verdes.
+- tsc --noEmit: 0 errores.
+
+**Hallazgo H-E5b-4 (bajo, backlog):**
+- Inconsistencia HTML min="1" vs Zod min(0) en intervalo_km / intervalo_meses de servicios globales. No es bug funcional: el HTML es mas estricto, el server nunca recibe 0. Se decide dejar como esta o alinear en E5c/v2.
+
+**Lecciones:**
+- Selects con defaultValue/primera opcion fallback: NUNCA renderea un select cuando el valor actual no matchea. Es un bug silencioso que se persiste con cualquier onChange.
+- Invariantes de rol: propietario/empleado => empresa_id NOT NULL, conductor => empresa_id NULL. Validar en backend (no solo en UI) y con tests.
+- El smoke test manual encontro un bug real que los 277 tests unitarios no podian detectar. Justifica el gate de 10 puntos.
+- Turbopack a veces necesita hard reload (Ctrl+F5) para reflejar cambios de client components que no se recompilaron.

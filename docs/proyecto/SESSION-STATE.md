@@ -6,7 +6,7 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. **E5b cerrada funcionalmente (dashboard + /admin/empresas + /admin/usuarios + /admin/catalogo completo 2026-11-02). Falta smoke test manual en navegador.**. E5c pendiente.
+- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. **E5b CERRADA 2026-11-02 (dashboard + /admin/empresas + /admin/usuarios + /admin/catalogo servicios + productos, smoke test manual completo verde, H-E5b-3 resuelto).** E5c pendiente.
 - **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 19 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehículo → crear orden → catálogo → establecimientos → directorio → portal del conductor (mi-garage).
 - **Tests:** 212/212 verdes (19 archivos). **tsc --noEmit:** 0 errores. **build:** OK (25 rutas).
@@ -77,3 +77,16 @@ Pegar el PROMPT DE CONTINUACION del dump actualizado.
 - /admin/catalogo pendiente: moderacion de servicio_global y producto_global.
 - Links del sidebar admin: hoy solo Panel. Agregar los demas cuando existan las paginas.
 
+
+
+### E5b (CERRADA 2026-11-02)
+- **Smoke test manual completo en navegador** con pirovanipedrojose@gmail.com. Pasos A (login/nav), B (/admin/empresas), C (/admin/usuarios), D (/admin/catalogo/servicios), E (/admin/catalogo/productos), F (logout/re-login/console/network). Todos verdes.
+- **H-E5b-1 resuelto:** smoke test manual completo.
+- **H-E5b-3 resuelto (alto, integridad de datos):** conductores aparecian con rol='empleado' en DB por bug del select que caia a la primera opcion. Fix en 4 piezas: (1) UPDATE en DB a rol='conductor'; (2) UsuarioAccionesClient no renderea select si empresaId es null (muestra texto plano); (3) cambiarRolUsuario valida invariante propietario/empleado requieren empresa_id y conductor requiere empresa_id=null; (4) +2 tests nuevos (279/279 verdes).
+- **H-E5b-4 nuevo (bajo, backlog):** inconsistencia HTML min="1" vs Zod min(0) en intervalos de servicios globales. No es bug funcional.
+- **Pendiente para v2:** seed de marcas [PENDIENTE] en producto_global, columna activo en catalogo global (delete real hoy).
+
+### Proximos 3 pasos (actualizado 2026-11-02)
+1. **E5c (Sentry + Vercel Analytics + backups automatizados).**
+2. **Cierre formal de gates de E2a-bis y E2b1** (no bloqueante, solo papeleo).
+3. **Pulir deuda UX acumulada** (H-E4b-1 login feedback, H-E4a-2 /establecimientos para admin, H-E4a-7 selector ciudad directorio, D-E4b-1 precarga email, H-E5b-4 HTML min vs Zod min).

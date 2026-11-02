@@ -166,7 +166,7 @@ describe('cambiarRolUsuario', () => {
     let updateCalled = false;
     mocks.mockAdminFrom.mockImplementation((table: string) => {
       if (table === 'usuario') {
-        const chain = makeChain({ maybeSingle: { data: { id: 'u-1', rol: 'empleado' }, error: null } });
+        const chain = makeChain({ maybeSingle: { data: { id: 'u-1', rol: 'empleado', empresa_id: 'e-1' }, error: null } });
         const origUpdate = chain.update as (v: unknown) => unknown;
         chain.update = vi.fn((v: unknown) => {
           updateCalled = true;
@@ -179,6 +179,32 @@ describe('cambiarRolUsuario', () => {
     const r = await cambiarRolUsuario('u-1', 'propietario');
     expect(r.ok).toBe(true);
     expect(updateCalled).toBe(true);
+  });
+
+  it('rechaza asignar propietario/empleado a usuario sin empresa', async () => {
+    mockRlsAdmin();
+    mocks.mockAdminFrom.mockImplementation((table: string) => {
+      if (table === 'usuario') {
+        return makeChain({ maybeSingle: { data: { id: 'u-1', rol: 'conductor', empresa_id: null }, error: null } });
+      }
+      return makeChain({});
+    });
+    const r = await cambiarRolUsuario('u-1', 'empleado');
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error).toMatch(/no tiene empresa/i);
+  });
+
+  it('rechaza asignar conductor a usuario con empresa', async () => {
+    mockRlsAdmin();
+    mocks.mockAdminFrom.mockImplementation((table: string) => {
+      if (table === 'usuario') {
+        return makeChain({ maybeSingle: { data: { id: 'u-1', rol: 'propietario', empresa_id: 'e-1' }, error: null } });
+      }
+      return makeChain({});
+    });
+    const r = await cambiarRolUsuario('u-1', 'conductor');
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error).toMatch(/conductor no puede tener empresa/i);
   });
 });
 

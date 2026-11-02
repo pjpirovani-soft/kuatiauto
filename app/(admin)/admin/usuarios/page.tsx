@@ -129,6 +129,7 @@ export default async function AdminUsuariosPage({
                         activo={u.activo}
                         esPropio={esPropio}
                         esAdminGeneral={esAdminGeneral}
+                        empresaId={u.empresa_id}
                       />
                     </td>
                   </tr>

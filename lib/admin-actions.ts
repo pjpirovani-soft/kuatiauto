@@ -311,13 +311,28 @@ export async function cambiarRolUsuario(
   const admin = createAdminClient();
   const { data: target, error: errRead } = await admin
     .from("usuario")
-    .select("id, rol")
+    .select("id, rol, empresa_id")
     .eq("id", userId)
     .maybeSingle();
   if (errRead) return { ok: false, error: "Error al leer usuario" };
   if (!target) return { ok: false, error: "Usuario no encontrado" };
   if (target.rol === "admin_general") {
     return { ok: false, error: "No se puede cambiar el rol de un admin_general desde esta UI" };
+  }
+
+  // Invariante: propietario/empleado requieren empresa_id; conductor requiere empresa_id = null.
+  const requiereEmpresa = nuevoRol === "propietario" || nuevoRol === "empleado";
+  if (requiereEmpresa && !target.empresa_id) {
+    return {
+      ok: false,
+      error: "El usuario no tiene empresa asignada. Asignale una empresa antes de cambiarle el rol.",
+    };
+  }
+  if (nuevoRol === "conductor" && target.empresa_id) {
+    return {
+      ok: false,
+      error: "Un conductor no puede tener empresa asignada. Desvinculá la empresa antes de asignarle este rol.",
+    };
   }
 
   const { error: errUpdate } = await admin
