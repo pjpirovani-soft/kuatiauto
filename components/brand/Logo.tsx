@@ -28,7 +28,7 @@ const SIZE_CLASSES: Record<NonNullable<LogoProps['size']>, string> = {
   sm: 'h-8',
   md: 'h-10',
   lg: 'h-12',
-  hero: 'h-24 md:h-32',
+  hero: 'h-32 md:h-44',
 };
 
 function LogoContent({
@@ -85,4 +85,5 @@ export default function Logo({ href, ...props }: LogoProps) {
   }
   return <LogoContent {...props} />;
 }
+
 
