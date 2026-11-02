@@ -1,7 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import OrdenLineas, { type ServicioLineaUI, type ProductoLineaUI } from "./OrdenLineas";
+import { IconLoader2 } from "@tabler/icons-react";
 
 type ServicioOpcion = { id: string; nombre: string; origen: "global" | "empresa" };
 type ProductoOpcion = { id: string; nombre: string; origen: "global" | "empresa" };
@@ -34,9 +35,8 @@ type Props = {
   }) => Promise<{ ok: boolean; error?: string; id?: string }>;
 };
 
-function nuevaKey(): string {
-  return Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
+const inputClass = "w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito bg-kuati-blanco focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all";
+const labelClass = "block text-sm font-semibold text-kuati-grafito mb-1.5";
 
 export default function OrdenForm(props: Props) {
   const { modo, initialData, vehiculos, servicioOpciones, productoOpciones, onSubmit } = props;
@@ -89,77 +89,100 @@ export default function OrdenForm(props: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
-      <div className="grid grid-cols-2 gap-4">
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Vehículo</span>
-          <select
-            className="border rounded px-2 py-1"
-            value={vehiculoId}
-            onChange={(e) => setVehiculoId(e.target.value)}
-            disabled={!editable}
-            required
-          >
-            <option value="">— Seleccionar —</option>
-            {vehiculos.map((v) => (
-              <option key={v.id} value={v.id}>{v.etiqueta}</option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Fecha</span>
-          <input
-            type="date"
-            className="border rounded px-2 py-1"
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
-            disabled={!editable}
-            required
-          />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Km al ingreso</span>
-          <input
-            type="number" min="0" step="1"
-            className="border rounded px-2 py-1"
-            value={kmServicio}
-            onChange={(e) => setKmServicio(e.target.value)}
-            disabled={!editable}
-            required
-          />
-        </label>
-        <label className="flex flex-col gap-1 col-span-2">
-          <span className="text-sm font-medium">Observaciones</span>
-          <textarea
-            className="border rounded px-2 py-1 min-h-[80px]"
-            value={observaciones}
-            onChange={(e) => setObservaciones(e.target.value)}
-            disabled={!editable}
-            maxLength={1000}
-          />
-        </label>
+    <form onSubmit={handleSubmit} className='space-y-6 max-w-4xl'>
+      <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm'>
+        <h2 className='text-xl font-bold text-kuati-petroleo mb-4'>Datos de la orden</h2>
+        
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+          <div>
+            <label className={labelClass}>Vehículo *</label>
+            <select
+              className={inputClass}
+              value={vehiculoId}
+              onChange={(e) => setVehiculoId(e.target.value)}
+              disabled={!editable}
+              required
+            >
+              <option value=''>— Seleccionar —</option>
+              {vehiculos.map((v) => (
+                <option key={v.id} value={v.id}>{v.etiqueta}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label className={labelClass}>Fecha *</label>
+            <input
+              type='date'
+              className={inputClass}
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              disabled={!editable}
+              required
+            />
+          </div>
+          
+          <div>
+            <label className={labelClass}>Km al ingreso *</label>
+            <input
+              type='number'
+              min='0'
+              step='1'
+              className={inputClass}
+              value={kmServicio}
+              onChange={(e) => setKmServicio(e.target.value)}
+              disabled={!editable}
+              required
+            />
+          </div>
+          
+          <div className='sm:col-span-2'>
+            <label className={labelClass}>Observaciones</label>
+            <textarea
+              className={`${inputClass} min-h-[100px] resize-y`}
+              value={observaciones}
+              onChange={(e) => setObservaciones(e.target.value)}
+              disabled={!editable}
+              maxLength={1000}
+              placeholder='Detalles o notas de la orden...'
+            />
+          </div>
+        </div>
       </div>
 
-      <OrdenLineas
-        servicios={servicios}
-        productos={productos}
-        servicioOpciones={servicioOpciones}
-        productoOpciones={productoOpciones}
-        onChange={(next) => { setServicios(next.servicios); setProductos(next.productos); }}
-        disabled={!editable}
-      />
+      <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm'>
+        <h2 className='text-xl font-bold text-kuati-petroleo mb-4'>Servicios y productos</h2>
+        <OrdenLineas
+          servicios={servicios}
+          productos={productos}
+          servicioOpciones={servicioOpciones}
+          productoOpciones={productoOpciones}
+          onChange={(next) => { setServicios(next.servicios); setProductos(next.productos); }}
+          disabled={!editable}
+        />
+      </div>
 
-      {error && <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded p-2">{error}</p>}
+      {error && (
+        <div className='text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3'>{error}</div>
+      )}
 
       {editable && (
-        <div className="flex gap-2">
-          <button type="submit" disabled={enviando} className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50">
+        <div className='flex flex-col sm:flex-row items-center gap-3'>
+          <button
+            type='submit'
+            disabled={enviando}
+            className='w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-petroleo/90 disabled:opacity-70 transition-colors'
+          >
+            {enviando && <IconLoader2 size={18} className='animate-spin' />}
             {enviando ? "Guardando..." : (modo === "crear" ? "Crear orden" : "Guardar cambios")}
           </button>
         </div>
       )}
+      
       {!editable && (
-        <p className="text-sm text-gray-600">Esta orden está {initialData?.estado} y no se puede editar. Usá las acciones de la página.</p>
+        <p className='text-sm text-kuati-grafito/60 bg-kuati-fondo p-4 rounded-lg border border-kuati-borde'>
+          Esta orden está {initialData?.estado} y no se puede editar. Usá las acciones de la página.
+        </p>
       )}
     </form>
   );
