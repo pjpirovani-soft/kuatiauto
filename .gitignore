@@ -36,3 +36,5 @@ test_out.txt
 # Dumps parciales en docs/proyecto
 docs/proyecto/_dump-*.txt
 docs/proyecto/_*.txt
+# Sentry Config File
+.env.sentry-build-plugin
