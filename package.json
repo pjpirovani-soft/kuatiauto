@@ -21,6 +21,7 @@
     "@supabase/supabase-js": "^2.45.0",
     "@tabler/icons-react": "^3.50.0",
     "@vercel/analytics": "^2.0.1",
+    "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
     "next": "16.4.2",
     "react": "^19.0.0",
