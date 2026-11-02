@@ -57,6 +57,9 @@ export default function SidebarPropietario() {
           );
         })}
       </nav>
+      <div className='px-4 pb-2 text-center text-xs text-kuati-blanco/40 font-mono'>
+        v{process.env.NEXT_PUBLIC_APP_VERSION}
+      </div>
       <div className='p-4 border-t border-white/20'>
         <button
           onClick={handleLogout}
@@ -69,3 +72,4 @@ export default function SidebarPropietario() {
     </aside>
   );
 }
+
