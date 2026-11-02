@@ -11,11 +11,24 @@ interface LogoProps {
   href?: string;
   className?: string;
   priority?: boolean;
+  size?: 'sm' | 'md' | 'lg' | 'hero';
 }
 
 const TEXT_COLOR: Record<LogoTheme, string> = {
   light: 'text-kuati-petroleo',
   dark: 'text-kuati-blanco',
+};
+
+const HORIZONTAL_SRC: Record<LogoTheme, string> = {
+  light: '/branding/logo-horizontal.webp',
+  dark: '/branding/logo-horizontal-blanco.webp',
+};
+
+const SIZE_CLASSES: Record<NonNullable<LogoProps['size']>, string> = {
+  sm: 'h-8',
+  md: 'h-10',
+  lg: 'h-12',
+  hero: 'h-16 md:h-20',
 };
 
 function LogoContent({
@@ -24,19 +37,21 @@ function LogoContent({
   showText,
   priority = false,
   className = '',
+  size = 'md',
 }: Omit<LogoProps, 'href'>) {
   const isHorizontal = variant === 'horizontal';
   const shouldShowText = showText ?? isHorizontal;
 
   if (isHorizontal) {
+    const sizeClass = SIZE_CLASSES[size];
     return (
       <Image
-        src="/branding/logo-horizontal.webp"
+        src={HORIZONTAL_SRC[theme]}
         alt="KuatiAuto"
-        width={160}
-        height={40}
+        width={400}
+        height={100}
         priority={priority}
-        className={['h-9 w-auto', className].filter(Boolean).join(' ')}
+        className={['w-auto', sizeClass, className].filter(Boolean).join(' ')}
       />
     );
   }
@@ -52,12 +67,7 @@ function LogoContent({
         className="h-10 w-10"
       />
       {shouldShowText && (
-        <span
-          className={[
-            'text-xl font-bold tracking-wide',
-            TEXT_COLOR[theme],
-          ].join(' ')}
-        >
+        <span className={['text-xl font-bold tracking-wide', TEXT_COLOR[theme]].join(' ')}>
           KuatiAuto
         </span>
       )}

@@ -13,7 +13,7 @@ export default function Home() {
       
       {/* Navbar simple */}
       <header className='bg-kuati-petroleo text-kuati-blanco p-4 md:px-8 flex justify-between items-center shadow-md'>
-        <Logo variant='horizontal' theme='light' priority className='h-10 w-auto' href='/' />
+        <Logo variant='horizontal' theme='dark' priority size='md' href='/' />
         <div className='flex gap-4'>
           <Link href='/login' className='px-4 py-2 text-sm font-medium hover:text-kuati-lima transition-colors'>
             Iniciar Sesión
@@ -28,7 +28,7 @@ export default function Home() {
       <main className='flex-1'>
         <section className='bg-kuati-petroleo text-kuati-blanco py-20 px-4 text-center'>
           <div className='max-w-3xl mx-auto'>
-            <Logo variant='horizontal' theme='light' priority className='h-16 md:h-20 w-auto mx-auto mb-8' />
+            <Logo variant='horizontal' theme='dark' priority size='hero' className='mx-auto mb-8' />
             <h1 className='text-4xl md:text-6xl font-bold mb-6 tracking-tight'>
               El sistema definitivo para tu <span className='text-kuati-lima drop-shadow-[0_0_15px_rgba(163,217,0,0.4)]'>Lubricentro</span>
             </h1>
@@ -100,4 +100,5 @@ export default function Home() {
     </div>
   );
 }
+
 
