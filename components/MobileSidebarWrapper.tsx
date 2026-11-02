@@ -1,10 +1,45 @@
 ﻿'use client';
 
-import { useState } from 'react';
-import { IconMenu2, IconX } from '@tabler/icons-react';
+import { useState, useEffect } from 'react';
+import { IconMenu2, IconX, IconRefresh } from '@tabler/icons-react';
 
 export default function MobileSidebarWrapper({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then((registration) => {
+        // Detectar si hay una nueva versión esperando
+        if (registration.waiting) {
+          setUpdateAvailable(true);
+        }
+
+        // Escuchar futuras actualizaciones
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                setUpdateAvailable(true);
+              }
+            });
+          }
+        });
+      });
+    }
+  }, []);
+
+  const handleUpdate = () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then((registration) => {
+        if (registration.waiting) {
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+      });
+    }
+    window.location.reload();
+  };
 
   return (
     <>
@@ -18,6 +53,19 @@ export default function MobileSidebarWrapper({ children }: { children: React.Rea
           <IconMenu2 size={24} />
         </button>
       </div>
+
+      {/* Botón de actualización (visible si hay nueva versión) */}
+      {updateAvailable && (
+        <div className='fixed bottom-4 left-1/2 -translate-x-1/2 z-50 animate-bounce'>
+          <button
+            onClick={handleUpdate}
+            className='flex items-center gap-2 bg-kuati-lima text-kuati-petroleo px-6 py-3 rounded-full font-bold shadow-lg hover:bg-kuati-lima/90 transition-colors'
+          >
+            <IconRefresh size={20} />
+            Nueva versión disponible. Actualizar
+          </button>
+        </div>
+      )}
 
       {/* Overlay oscuro cuando el sidebar está abierto en celular */}
       {isOpen && (
