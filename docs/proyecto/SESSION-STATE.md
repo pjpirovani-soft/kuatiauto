@@ -6,7 +6,7 @@
 
 ## Estado actual (30 segundos)
 
-- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. **E5b wip (dashboard funcional 2026-11-02, faltan listas)**. E5c pendiente.
+- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. **E5b wip (dashboard + /admin/empresas 2026-11-02, faltan /admin/usuarios y /admin/catalogo)**. E5c pendiente.
 - **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 19 migraciones aplicadas. .env.local cargado.
 - **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehículo → crear orden → catálogo → establecimientos → directorio → portal del conductor (mi-garage).
 - **Tests:** 212/212 verdes (19 archivos). **tsc --noEmit:** 0 errores. **build:** OK (25 rutas).
@@ -24,7 +24,7 @@
 
 ## Próximos 3 pasos
 
-1. **E5b-futuro (listas del panel admin).** /admin/empresas, /admin/usuarios, /admin/catalogo. Hoy solo dashboard con contadores.
+1. **E5b-futuro (listas del panel admin).** /admin/usuarios, /admin/catalogo. /admin/empresas ya cerrada (lista + detalle).
 2. **E5c (Sentry + Vercel Analytics + backups automatizados).**
 3. **Cierre formal de gates de E2a-bis y E2b1** (no bloqueante, solo papeleo).
 
@@ -71,8 +71,8 @@ Pegar el PROMPT DE CONTINUACION del dump actualizado.
 - Cron de recordatorios automaticos no implementado: hoy solo se envia al completar orden manualmente.
 - Fire-and-forget: los 3 envios usan void ... .catch(...). Aceptado en MVP.
 
-### E5b (wip 2026-11-02, dashboard funcional)
-- /admin/empresas pendiente: lista de empresas + detalle con contadores por empresa.
+### E5b (wip 2026-11-02, dashboard + /admin/empresas)
+- /admin/empresas CERRADA: lista con filtro por estado + detalle con contadores, usuarios y establecimientos. Fix H-E5b-2 (contadores usaban RLS y devolvian 0 en dashboard).
 - /admin/usuarios pendiente: lista de usuarios + cambio de rol / desactivacion.
 - /admin/catalogo pendiente: moderacion de servicio_global y producto_global.
 - Links del sidebar admin: hoy solo Panel. Agregar los demas cuando existan las paginas.

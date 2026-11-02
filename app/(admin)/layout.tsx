@@ -5,7 +5,8 @@ import { logout } from "@/lib/auth-actions";
 
 const NAV = [
   { href: "/admin", label: "Panel" },
-  // TODO E5b-futuro: agregar Empresas, Usuarios, Catálogo global cuando existan las páginas.
+  { href: "/admin/empresas", label: "Empresas" },
+  // TODO E5b-futuro: Usuarios, Catalogo global.
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

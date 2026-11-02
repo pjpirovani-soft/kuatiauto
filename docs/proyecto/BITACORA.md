@@ -721,3 +721,34 @@ Pruebas ejecutadas:
 
 **Pendiente (E5b-futuro):** /admin/empresas, /admin/usuarios, /admin/catalogo, links del sidebar.
 
+
+## E5b-futuro parte 1 — 2026-11-02
+
+**Panel admin: /admin/empresas (lista + detalle). Fix de bug de RLS en contadores (H-E5b-2).**
+
+**Hallazgo H-E5b-2 (alto, funcional, corregido):**
+- Las policies SELECT de cliente, vehiculo, orden_trabajo y establecimiento son SOLO `empresa_id = current_empresa_id()`. Para admin_general, `current_empresa_id()` es NULL, asi que las 4 tablas devolvian 0 filas con `createClient()` (RLS). Los contadores del dashboard mostraban "0 establecimientos publicados" y "0 ordenes" cuando en realidad habia datos.
+- Verificado: `select count(*) from cliente` = 2, `from vehiculo` = 1, mientras el dashboard reportaba 0.
+- Fix: `obtenerContadoresAdmin`, `listarEmpresasAdmin` y `obtenerEmpresaAdmin` usan `createAdminClient()` (service_role) DESPUES del check de rol admin_general. No se toca el auth check (sigue con createClient + RLS).
+
+**Codigo nuevo:**
+- lib/admin-actions.ts reescrito: helper `requireAdmin()`, `obtenerContadoresAdmin()` (fix), `listarEmpresasAdmin(filtroEstado?)` (contadores agrupados por empresa_id, sin N+1), `obtenerEmpresaAdmin(id)` (detalle + establecimientos + usuarios).
+- app/(admin)/admin/empresas/page.tsx: lista con filtro por estado (Todas / Activas / Desactivadas), badge activa/desactivada, contadores por columna, link al detalle.
+- app/(admin)/admin/empresas/[id]/page.tsx: detalle con datos, 5 contadores, tabla de usuarios y tabla de establecimientos. `await params` (Next 16). `notFound()` si la empresa no existe.
+- app/(admin)/layout.tsx: link "Empresas" agregado al NAV. Mojibake corregido (`Cerrar sesiÃ³n` -> `Cerrar sesión`).
+
+**Verificacion:**
+- 221/221 tests verdes (20 archivos, +9 nuevos en lib/admin-actions.test.ts).
+- tsc --noEmit: exit 0.
+- npm run build: OK, incluye /admin, /admin/empresas, /admin/empresas/[id].
+
+**Pendiente (E5b-futuro parte 2):**
+- /admin/usuarios: lista + cambio de rol / desactivacion.
+- /admin/catalogo: moderacion de servicio_global y producto_global.
+- Link "Usuarios" y "Catalogo" en el sidebar admin.
+
+**Lecciones:**
+- RLS en tablas de negocio (cliente, vehiculo, orden_trabajo, establecimiento) excluye a admin_general. Cualquier vista admin que cuente esas tablas debe usar service_role, previo check de rol.
+- Promise.all con chains mockeados: el orden de invocacion no es determinista. Para mocks de chains duales (count vs list), distinguir por el primer arg de `select()` (string `*` = count), no por contador de invocaciones.
+- `order()` tambien debe respetar el dual-chain: si el codigo hace `.select(...).eq(...).order(...)`, el resultado final viene de `order`, no de `then`.
+- select() como vi.fn que captura el primer arg permite discriminar entre count y list en el mismo chain.

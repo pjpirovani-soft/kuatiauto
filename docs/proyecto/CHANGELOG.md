@@ -383,3 +383,30 @@ Ver `BITACORA.md` §Cierre E2b2 sesión 2. Lista `/ordenes`, form `/ordenes/nuev
 ## [E3] — 2026-10-31 — Catálogo local + seed de marcas/modelos
 
 Ver `BITACORA.md` §Cierre E3. CRUD de servicios y productos propios de la empresa (`/catalogo/servicios`, `/catalogo/productos`), backend con 4 actions cada uno, 43 tests nuevos (suite 176). Migración `017` con 10 marcas faltantes + 70 modelos populares en Paraguay. Commit `b399b28`.
+
+## [E5b-wip2] - 2026-11-02 - Panel admin: /admin/empresas + fix H-E5b-2
+
+### Added
+- `lib/admin-actions.ts`: `listarEmpresasAdmin(filtroEstado?)` (contadores agrupados por empresa_id, sin N+1) y `obtenerEmpresaAdmin(id)` (detalle con establecimientos y usuarios).
+- `app/(admin)/admin/empresas/page.tsx`: lista con filtro por estado (Todas / Activas / Desactivadas), badge, contadores por columna, link al detalle.
+- `app/(admin)/admin/empresas/[id]/page.tsx`: detalle con datos, 5 contadores, tabla de usuarios, tabla de establecimientos. `await params`, `notFound()` si no existe.
+- `lib/admin-actions.test.ts`: 9 tests (obtenerContadoresAdmin, listarEmpresasAdmin, obtenerEmpresaAdmin).
+- Link "Empresas" en `app/(admin)/layout.tsx`.
+
+### Changed
+- `lib/admin-actions.ts`: `obtenerContadoresAdmin` usa `createAdminClient()` (service_role) para las 4 queries de conteo, previo check de rol admin_general. Fix del bug de RLS.
+- `lib/admin-actions.ts`: helper `requireAdmin()` extraido (reutilizado por las 3 actions).
+
+### Fixed
+- **H-E5b-2 (alto):** las policies SELECT de cliente, vehiculo, orden_trabajo y establecimiento NO incluyen `is_admin_general()`. Con `createClient()` (RLS), admin_general veia 0 filas en esas 4 tablas. El dashboard mostraba "0 establecimientos publicados" y "0 ordenes" cuando habia datos reales. Fix con service_role + check previo de rol.
+- Mojibake en `app/(admin)/layout.tsx`: `Cerrar sesiÃ³n` -> `Cerrar sesión`, comment `CatÃ¡logo` -> `Catalogo`.
+
+### Verified
+- 221/221 tests verdes (20 archivos, +9 nuevos).
+- `tsc --noEmit`: exit 0.
+- `npm run build`: OK (incluye /admin, /admin/empresas, /admin/empresas/[id]).
+
+### Pending
+- /admin/usuarios: lista + cambio de rol / desactivacion.
+- /admin/catalogo: moderacion de servicio_global y producto_global.
+- Link "Usuarios" y "Catalogo" en el sidebar admin.

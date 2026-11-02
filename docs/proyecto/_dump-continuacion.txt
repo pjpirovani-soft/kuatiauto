@@ -1,0 +1,1530 @@
+# KuatiAuto — Dump de continuidad
+
+> Este archivo contiene los 4 documentos esenciales del proyecto + el prompt de continuacion.
+> Pegar el prompt del final en una conversacion nueva para retomar.
+
+**Generado:** 2026-11-02 (post E5b-wip)
+
+===== docs\proyecto\SESSION-STATE.md =====
+
+# Session State — KuatiAuto (provisional)
+
+**Actualizado:** 2026-11-01
+
+> Este archivo es el handoff entre sesiones. Leerlo primero al arrancar. Actualizarlo al cerrar.
+
+## Estado actual (30 segundos)
+
+- **Fase:** F0–F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip (funcional, sin gate formal). E2b1 wip (funcional, sin gate formal). E2b2, E3, E4a, E4b cerradas (gate 10/10). **E5a cerrada (2026-11-02)**. **E5b wip (dashboard funcional 2026-11-02, faltan listas)**. E5c pendiente.
+- **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 19 migraciones aplicadas. .env.local cargado.
+- **App funcional end-to-end contra DB real:** registro → login → crear empresa → crear cliente → crear vehículo → crear orden → catálogo → establecimientos → directorio → portal del conductor (mi-garage).
+- **Tests:** 212/212 verdes (19 archivos). **tsc --noEmit:** 0 errores. **build:** OK (25 rutas).
+- **Repo:** C:\Users\Admin\proyectos\kuatiauto. Remote: github.com/pjpirovani-soft/kuatiauto.
+- **Bloqueado por:** nada.
+
+## Usuarios de prueba en DB real
+
+| Email | Rol | Empresa | Password |
+|---|---|---|---|
+| importjapanencar@gmail.com | propietario | Import Japan (adbcd23e-f296-435c-b835-e9ce837a9d95) | ImportJapan-2026 |
+| test-b-user@example.com | propietario | Taller Prueba B (b4d1b031-f3c9-4c86-a513-b0b071929b28) | TestB1234!Segura |
+| pirovanipedrojose@gmail.com | admin_general | — | (no usada en tests) |
+| conductor2@example.com | conductor | — | TestConductor123! |
+
+## Próximos 3 pasos
+
+1. **E5b-futuro (listas del panel admin).** /admin/empresas, /admin/usuarios, /admin/catalogo. Hoy solo dashboard con contadores.
+2. **E5c (Sentry + Vercel Analytics + backups automatizados).**
+3. **Cierre formal de gates de E2a-bis y E2b1** (no bloqueante, solo papeleo).
+
+## Deuda pendiente
+
+### E4b (cerrada, 2026-11-01)
+- **H-E4b-1** (bajo, UX): form de login deja el botón sin feedback ~3s durante el server action. E5.
+- **H-E4b-2** (medio, cosmético): `/mi-garage/historial` muestra "Taller" y "Vehículo:" vacíos por RLS bloqueando join anidado en PostgREST. Fix: denormalizar en `proponer_historial_compartido` (migración 020) o RPC `listar_historial_compartido()` SECURITY DEFINER. Datos críticos (autorizado, token) funcionan perfecto; no bloquea.
+- **D-E4b-1** (deuda UX): precargar email del cliente dueño en `ProponerHistorialForm` si existe. E5/v2.
+
+### E4a (resuelto, salvo residuales)
+- H-E4a-2 (bajo): `/establecimientos` no oculta "Nuevo" para admin_general. E5.
+- H-E4a-7 (medio): directorio arranca en Asuncion sin selector de ciudad ni geolocalizacion. E5.
+
+### E2b2 (cerrada, deudas aceptadas)
+- `editarOrden` y `crearOrden` sin transaccion real (delete + insert sin rollback). Mitigado con audit log.
+- Inmutabilidad de orden `completada` bloqueada solo en UI, no en backend.
+- `any` en helper `mapearOpciones` de las paginas de ordenes.
+- `historial_compartido.vehiculo_conductor_id` FK OK, pero el flujo conductor-conductor no se usa hoy.
+
+### E2a/E2b1 (wip funcional)
+- Gate formal de 10 puntos pendiente (solo papeleo, funcionalidad validada).
+
+### Proyecto
+- `empresa_id: null` en `notificaciones-actions.ts` (enviarBienvenida). Deuda F11.
+- `RESEND_API_KEY` sin configurar (modo mock).
+- npm audit: 16 moderate dev-only (cadena ESLint), no explotables en produccion.
+- Sentry diseñado, no configurado — E5.
+- Backups automatizados, export semanal — v2.
+
+## Cómo retomar en conversacion nueva
+
+Pegar el PROMPT DE CONTINUACION del dump actualizado.
+
+## Contacto
+
+- Propietario: Pedro J. Pirovani (pjpirovani-soft en GitHub).
+- Piloto: Luis María Delvalle Ramírez — Import Japan - Autorepuestos (Encarnación).
+
+
+### E5a (cerrada 2026-11-02, con deudas de dominio)
+- RESEND_FROM usa onboarding@resend.dev: solo permite enviar al email de la cuenta Resend. Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
+- Vercel no configurado: cuando se deploye, replicar RESEND_API_KEY y RESEND_FROM en env vars del proyecto.
+- Cron de recordatorios automaticos no implementado: hoy solo se envia al completar orden manualmente.
+- Fire-and-forget: los 3 envios usan void ... .catch(...). Aceptado en MVP.
+
+### E5b (wip 2026-11-02, dashboard funcional)
+- /admin/empresas pendiente: lista de empresas + detalle con contadores por empresa.
+- /admin/usuarios pendiente: lista de usuarios + cambio de rol / desactivacion.
+- /admin/catalogo pendiente: moderacion de servicio_global y producto_global.
+- Links del sidebar admin: hoy solo Panel. Agregar los demas cuando existan las paginas.
+
+
+
+===== docs\proyecto\STATUS.md =====
+
+# STATUS — KuatiAuto (provisional)
+
+**Actualizado:** 2026-10-31
+**Propósito:** tablero macro de módulos. `SESSION-STATE.md` sigue siendo el handoff operativo entre sesiones. No se duplican (D-F14-5).
+**Regla:** un módulo se marca `completo` solo tras pasar el gate de seguridad de 10 puntos (`ARCHITECTURE.md` §Gate de seguridad por módulo). Sin gate, se commitea como `wip` con nota acá.
+
+## Leyenda
+
+- `pendiente`: no arrancado.
+- `wip`: en progreso, no pasa el gate todavía.
+- `completo`: pasa el gate de 10 puntos.
+- `bloqueado`: esperando dependencia o decisión externa.
+
+## Estado de módulos
+
+| Etapa | Módulo | Estado | Bloqueantes | Hallazgos |
+|---|---|---|---|---|
+| E1 | auth completo (registro/login/reset/confirmación) | **completo** | — | prueba cruzada A/B ✅ 2026-10-31; 2FA en Bitwarden activada 2026-11-01 |
+| E1 | multiempresa (crear empresa + establecimiento) | wip | — | validado end-to-end (Luis) |
+| E1 | shell + route groups + layout base | wip | — | layout dashboard es E2b1 |
+| E1 | middleware rate limiting | wip | — | tests 8/8 verdes |
+| E1 | hooks audit_log | wip | — | audit_log registra crear/empresa, crear/cliente |
+| E1 | cablear `empresa_id` en notificaciones-actions | pendiente | — | deuda F11, diferida |
+| E2a | clientes CRUD (schema, actions, tests, UI) | **wip (piloto funcional)** | — | validado con cliente real |
+| E2a | vehículos backend (schema, actions, tests) | wip | — | UI es E2b1 |
+| E2a | vehículos UI (form, lista, nuevo, editar) | pendiente | E2a-vehículos backend | E2b1 |
+| E2a | layout dashboard con navegación | pendiente | — | E2b1 |
+| E2b1 | UI vehículos + layout dashboard | pendiente | E2a | próxima sesión |
+| E2b2 | órdenes (CRUD + líneas) | **completo** | — | gate 10/10 cerrado 2026-11-01; prueba cruzada A/B OK |
+| E2b2 | empleados (invitación Resend) | pendiente | RESEND_API_KEY | sacado de E2b2 |
+| E3 | catálogo global (lectura) | **completo** | — | gate 10/10 cerrado 2026-11-01; 15 fabricantes, 73 modelos |
+| E3 | catálogo local (CRUD) | **completo** | — | gate 10/10 cerrado 2026-11-01; prueba cruzada A/B OK |
+| E3 | stock + movimientos | pendiente | — | columnas stock_actual/stock_minimo ya existen en producto_empresa; falta UI de movimientos |
+| E4 | directorio (búsqueda + mapa) | **completo** | — | E4a cerrada 2026-10-31, gate 10/10, prueba cruzada A/B 7/7 |
+| E4 | publicación/moderación directorio | wip | — | propietario publica/despublica OK; moderación admin_general va a E5 |
+| E4 | portal del conductor | **completo** | — | gate 10/10 cerrado 2026-11-01; prueba cruzada A/B OK (proponer/aceptar/revocar). H-E4b-2 resuelto 2026-11-01 con RPC SECURITY DEFINER (migracion 020) |
+| E4 | portal del conductor | pendiente | E1, E2b2 | — |
+| E5 | notificaciones reales (bienvenida + historial + recordatorio) | **completo (con deuda de dominio)** | dominio verificado en Resend | cableado 2026-11-02; envio real OK contra API Resend. Deuda: RESEND_FROM usa onboarding@resend.dev (solo tests a email propio) hasta verificar dominio |
+| E5 | cron recordatorios + reintentos | pendiente | dominio Resend + deploy | — |
+| E5 | panel admin | wip | — | dashboard funcional 2026-11-02 (contadores: empresas, usuarios, establecimientos publicados, ordenes). Redirect post-login (admin -> /admin). Faltan /admin/empresas, /admin/usuarios, /admin/catalogo |
+| E5 | Sentry + Vercel Analytics | pendiente | E1 | — |
+
+## Infraestructura
+
+| Item | Estado |
+|---|---|
+| Supabase proyecto `kuatiauto` | ✅ Activo (free tier, us-east-1) |
+| 18 migraciones aplicadas | ✅ 2026-10-31 |
+| `lib/supabase/types.ts` (27 tablas, 12 funciones) | ✅ Generado |
+| `@supabase/ssr@0.12.7` | ✅ Bug `never` resuelto |
+| `.env.local` | ✅ Cargado (URL, anon, service_role) |
+| `RESEND_API_KEY` | ❌ No configurada (modo mock) |
+| Sentry | ❌ No configurado |
+| Backups automatizados | ❌ Script manual, no automatizado |
+
+## Deuda técnica al cierre de E2a-bis
+
+| Deuda | Origen | Etapa de resolución |
+|---|---|---|
+| Prueba cruzada A/B contra Supabase real | E1 | E1-cierre (gate 8-10) |
+| 2FA en gestor de contraseñas | F13 | Acción del propietario |
+| `empresa_id: null` en `notificaciones-actions.ts` | F11 | Cuando se toque notificaciones (E5) |
+
+
+| Seed catálogo marcas `[PENDIENTE]` | F6a | E3 |
+| `npm audit` 16 moderate (0 critical, 0 high) — todas en `minimatch` dev-only | E2a-bis | Resuelto 2026-10-31: upgrade Vitest 5 eliminó las 2 critical + 12 moderate. Las 16 restantes son dev-only en la cadena de ESLint, no explotables en producción |
+| Sentry diseñado, no configurado | F13 | E5 |
+| RESEND_FROM con onboarding@resend.dev (solo tests propios) | E5a | cuando se registre y verifique dominio |
+| Vercel no configurado (solo .env.local por ahora) | E5a | cuando se deploye |
+| Export semanal de backups: script manual | F13 | v2 |
+| Prueba de restauración trimestral: no ejecutada | F13 | Post-E5 |
+
+## Hallazgos de seguridad abiertos
+
+(vacío al 2026-10-31)
+
+Un hallazgo crítico o alto abierto bloquea el cierre del módulo salvo aceptación explícita documentada en `SESSION-STATE.md`.
+
+## Notas
+
+- `STATUS.md` es tablero macro. `SESSION-STATE.md` es handoff operativo. No se duplican (D-F14-5).
+- Un módulo con hallazgos críticos/altos abiertos NO se commitea como `completo`. Se commitea como `wip` con nota acá.
+- Al cierre de cada etapa se actualiza este tablero + SESSION-STATE + BITACORA + CHANGELOG.
+
+## Nota de cierre E2a-bis (2026-10-31)
+
+**Piloto funcional end-to-end contra Supabase real.** Registro → login → crear empresa → crear cliente → persistencia → audit_log. Suite 89/89. `tsc` 0. Encoding limpio. Commits `93c3f9a` y `6a4d365` pusheados.
+
+**Próximo:** E2b1 (UI vehículos + layout dashboard con navegación).
+## Nota de cierre E2b1 (2026-10-31)
+
+**UI vehículos + layout dashboard cerrados.** Commit 6143d08.
+
+- listarVehiculosEmpresa() agregado a lib/vehiculos-actions.ts (lista global, filtro por empresa).
+- app/(dashboard)/layout.tsx: sidebar (Panel, Clientes, Vehículos, Directorio, Logout) + auth check server-side.
+- components/VehiculoForm.tsx: client component crear/editar con discriminated union.
+- /vehiculos (lista), /vehiculos/nuevo (form crear), /vehiculos/[id] (form editar).
+- Panel logueado movido de (dashboard)/page.tsx a (dashboard)/dashboard/page.tsx. (dashboard)/page.tsx borrado (colisión con landing app/page.tsx).
+- / sigue siendo landing pública estática. /directorio queda fuera del shell.
+
+**Verificado:** tsc 0 errores, npm run build OK (11 rutas, incluye las 3 nuevas), npm test 89/89. Encoding sin BOM en 6 archivos nuevos.
+
+**Deuda generada:** listarVehiculosEmpresa() sin tests (agregar 2 casos en próxima sesión).
+
+**Próximo:** tests de listarVehiculosEmpresa() + trigger handle_new_user, después E2b2 (órdenes + empleados).
+**Segunda pasada E2b1 (2026-10-31):**
+
+- Tests de `listarVehiculosEmpresa()` agregados: 3 casos, suite 89 → 92.
+- Registro manda `nombre` en `signUp` → `raw_user_meta_data.nombre`. Trigger `handle_new_user` no requirió migración SQL (ya leía con `coalesce`).
+- BITACORA.md y CHANGELOG.md actualizados con el cierre de E2b1.
+- Pendiente residual: test unitario para `auth-actions.ts` (register con nombre); cobertura por integración manual en el próximo registro real.
+
+## Nota de avance E2b2 sesion 1 (2026-10-31)
+
+**Backend de ordenes cerrado.** Commit 326bd1c. 928 lineas, 44 tests nuevos (133/133 suite completa).
+
+- Migracion 016_producto_empresa.sql: sincroniza el repo con la DB real (drift detectado al planificar E2b2). Aplicada con supabase db push.
+- lib/schemas/ordenSchema.ts: crearOrdenSchema, editarOrdenSchema, anularOrdenSchema, listarOrdenesSchema, ordenIdSchema. Validacion de lineas (exactamente uno de servicio_global_id / servicio_empresa_id; idem producto). Limites duros (max 50 servicios, 100 productos). 26 tests.
+- lib/ordenes-actions.ts: 8 server actions (listarOrdenes, listarOrdenesEmpresa, obtenerOrden, crearOrden, editarOrden, completarOrden, anularOrden, eliminarOrdenBorrador). Rate limit en mutaciones, audit log, validacion cross-empresa, calculo de importe_total y proximo_mantenimiento (D-E2-2) al completar.
+- lib/ordenes-actions.test.ts: 15 tests. Cubre auth, rate limit, cross-empresa, transiciones de estado.
+
+**Deuda aceptada en backend:** editarOrden y crearOrden sin transaccion real (delete + insert sin rollback). Mitigado con audit log. Si aparece bug, migrar a RPC en sesion futura.
+
+**Proximo:** E2b2 sesion 2 (UI de ordenes: /ordenes, /ordenes/nuevo, /ordenes/[id], OrdenForm, OrdenLineas).
+## Nota de cierre E2b2 sesion 2 (2026-10-31)
+
+**UI de órdenes cerrada.** Commit `64c6b23`. 922 líneas, 9 archivos (7 nuevos + 2 modificados).
+
+- `/ordenes`: lista global por empresa con badge de estado, importe, observaciones truncadas, link a detalle.
+- `/ordenes/nuevo`: form de creación, precarga de vehículo vía `?vehiculo_id=` desde `/vehiculos/[id]`.
+- `/ordenes/[id]`: form de edición + acciones (completar / anular con motivo / eliminar borrador).
+- `components/OrdenLineas.tsx`: editor de líneas de servicio y producto, respeta el schema real (sin `descripcion` ni `cantidad` en servicios).
+- `components/OrdenForm.tsx`: cabecera + líneas + submit, discriminated union `modo: crear | editar`.
+- `components/NuevaOrdenClient.tsx` y `components/EditarOrdenClient.tsx`: wrappers cliente que importan las server actions (no se puede pasar function de server a client en Next 16).
+- `app/(dashboard)/layout.tsx`: link "Órdenes" agregado al sidebar.
+
+**Verificado:** tsc 0 errores, npm test 133/133, npm run build OK (15 rutas, incluye las 3 nuevas), encoding sin BOM y sin mojibake en 9 archivos.
+
+**Deuda generada / diferida:**
+- `editarOrden` y `crearOrden` sin transacción real (delete + insert sin rollback). Mitigado con audit log. Migrar a RPC si aparece bug.
+- Inmutabilidad de orden `completada` no bloqueada en backend (solo UI).
+- Catálogo global/empresa vacío: seed pendiente E3.
+- `any` en helper `mapearOpciones` de las páginas de órdenes.
+- `RESEND_API_KEY` sin configurar → empleados se pospone.
+
+**Próximo:** E3 (catálogo global + local) + cierre E1 (gate 10/10).
+
+## Nota de cierre E3 (2026-10-31)
+
+**Catálogo local + seed de marcas/modelos cerrados.** Commit `b399b28`. 19 archivos, 1482 líneas.
+
+- Backend: `lib/schemas/servicioEmpresaSchema.ts`, `lib/schemas/productoEmpresaSchema.ts`, `lib/servicios-empresa-actions.ts`, `lib/productos-empresa-actions.ts` (listar / obtener / crear / editar; **sin eliminar**, decisión D-E3a-1 por falta de columna `activo`).
+- Tests: 17 schema + 26 actions = 43 nuevos. Suite total 176/176.
+- UI: `/catalogo` (índice), `/catalogo/servicios` (lista + nuevo + editar), `/catalogo/productos` (lista + nuevo + editar). Link "Catálogo" en sidebar.
+- Migración `017_seed_marcas_modelos.sql`: 10 marcas faltantes (todas las de `fabricante` que no tenían homónima) + 70 modelos populares en Paraguay. Total: 15 fabricantes, 15 marcas, 73 modelos.
+
+**Verificado:** tsc 0, 176/176 tests, build OK (22 rutas), encoding limpio.
+
+**Deuda generada:**
+- Soft-delete de catálogo local: falta migración 018 con `activo` + actions `eliminarX`.
+- Catálogo técnico profundo (versiones, motorizaciones, especificaciones): vacío, deuda v2.
+- Productos globales con `marca = [PENDIENTE]`: deuda v2.
+- Stock: solo columnas `stock_actual`/`stock_minimo`; UI de movimientos pendiente.
+
+**Próximo:** cierre de E1 (gate 10/10) — prueba cruzada A/B + 2FA. Después E4 (directorio + portal del conductor) y E5 (recordatorios + panel admin).
+
+## Nota de prueba cruzada A/B (2026-10-31)
+
+**Prueba cruzada A/B completada contra Supabase real.**
+
+- Usuario A: `importjapanencar@gmail.com` (Luis, Import Japan, empresa adbcd23e-f296-435c-b835-e9ce837a9d95).
+- Usuario B: `test-b-user@example.com` (Taller Prueba B, empresa b4d1b031-f3c9-4c86-a513-b0b071929b28). Creado vía Auth Admin API con service_role.
+- Cliente A: María José Bitar Balletbo (7e74bf38-796b-4d92-8fd3-338ea3a6fd2b).
+- Cliente B: Cliente Prueba B (4538656d-9c65-4dd6-8d9a-195af4741803).
+
+**Verificado:**
+- B ve solo sus propios clientes (Taller Prueba B).
+- B → URL directa a cliente de A → "Cliente no encontrado".
+- A (Luis) → URL directa a cliente de B → "Cliente no encontrado".
+
+**Resultado:** RLS aísla correctamente. Gate E1 cruzado cerrado. E1 pasa de gate 7/10 a gate 9/10 (falta solo 2FA del propietario para el 10/10).
+
+## Nota de cierre E4a (2026-10-31)
+
+**Directorio + establecimientos públicos cerrados. Gate 10/10.**
+
+- Migración `018`: endurece GRANT de `anon` en `establecimiento_publico` (H-E4a-1).
+- Backend: `lib/schemas/establecimientoSchema.ts` + `lib/establecimiento-actions.ts` (listar, obtener, crear, editar, publicarMiEstablecimiento). 36 tests nuevos.
+- UI: `/establecimientos` (lista + nuevo + editar) + `EstablecimientoForm` + `PublicarButton`. Link en sidebar.
+- `/directorio`: `await searchParams` (H-E4a-8).
+- Fix `upsert` en `editarEstablecimiento` (H-E4a-3): crea fila pública si no existe.
+- Fix `await params` en `/establecimientos/[id]` (H-E4a-4).
+- Prueba cruzada A/B 7/7 contra DB real. Aislamiento bidireccional verificado. Directorio muestra solo publicados.
+- Verificación: 212/212 tests, tsc 0, build OK (25 rutas).
+
+**Deuda diferida:** H-E4a-2 (UI admin_general en `/establecimientos` → E5), H-E4a-7 (default geográfico del directorio → E4b/E5).
+
+**Próximo:** E4b (portal del conductor: `/mi-garage`, `vehiculo_conductor`, `historial_compartido`, invitación por token).
+
+## Nota de cierre E4b (2026-11-01)
+
+**Portal del conductor cerrado. Gate 10/10.**
+
+- Backend: `lib/conductor-actions.ts` + `lib/schemas/conductorSchema.ts` (E4b sesion anterior).
+- Migracion `019_historial_compartido_consentimiento.sql` (3 funciones SECURITY DEFINER: proponer, aceptar, revocar).
+- UI: `(portal)/layout.tsx`, `/mi-garage`, `/mi-garage/vehiculos`, `/mi-garage/historial`, `/register-conductor`.
+- Componentes: `VehiculoConductorForm`, `ProponerHistorialForm`, `HistorialAccionesClient` (nuevo).
+- Integracion: `ProponerHistorialForm` en `/vehiculos/[id]` (empresa propone); `HistorialAccionesClient` en `/mi-garage/historial` (conductor acepta/revoca).
+- Fix E2b2: `href` de `/ordenes/nuevo?vehiculo_id=` perdió `{vehiculo.id}`. Corregido.
+
+**Prueba cruzada A/B (Luis -> conductor2):**
+- Proponer historial: token generado, fila en DB con `autorizado=false`.
+- Conductor2 recarga `/mi-garage/historial` -> ve propuesta pendiente -> Aceptar -> `autorizado=true`.
+- Conductor2 Revocar -> `autorizado=false`. Reversible.
+
+**Hallazgos:**
+- **H-E4b-1** (bajo, UX): form de login deja el botón sin feedback ~3s durante el server action. E5.
+- **H-E4b-2** (medio, cosmetico): RESUELTO 2026-11-01. Causa: RLS bloqueaba joins anidados en PostgREST. Fix: RPC `listar_historial_compartido()` SECURITY DEFINER (migracion 020). Datos de taller y vehiculo ahora se ven en `/mi-garage/historial`.
+- **D-E4b-1** (deuda UX): precargar email del cliente dueño en `ProponerHistorialForm` si existe. E5/v2.
+
+**Verificacion:** 212/212 tests, tsc 0, build OK (25 rutas). Encoding limpio.
+
+## Nota de cierre E5a (2026-11-02)
+
+**Notificaciones reales cableadas y verificadas contra Resend.**
+
+- enviarBienvenida cableada en crearEmpresa (fire-and-forget).
+- enviarHistorialCompartido cableada en revocarHistorial (fire-and-forget).
+- enviarRecordatorioMantenimiento cableada en completarOrden (fire-and-forget).
+- RESEND_API_KEY configurada en .env.local. Envio de prueba a pirovanipedrojose@gmail.com: OK (id real de Resend, mock=false).
+- tsx agregado como devDependency para scripts sueltos.
+
+**Deudas:**
+- RESEND_FROM usa onboarding@resend.dev (solo permite enviar al email de la cuenta Resend). Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
+- Vercel no configurado; cuando se deploye, replicar RESEND_API_KEY y RESEND_FROM en env vars del proyecto.
+- Cron de recordatorios automaticos no implementado (solo envio manual al completar orden).
+
+
+## Nota de cierre E5b (2026-11-02, wip)
+
+**Panel admin: dashboard funcional. Wip, faltan listas de entidades.**
+
+**Hecho:**
+- lib/auth-actions.ts: redirect post-login. Orden de checks: admin_general -> /admin, conductor -> /mi-garage, sin empresa -> /crear-empresa, con empresa -> /clientes. Fix adicional: usuarios sin empresa ahora van a /crear-empresa (antes caian en /clientes).
+- app/(admin)/layout.tsx: auth check server-side. notFound() si no es admin_general. Sidebar con link Panel + logout via server action.
+- app/(admin)/admin/page.tsx: dashboard con 4 contadores (empresas, usuarios, establecimientos publicados, ordenes).
+- lib/admin-actions.ts: obtenerContadoresAdmin(). Usa createClient() (RLS permite SELECT a admin_general via is_admin_general() en las policies de empresa y usuario).
+
+**Verificacion:** login como pirovanipedrojose@gmail.com -> /admin, contadores reales (Empresas: 2, Usuarios: 5). tsc 0, build OK (26 rutas).
+
+**Pendiente (E5b-futuro):**
+- /admin/empresas: lista + detalle con contadores por empresa.
+- /admin/usuarios: lista + cambiar rol / desactivar.
+- /admin/catalogo: moderacion de servicio_global y producto_global.
+- Links del sidebar correspondientes (hoy solo Panel).
+
+
+
+===== docs\proyecto\BITACORA.md =====
+
+# BITACORA — KuatiAuto (provisional)
+
+## 2026-10-30 — Fase 0: punto de partida arquitectónico
+
+- **Contexto:** el proyecto nace del contacto comercial de Encarnación (Paraguay) que trabaja en mantenimiento automotor y propuso una plataforma común para establecimientos del rubro. El nombre `KuatiAuto` queda como provisional hasta verificar redes y DINAPI.
+- **Proyecto base:** creado con `nueva-app.ps1 -Blueprint web-app -Destino clients\kuatiauto`. Scaffold `web-app` con auth + CRUD + RLS de ejemplo.
+- **Metodología:** se alinea a la metodología del studio (ENC) el mismo día.
+- **Fase 0 (documentación):** `ARCHITECTURE.md`, `SPEC.md`, `SESSION-STATE.md`, `CLIENTE.md`, `GLOSARIO.md`, `BITACORA.md`.
+- **Decisiones aprobadas:** D-A, D-B, D-C, D-D (metodología), D-P1, D-P2, D-P3 (delegadas), ADR-001 a ADR-004.
+- **Verificado:** `kuatiauto.com.py` disponible en NIC.py (2026-10-30). Sin registrar.
+- **Pendiente:** verificar redes (@kuatiauto) y DINAPI (clases 9, 35, 42).
+- **No se tocó:** `app/`, `components/`, `lib/`, `supabase/`.
+
+**Commits:** `b0bea04 docs: fase 0 — punto de partida arquitectonico KuatiAuto`.
+
+## 2026-10-30 — Fase 1: definición de producto
+
+- **Contexto:** se define el alcance del MVP, los flujos, el modelo de datos preliminar y los criterios de aceptación.
+- **Decisiones por delegación (D-F1-1, D-F1-2, D-F1-3):**
+  - Flujo MVP: 7 pasos del camino feliz. Sin factura/recibo, sin impresión/PDF, sin métricas en dashboard. Próximo mantenimiento sugerido automático.
+  - Orden de trabajo: 9 campos. `orden_servicio` y `orden_producto` en tablas aparte. `importe_total` único.
+  - Catálogo: híbrido. Global (admin) + local (empresa). Seed manual.
+- **ADRs nuevos:** ADR-005 (catálogo híbrido), ADR-006 (productos y servicios en tablas aparte).
+- **Riesgos cerrados:** R5 (alcance MVP inflado).
+- **Docs actualizados:** `SPEC.md` (secciones 2, 3, 4, 8, 9, 10, 11), `GLOSARIO.md` (términos nuevos), `ARCHITECTURE.md` (ADR-005, ADR-006, plan de migraciones), `SESSION-STATE.md`, `BITACORA.md`, `CHANGELOG.md`.
+- **No se tocó:** `app/`, `components/`, `lib/`, `supabase/`. El scaffold `web-app` queda intacto hasta F3.
+
+**Commits:** (pendiente).
+
+
+## 2026-10-30 — Cierre de F1: alcance MVP confirmado
+
+- **Contexto:** el PROMPT MAESTRO se recupera y se guarda como `docs/proyecto/PROMPT-MAESTRO.md`. Se crea `ROADMAP.md` (hoja de ruta de 14 fases) y `DECISIONES.md` (registro A/B/C/D).
+- **Decisiones confirmadas:**
+  - **P-Alcance-MVP:** los 4 componentes del PROMPT MAESTRO son MVP (gestión + directorio + portal + catálogo + inventario). Directorio y portal no son v2.
+  - **P-Catálogo:** catálogo completo desde MVP (fabricantes, marcas, modelos, motores, especificaciones, fuentes).
+  - **P-Inventario:** inventario y movimientos de stock en MVP.
+- **Reversión:** D-P1 (mi propuesta de recortar a gestión + catálogo mínimo + admin mínimo) queda DESCARTADA. El alcance es el del PROMPT MAESTRO.
+- **Consecuencia:** F2 ahora incluye el rol de conductor (portal) y el rol público (directorio). La matriz de permisos es más grande.
+- **Docs actualizados:** `SPEC.md` (sección 2), `DECISIONES.md`, `ROADMAP.md`, `SESSION-STATE.md`, `BITACORA.md`, `CHANGELOG.md`.
+
+**Commits:** (pendiente).
+
+## 2026-10-30 — Fase 2: usuarios, roles y permisos
+
+- **Contexto:** se define la matriz completa de permisos, la separación authn/authz, las operaciones auditables y las reglas de negocio por rol.
+- **Roles del MVP:** `admin_general`, `propietario`, `empleado`, `conductor`, `visitante`. `verificador_catalogo` → v2.
+- **Authn:** Supabase Auth para roles con cuenta. **Authz:** RLS + server actions (doble capa).
+- **Matriz de permisos:** 20 entidades × 5 roles × operaciones (V/C/E/D). En `SPEC.md` sección 3.
+- **Reglas clave:**
+  - Conductor ve historial solo si autorizó. Establecimiento no ve historial cross-tenant (R8).
+  - Directorio con coordenadas aproximadas. Exactas solo para autenticados (R10).
+  - Propietario no puede degradarse a sí mismo ni eliminarse.
+  - Admin general no ve datos de negocio.
+- **Operaciones auditables:** 8 (alta/baja empresa, alta/desactivación empleado, edición cliente/vehículo/orden, edición catálogo global, cambios de rol, autorización de historial, publicación en directorio, uso de service_role).
+- **Decisiones:** D-F2-1 a D-F2-5 en `DECISIONES.md`.
+- **Docs actualizados:** `SPEC.md` (sección 3), `ARCHITECTURE.md` (sección Autorización), `DECISIONES.md`, `ROADMAP.md`, `SESSION-STATE.md`, `BITACORA.md`, `CHANGELOG.md`.
+- **No se tocó:** `app/`, `components/`, `lib/`, `supabase/`. El scaffold `web-app` queda intacto hasta F3.
+
+**Commits:** (pendiente).
+
+
+## 2026-10-30 — Fase 3: arquitectura multiempresa
+
+- **Contexto:** se define el modelo multi-tenant, la estrategia RLS, SECURITY DEFINER y las pruebas cruzadas. Es la fase crítica: sin esto, no hay código seguro.
+- **Modelo:** empresa → N establecimientos. 1 usuario = 1 empresa en MVP. Multi-empresa → v2 (tabla usuario_empresa). admin_general y conductor tienen empresa_id = null.
+- **RLS:** por empresa_id en todas las tablas de negocio. Catálogo global: SELECT true, escritura solo admin_general. Directorio: SELECT true con coordenadas aproximadas. Portal: RLS por conductor_id. Administración: empresa/usuario/audit_log con políticas específicas.
+- **SECURITY DEFINER:** una sola función en MVP: crear_empresa_con_establecimiento. search_path fijo, permisos solo authenticated, transacción atómica.
+- **Pruebas cruzadas:** 2 sesiones (empresa A y B), todas las tablas, SELECT/INSERT/UPDATE/DELETE. Documentadas en este archivo antes de cerrar F3.
+- **Diferenciación por rol:** RLS por empresa_id. Roles (empleado vs propietario) se validan en server actions. Excepción: historial_compartido.
+- **Decisiones:** D-F3-1 a D-F3-5 en DECISIONES.md.
+- **Docs actualizados:** ARCHITECTURE.md (sección Multiempresa), DECISIONES.md, ROADMAP.md, SESSION-STATE.md, BITACORA.md, CHANGELOG.md.
+- **No se tocó:** app/, components/, lib/, supabase/. El scaffold web-app queda intacto hasta F5.
+
+**Commits:** 6507ebe (arquitectura), pendiente (cierre F3).
+
+## 2026-10-30 — Fase 4: arquitectura de seguridad
+
+- **Contexto:** se cierra el modelo de amenazas, límites de confianza, rate limiting, auditoría y recuperación. Es la última fase crítica antes de F5.
+- **Modelo de amenazas:** OWASP Top 10 (2021) completo + OWASP ASVS nivel 2 + amenazas del dominio (R7-R14, cada una con control y fase).
+- **Límites de confianza:** frontend no confiable, server actions confiables pero validan todo, Supabase confiable (RLS última línea), service_role solo server-side, terceros con permisos mínimos y rotación.
+- **Rate limiting:** login 5/min IP, registro 3/min IP, recuperación 3/min IP, API 100/min usuario, crear empresa 10/min, invitar empleado 10/min, publicar directorio 20/min. Implementación: middleware + tabla rate_limit.
+- **Auditoría:** tabla audit_log con 9 operaciones auditables, retención 1 año, solo admin_general lee, INSERT vía SECURITY DEFINER o server action con service_role.
+- **Recuperación:** backups diarios Supabase (7 días free), rotación de secretos 90 días, plan de respuesta documentado, notificación de incidentes críticos en 72h (Ley 6534/2020).
+- **Decisiones:** D-F4-1 a D-F4-5 en DECISIONES.md.
+- **Docs actualizados:** ARCHITECTURE.md (sección Seguridad ampliada), DECISIONES.md, ROADMAP.md, SESSION-STATE.md, BITACORA.md, CHANGELOG.md.
+- **No se tocó:** app/, components/, lib/, supabase/.
+
+**Commits:** 9d7b1c2 (arquitectura), pendiente (cierre F4).
+
+## 2026-10-30 — Fase 5a: modelo de datos (gestión)
+
+- **Contexto:** se implementan las migraciones 001-006 de las tablas de gestión. Es la primera fase con código real.
+- **Migraciones:** 001_empresa_establecimiento, 002_usuario, 003_cliente, 004_vehiculo, 005_orden_trabajo, 006_stock_movimiento. Total: ~14 KB de SQL.
+- **Tablas creadas:** empresa, establecimiento, usuario, cliente, vehiculo, vehiculo_identidad, orden_trabajo, orden_servicio, orden_producto, producto_empresa, stock_movimiento.
+- **Triggers y funciones:** set_updated_at, handle_new_user, crear_empresa_con_establecimiento (SECURITY DEFINER), poblar_vehiculo_identidad, actualizar_stock.
+- **Pendiente F5b:** catálogo automotriz (fabricante, marca, modelo, version, motorizacion, especificacion_lubricante, servicio_global, servicio_empresa, producto_global), directorio (establecimiento_publico), portal (conductor, vehiculo_conductor, historial_compartido).
+- **Pendiente F5c:** audit_log, rate_limit, RLS policies (011), seed del catálogo.
+- **No se tocó:** app/, components/, lib/. El scaffold web-app queda intacto hasta F6.
+
+**Commits:** (pendiente).
+
+## 2026-10-30 — Fase 5b: catálogo, directorio y portal
+
+- **Contexto:** se implementan las migraciones 007-008. Con esto el modelo de datos del MVP está completo (falta F5c: audit_log, rate_limit, RLS, seed).
+- **Migraciones:** 007_catalogo.sql (7112 bytes), 008_directorio_portal.sql (5444 bytes). Total F5a+F5b: ~26 KB de SQL.
+- **Catálogo:** fabricante → marca → modelo → version → motorizacion → especificacion_lubricante (con fuente, fecha, estado de validación). servicio_global, servicio_empresa, producto_global. FKs pendientes de orden_servicio/orden_producto agregadas.
+- **Directorio:** establecimiento_publico con coordenadas aproximadas (lat/lng 5 decimales, barrio, ciudad, departamento), servicios_ofrecidos, horarios.
+- **Portal:** conductor (cuenta propia), vehiculo_conductor, historial_compartido (con autorizado boolean).
+- **Trigger nuevo:** handle_new_conductor (crea conductor si el usuario se registra como tal).
+- **Pendiente F5c:** audit_log, rate_limit, RLS policies (011), seed del catálogo.
+- **No se tocó:** app/, components/, lib/.
+
+**Commits:** (pendiente).
+
+## 2026-10-30 — Fase 5c: RLS, audit_log, rate_limit y seed (F5 completa)
+
+- **Contexto:** se cierran las últimas 3 migraciones de F5. Con esto el modelo de datos del MVP está completo.
+- **Migraciones:** 009_audit_log_rate_limit, 010_rls_policies, 011_seed_catalogo. Total F5: 11 migraciones, ~49 KB de SQL.
+- **RLS:** habilitado en todas las tablas. 2 helpers (current_empresa_id, is_admin_general). Políticas por tabla y operación, siguiendo el modelo de F3.
+- **audit_log:** 9 operaciones auditables, retención 1 año, solo admin_general lee.
+- **rate_limit:** check_rate_limit(clave, max, ventana) SECURITY DEFINER. cleanup_rate_limit() para limpieza.
+- **Seed:** 15 fabricantes, 5 marcas, 3 modelos, 10 servicios globales, 8 productos globales. Marcas [PENDIENTE] hasta F6. Especificaciones de lubricantes vacías (no inventar).
+- **F5 completa:** modelo de datos del MVP cerrado. Listo para F6 (catálogo automotriz) y F7 (stack).
+- **No se tocó:** app/, components/, lib/.
+
+**Commits:** (pendiente).
+
+## 2026-10-30 — Fase 6a: catálogo automotriz (fuentes y validación)
+
+- **Contexto:** se define el proceso de llenado y validación del catálogo. No es código: es la política de fuentes y el proceso de verificación.
+- **Fuentes:** niveles 1-3 aceptables (manual del fabricante, fabricante del lubricante, bases técnicas). Nivel 4 (foros) no aceptable.
+- **Validación:** admin_general verifica en MVP. pendiente → verificado o disputado. Contradicción → disputado. Revisión anual.
+- **Alcance inicial:** 10 fabricantes comunes en Paraguay, 2-3 modelos cada uno, solo especificaciones de aceite de motor. Ampliación en v2.
+- **Carga:** manual por admin en MVP. CSV en v2. Versionado por fila nueva. Auditoría en audit_log.
+- **Pendiente F6b:** carga inicial del catálogo con datos verificados. Requiere que el piloto o el admin verifiquen las fuentes antes de cargar.
+
+**Commits:** (pendiente).
+
+## 2026-10-30 — Fase 7: stack tecnológico (justificación)
+
+- **Contexto:** se justifica cada elección del stack y se definen los servicios externos que faltaban: correo, mapas, analítica, CI/CD.
+- **Stack core:** Next.js 16 + React 19 + TypeScript + Tailwind 4 + Supabase + Zod + Vitest + Vercel. Justificación en ARCHITECTURE.md.
+- **Correo:** Resend (free tier 100/día, 3000/mes). Emails: confirmación, recuperación, invitación. v2: notificación de mantenimiento.
+- **Mapas:** Leaflet + OpenStreetMap en MVP (gratis). Mapbox en v2 si el directorio crece.
+- **Analítica:** Vercel Analytics + Sentry free tier. CI/CD: GitHub Actions.
+- **Variables de entorno:** 6 definidas (Supabase URL + anon + service_role, Resend, Sentry, app URL).
+- **Decisiones:** D-F7-1 a D-F7-4 en DECISIONES.md.
+
+**Commits:** (pendiente).
+
+## 2026-10-30 — Fase 8: costes y sostenibilidad
+
+- **Contexto:** se define la política de costes. Todo free tier, sin pagar nada hasta que el proyecto lo justifique.
+- **Free tiers:** Vercel Hobby, Supabase Free, Resend Free, Sentry Free, Leaflet + OSM, GitHub Free. Único costo real: dominio `.com.py` (~$2/mes).
+- **Escenarios:** 1 (prueba) $0/mes, 2 (primeros establecimientos) $0/mes, 3 (crecimiento moderado) ~$65/mes si se supera free tier, 4 (crecimiento importante) ~$1200/mes.
+- **Regla de oro:** no se paga nada hasta que el proyecto lo justifique con uso real o ingresos. Monitoreo mensual de límites. No pagar por adelantado.
+- **Decisiones:** D-F8-1 a D-F8-3 en DECISIONES.md.
+
+**Commits:** (pendiente).
+
+## 2026-10-30 — Fase 9: privacidad y protección de datos
+
+- **Contexto:** se define el cumplimiento de la Ley 6534/2020 de Paraguay.
+- **Datos recopilados:** email, nombre, teléfono, patente, VIN (interno), km_actual, IP/user_agent (audit_log), coordenadas aproximadas. Nada más.
+- **Retención:** mientras cuenta/vehículo activo. audit_log 1 año. Eliminación: soft delete + anonimización en 30 días.
+- **Derechos:** acceso, rectificación, eliminación, oposición, portabilidad (v2).
+- **Consentimiento:** registro (términos + privacidad), conductor (historial compartido). Sin cookies de tracking.
+- **Incidentes:** notificación a afectados en 72h (Ley 6534/2020).
+- **Decisiones:** D-F9-1 a D-F9-4 en DECISIONES.md.
+
+**Commits:** (pendiente).
+
+## 2026-10-30 — Fase 10: directorio y geolocalización
+
+- **Contexto:** se implementa la búsqueda por distancia y el mapa del directorio. Primera fase con código de frontend.
+- **Migración 012:** earthdistance + cube. Función buscar_establecimientos (SECURITY DEFINER), publicar_establecimiento (SECURITY DEFINER).
+- **Frontend:** lib/schemas/directorioSchema.ts, lib/directorio-actions.ts, components/directorio/MapaDirectorio.tsx (Leaflet + OSM), app/(directorio)/page.tsx.
+- **Dependencia nueva:** leaflet (npm install leaflet + @types/leaflet).
+- **Protección:** coordenadas aproximadas (R10), rate limiting (F4), no email, solo teléfono, paginación.
+- **Decisiones:** D-F10-1 a D-F10-6 en DECISIONES.md.
+
+**Commits:** (pendiente).
+## 2026-10-30 — Fase 11: notificaciones (docs)
+
+**Docs:**
+- `ARCHITECTURE.md` §Notificaciones (alcance F11a: stub + mocks, tabla `notificacion_log`, server actions, cron solo diseño, idempotencia, rate limiting, reintentos, trazabilidad, RLS, criterios de aceptación).
+- `DECISIONES.md` D-F11-1 a D-F11-5 (PROPUESTA).
+- `F11-PLAN.md` (alcance aprobado, qué incluye, qué no, orden de implementación).
+- `ROADMAP.md` actualizado (F11 en progreso con docs 5a-5b).
+- `SESSION-STATE.md` actualizado (D-F11-* como PROPUESTA, próximos 3 pasos).
+
+**Decisiones:** D-F11-1 a D-F11-5 (PROPUESTA, se aprueban al cerrar F11).
+
+**Commits:** 14ca03b, d53b5b3, fdd5ef6.
+
+**Pendiente:** código de F11 (migración 013, lib/email/, notificaciones-actions, tests), `next build` verde, cierre de F11.
+## 2026-10-30 - Cierre de F11: notificaciones (stub + mocks)
+
+**Codigo (F11a):**
+- supabase/migrations/013_notificaciones.sql: tabla notificacion_log, indices, RLS (SELECT por empresa, escritura solo service_role).
+- lib/email/resend.ts: cliente con fallback mock (sin dependencia resend, fetch nativo).
+- lib/email/templates/: recordatorio-mantenimiento, bienvenida, historial-compartido.
+- lib/supabase/admin.ts: createAdminClient() + hasAdminClient().
+- lib/schemas/notificacionesSchema.ts: 3 schemas Zod.
+- lib/notificaciones-actions.ts: 3 server actions con idempotencia + rate limit + persistencia opcional.
+
+**Verificacion:** vitest 28/28, tsc --noEmit 0 errores, next build verde.
+
+**Decisiones:** D-F11-1..5 APROBADAS.
+
+**Commits:** 14ca03b, d53b5b3, fdd5ef6, 47273b7, 5ec82aa, c8f233a, 1c692dc, 0ec2b85.
+
+**Deuda:** empresa_id: null (TODO F12), SUPABASE_SERVICE_ROLE_KEY y RESEND_API_KEY sin configurar, tipos Supabase sin regenerar, reintentos y cron disenados no implementados.
+
+## 2026-10-30 - Cierre de F12: modelo comercial
+
+**Docs:**
+- F12-PLAN.md (alcance, decisiones D-F12-1..5, criterios de aceptacion).
+- BUSINESS-LOGIC.md �Modelo comercial (planes, limites, premium, estrategia, suscripciones).
+- DECISIONES.md D-F12-1..5 (PROPUESTA).
+- ROADMAP.md F12 EN PROGRESO.
+- SESSION-STATE.md actualizado.
+
+**Decisiones:** D-F12-1..5 (APROBADAS).
+
+**Commits:** d64e534, 5dcdaec, f5a1311, 60a0815.
+
+**Pendiente:** cierre de F12 (aprobacion D-F12, CHANGELOG, commit final).
+
+## 2026-10-30 - Cierre de F13: operacion y continuidad
+
+**Docs:**
+- F13-PLAN.md (alcance, decisiones D-F13-1..5, criterios).
+- MANTENIMIENTO.md completo en docs/proyecto/ (runbook: entornos, despliegues, backups, monitorizacion, incidentes S1/S2/S3, continuidad, accesos).
+- docs/ciclo-de-vida/MANTENIMIENTO.md -> stub que apunta al nuevo.
+- DECISIONES.md D-F13-1..5 (PROPUESTA).
+- ARCHITECTURE.md §Operacion (F13 - 2026-10-30), insertada entre Migraciones SQL y Flujos principales.
+- ROADMAP.md F13 EN PROGRESO + deuda de docs saneada (BUSINESS-LOGIC marcado resuelto en F12, MANTENIMIENTO marcado resuelto en F13).
+- SESSION-STATE.md actualizado a F13.
+- CHANGELOG.md pendiente.
+
+**Decisiones:** D-F13-1..5 (PROPUESTA, aprobar al cierre).
+
+**Extra:** fix de encoding en SESSION-STATE, BITACORA y CHANGELOG (doble codificacion cp1252 -> utf8, mojibake A-tilde eliminado, em-dash preservados).
+
+**Commits:** 4878559 (plan, decisiones, runbook) + pendientes de esta sesion.
+
+**Cierre:** D-F13-1..5 APROBADAS (2026-10-30, por delegacion). ROADMAP COMPLETADA. Commit de cierre: 3684ff2. Saneamiento de estado aplicado al arrancar F14.
+## 2026-10-30 - F14 arranque: plan de implementacion + saneamiento F13
+
+**Saneamiento F13 (por delegacion, al arrancar F14):**
+- D-F13-1..5 aprobadas (PROPUESTA -> APROBADA).
+- SESSION-STATE, CHANGELOG, BITACORA: F13 a COMPLETADA (ROADMAP ya lo estaba desde 3684ff2).
+- Sin cambios de codigo.
+
+**F14 (en progreso):**
+- F14-PLAN.md (alcance, D-F14-1..5, criterios de aceptacion).
+- IMPLEMENTATION-PLAN.md (etapas, modulos, dependencias, prioridades, entregables, gate de seguridad).
+- STATUS.md reescrito (tablero macro de modulos).
+- ROADMAP.md F14 EN PROGRESO.
+
+**Decisiones:** D-F14-1..5 (PROPUESTA, aprobar al cierre de F14).
+
+**Commits:** (pendiente).
+
+## 2026-10-30 - E1 Fundamentos (wip)
+
+**Código:**
+- Auth completo: login, register, resetPassword, logout, tildes corregidas (lib/auth-actions.ts).
+- Rate limiting: lib/rate-limit.ts (helper con check_rate_limit de F5c) + integrado en login (5/min), register (3/min), resetPassword (3/min).
+- Multiempresa: lib/empresa-actions.ts (crearEmpresa via crear_empresa_con_establecimiento).
+- Audit hooks: lib/audit.ts (auditLog helper con service_role, no-op sin key).
+- Cableado empresa_id en notificaciones-actions.ts (enviarRecordatorioMantenimiento, enviarHistorialCompartido). enviarBienvenida deja null (se llama antes de tener empresa).
+- Layout: metadata KuatiAuto, route group (dashboard).
+- .env.example: NEXT_PUBLIC_APP_URL, SENTRY_DSN, RATE_LIMIT_FAIL_MODE.
+- .gitignore: *.bak, *.bak-template, docs/_dump-continuacion.txt.
+
+**Verificación:**
+- tsc --noEmit: 0 errores.
+- npm run test: 28/28.
+- Encoding: 0 mojibake, 0 BOM en archivos nuevos.
+
+**Pendiente (deuda E1, a E2):**
+- Tests de rate-limit y empresa-actions (mock pesado, sin Supabase real).
+- Prueba cruzada A/B (requiere Supabase real, keys al final).
+- Gate de seguridad de 10 puntos: parcial (1-7 ok, 8-10 pendientes).
+
+**Commits:** (pendiente).
+## 2026-10-31 - E2a: Gestion core (clientes + vehiculos backend)
+
+**Codigo:**
+- lib/schemas/clienteSchema.ts + clienteSchema.test.ts (12 tests).
+- lib/clientes-actions.ts + clientes-actions.test.ts (10 tests): listar, crear, editar, soft-delete.
+- lib/schemas/vehiculoSchema.ts + vehiculoSchema.test.ts (12 tests).
+- lib/vehiculos-actions.ts + vehiculos-actions.test.ts (11 tests): listar por cliente, crear, editar, soft-delete.
+- supabase/migrations/014_cliente_activo.sql: soft-delete en cliente.
+- supabase/migrations/015_vehiculo_activo.sql: soft-delete en vehiculo.
+- components/ClienteForm.tsx reescrito (objeto plano, no FormData).
+- app/(dashboard)/clientes/page.tsx, nuevo/page.tsx, [id]/page.tsx reescritos.
+- app/page.tsx: home real KuatiAuto (reemplaza blueprint).
+- app/(directorio)/page.tsx -> app/directorio/page.tsx (resuelve colision de rutas /).
+- .gitignore: docs/_*.txt.
+
+**Verificacion:**
+- tsc --noEmit: 0 errores.
+- vitest: 71/73 (2 tests desactualizados por cambio de schema: km_actual optional, ClienteForm props nuevas).
+- App funcional end-to-end: login, directorio, CRUD clientes.
+
+**Decisiones por delegacion (2026-10-31):**
+- D-E2-1: soft-delete en cliente y vehiculo (campo activo). Ordenes no se borran, se anulan.
+- D-E2-2: proximo mantenimiento = fecha_orden + intervalo_km. Calculo en server action, no en BD.
+- D-E2-3: invitacion empleado = token en usuario + email con link. Sin tabla nueva.
+- D-E2-4: subdivision E2a (clientes+vehiculos) -> E2b (ordenes+empleados) desde el inicio.
+- D-E2-5: tests de E1 diferidos se escriben al final de E2a.
+
+**Lecciones:**
+- Zod v4: z.string().uuid() exige UUID v4 estricto (bloque 3 empieza con 4, bloque 4 con 8/9/a/b). Fixtures deben usar UUIDs v4 reales.
+- vi.mock se hoistea: usar vi.hoisted() para mocks compartidos.
+- Mock chainable de Supabase: agregar .then al chainable para que await sobre .eq() funcione.
+- PowerShell 5.x: -LiteralPath para paths con [id]; un comando por mensaje; no pegar PS> ni >>.
+
+**Deuda pendiente:**
+- vehiculoSchema.test.ts: 1 test espera km_actual: 0, ahora es optional.
+- ClienteForm.test.tsx: test escrito para componente viejo (FormData), reescribir.
+- UI vehiculos: 3 paginas + VehiculoForm.tsx.
+- Layout dashboard con navegacion (sidebar o menu).
+- Links de clientes apuntan a /dashboard/clientes pero ruta real es /clientes.
+- Fix encoding BITACORA aplicado en este commit.
+
+**Commits:** 4fa3185 (plan), 41fede8 (clientes backend), fd1d1cf (vehiculos backend), 7316326 (UI clientes), 62e3962 (fix rutas).
+## Deuda técnica pendiente
+
+- Renombrar `clientes` a `establecimientos` en el scaffold (F3).
+- Decidir estructura final de `app/` con route groups (F3).
+- Verificar `@kuatiauto` en redes y DINAPI.
+- Registrar `kuatiauto.com.py` cuando el piloto lo justifique.
+- Definir contenido exacto del seed del catálogo global (~20-30 servicios/productos) (F6).
+## 2026-10-31 — E2a-bis: Supabase real + piloto end-to-end
+
+**Contexto:** sesión larga de conexión real. Se sale del modo mock y se valida el flujo completo contra PostgreSQL real.
+
+**Supabase:**
+- Proyecto `kuatiauto` (`wzfukuzcousihslfgelr`, us-east-1, free tier).
+- CLI `2.122.0` instalada como devDependency (`supabase`).
+- Login con PAT, link al project-ref.
+- 15 migraciones aplicadas en orden (001–015) sin errores.
+- Migración scaffold `001_clientes.sql` del blueprint web-app movida a `_cuarentena/` (crea tabla `clientes` plural, RLS por user_id — no pertenece a KuatiAuto).
+- `lib/supabase/types.ts` generado (83 KB, 27 tablas, 12 funciones).
+
+**Tipos cableados:**
+- `@supabase/ssr` de `0.5.2` a `0.12.7` — resuelve el bug de `never` en queries (por `__InternalSupabase.PostgrestVersion: "14.18"`).
+- `<Database>` cableado en `server.ts` y `client.ts`.
+- 23 errores de `never` resueltos al actualizar `@supabase/ssr`. Quedaron 6 de `null` → `undefined` en params RPC (`directorio-actions.ts`, `empresa-actions.ts`), resueltos con reemplazo quirúrgico.
+
+**Flujo piloto validado end-to-end:**
+- Luis María Delvalle Ramírez (`importjapanencar@gmail.com`) creado desde Supabase Dashboard (auto-confirm, sin email — el SMTP de Supabase free no manda a emails fuera del equipo).
+- `rol='propietario'`, `nombre` corregido por SQL, `empresa_id` seteado al crear empresa.
+- Empresa `Import Japan - Autorepuestos` (`adbcd23e-f296-435c-b835-e9ce837a9d95`) creada vía `crear_empresa_con_establecimiento` (SECURITY DEFINER) desde `/crear-empresa`.
+- Cliente `María José Bitar Balletbo` creado vía `crearCliente`, persistido con `empresa_id` correcto.
+- `audit_log` registra `crear/empresa` (14:07) y `crear/cliente` (14:19).
+
+**CEO:**
+- Pedro José Pirovani (`pirovanipedrojose@gmail.com`) como `admin_general`, `empresa_id=null`. Panel de admin real: Supabase Dashboard (UI `/admin` es E5).
+
+**Reorganización de repos:**
+- Studio (`studio-pjpirovani-soft`) limpiado: scripts/, blueprints/, .github/workflows/ retirados. Queda como "documentación + clients". Commit `53ebf93`.
+- KuatiAuto movido a `C:\Users\Admin\proyectos\kuatiauto` (fuera del studio). Commit `4adf7aa..6a4d365` pusheado.
+- ENC-Logística movida a `C:\Users\Admin\proyectos\enc-logistica`. Sin cambios (ya sincronizado en `0319683`).
+
+**Fixes UI:**
+- `/crear-empresa` (form + page) creado. Sin esto, Luis no podía crear empresa.
+- `app/(dashboard)/page.tsx` reescrito (sin mojibake, condicional: crear empresa vs gestionar clientes).
+- `app/(dashboard)/dashboard/page.tsx` → redirect a `/`.
+- Links `/dashboard/clientes` → `/clientes` en 6 archivos (deuda de E2a documentada).
+
+**E2a-bis cerrado:**
+- `vehiculoSchema.test.ts`: test `default km_actual a 0` reemplazado por 2 tests (optional + 0 explícito). 13/13 verdes.
+- `empresa-actions.ts` reformateado (era 1 línea, ahora legible). Sin mojibake (`Datos inv�lidos` → `Datos inválidos`).
+- `ClienteForm.test.tsx` reescrito contra interfaz nueva (action plano, no FormData). 5/5 verdes.
+- `rate-limit.test.ts` (nuevo): 8 tests (`buildClave` + `checkRateLimit` con fail-open). 8/8 verdes.
+- `empresa-actions.test.ts` (nuevo): 5 tests (`crearEmpresa`: validación Zod, sin sesión, RPC OK, RPC falla). 5/5 verdes.
+
+**Verificación:**
+- `npx vitest run`: **89/89** tests verdes (11 archivos).
+- `npx tsc --noEmit`: **0 errores**.
+- Encoding: 0 BOM, 0 mojibake en archivos nuevos.
+
+**Deuda pendiente (E1 gate):** prueba cruzada A/B contra Supabase real (8-10 del gate).
+**Deuda pendiente (E2a):** `empresa_id: null` en `notificaciones-actions.ts` (dejar para cuando se toque notificaciones), trigger `handle_new_user` (mejorar en E2b), `/` vs `/dashboard` (E2b1).
+
+**Commits:** `93c3f9a` (CLI + cuarentena), `6a4d365` (Supabase real + flujo piloto), `[pendiente]` (E2a-bis).
+
+**Lecciones:**
+- El SMTP de Supabase free solo manda a emails del equipo. Sin Resend, los signups externos fallan. Workaround: crear usuarios desde Dashboard con "Auto Confirm User".
+- `@supabase/ssr@0.5.2` + `supabase-js` moderno → `never` en queries. Actualizar a `0.12.7`.
+- PowerShell: `Resolve-Path` falla con `[id]` (wildcards). Usar `Join-Path (Get-Location) $path` + `[System.IO.File]::ReadAllText($full)`.
+- Nunca pegar output de comandos en la consola. Nunca pegar TS en la consola.
+
+## Cierre E2b1 — 2026-10-31
+
+**Cerrado:**
+- `listarVehiculosEmpresa()` agregada a `lib/vehiculos-actions.ts` (lista global, filtro por empresa).
+- `app/(dashboard)/layout.tsx`: sidebar con Panel, Clientes, Vehículos, Directorio (externo) y Logout. Auth check server-side.
+- `components/VehiculoForm.tsx`: client component crear/editar con discriminated union (`modo`).
+- `/vehiculos` (lista), `/vehiculos/nuevo` (crear), `/vehiculos/[id]` (editar).
+- Panel logueado movido a `(dashboard)/dashboard/page.tsx`. `(dashboard)/page.tsx` borrado (colisión con landing `app/page.tsx`).
+- Tests de `listarVehiculosEmpresa()`: 3 casos (sin auth, sin empresa, ok). Suite 89 → 92.
+- Registro manda `nombre` en `signUp` → `raw_user_meta_data.nombre`. Trigger `handle_new_user` ya lo leía con `coalesce`, no requirió migración SQL.
+
+**Verificación:**
+- `npx tsc --noEmit`: 0 errores.
+- `npm run build`: OK (11 rutas, incluye las 3 nuevas).
+- `npx vitest run`: **92/92** tests verdes (11 archivos).
+- Encoding: 0 BOM, 0 mojibake en archivos nuevos y modificados.
+
+**Deuda pendiente:**
+- E1 gate 7/10: prueba cruzada A/B contra Supabase real, 2FA del propietario.
+- E2a: `empresa_id: null` en `notificaciones-actions.ts` (diferida a E5).
+- Sin tests para los cambios de `auth-actions.ts` (register con nombre) — cobertura por integración manual en el próximo registro real.
+- `VehiculoForm initialData` compila por structural typing; si crece el schema, ajustar tipo `VehiculoData`.
+
+**Commits:** `6143d08` (feat E2b1), `cbc6af3` (docs E2b1), pendientes al cierre: fix registro + docs cierre completa.
+
+**Lecciones:**
+- PowerShell 5.x: `npm test 2>&1` mató el pipeline con `NativeCommandError`. Solución: `cmd /c "npm test > file 2>&1"`.
+- `Set-Clipboard` puede fallar silenciosamente por bloqueo del portapapeles. Preferir `Write-Host` del output directo.
+- Heredocs `@"..."@` en PowerShell son frágiles con paste. Preferir `$lines = @(...) -join "`r`n"` + `WriteAllText`.
+- Nunca pegar TS/output en la consola. Se perdió ~40 min en esta sesión por eso.
+- La deuda del trigger `handle_new_user` era realmente del form de registro (no del SQL). Diagnosticar antes de migrar.
+- `.next/` cachea types generados. Si `tsc` falla en `.next/dev/types/validator.ts`, borrar `.next` y reintentar.
+## Cierre E2b2 sesión 2 — 2026-10-31
+
+**Cerrado:**
+- `/ordenes` (lista global por empresa, badge de estado, importe, observaciones trunc).
+- `/ordenes/nuevo` (form de creación, precarga de vehículo vía `?vehiculo_id=`).
+- `/ordenes/[id]` (form de edición + acciones: completar / anular con motivo / eliminar borrador).
+- `components/OrdenLineas.tsx` (servicios y productos, respeta schema real).
+- `components/OrdenForm.tsx` (cabecera + líneas, discriminated union `crear | editar`).
+- `components/NuevaOrdenClient.tsx` y `components/EditarOrdenClient.tsx` (wrappers cliente que importan server actions).
+- `app/(dashboard)/layout.tsx`: link "Órdenes" en sidebar.
+- `app/(dashboard)/vehiculos/[id]/page.tsx`: botón "Nueva orden para este vehículo".
+
+**Verificación:**
+- `npx tsc --noEmit`: 0 errores.
+- `npm run build`: OK (15 rutas, incluye `/ordenes`, `/ordenes/nuevo`, `/ordenes/[id]`).
+- `npx vitest run`: 133/133 verdes (13 archivos).
+- Encoding: 0 BOM, 0 mojibake en 9 archivos (verificado por bytes + codepoints, no por `Get-Content`).
+
+**Deuda generada:**
+- `editarOrden` y `crearOrden` sin transacción real (delete + insert sin rollback). Mitigado con audit log. Deuda aceptada en backend E2b2 sesión 1.
+- Inmutabilidad de orden `completada` no bloqueada en backend (solo UI).
+- Catálogo global/empresa vacío: seed pendiente E3.
+- `any` en helper `mapearOpciones` de las páginas de órdenes (deuda menor de tipado).
+
+**Commits:** `64c6b23` (feat E2b2 UI), `[pendiente]` (docs cierre E2b2 sesión 2).
+
+**Lecciones:**
+- **`Get-Content` de PowerShell 5.x en esta máquina miente sobre encoding** (muestra mojibake incluso en archivos UTF-8 limpios). Para verificar encoding: `[System.IO.File]::ReadAllText` + inspección de codepoints, o `ReadAllBytes` y chequeo de BOM. Nunca confiar en `Get-Content` para diagnóstico de encoding.
+- **Drift check obligatorio antes de etapas que tocan tablas existentes.** `producto_empresa` apareció a mitad de planificar E2b2 sesión 1. Detectado por suerte. Protocolo ahora exige `supabase migration list --linked` + `supabase db diff --linked --schema public` al inicio de la etapa.
+- **`supabase db diff` requiere Docker Desktop corriendo.** En esta máquina, `docker desktop start` arranca el daemon y el named pipe `dockerDesktopLinuxPipe` queda disponible. `Get-Service com.docker.service` falla porque es instalación per-user (no registra servicio de Windows). Normal.
+- **`rls_auto_enable` es ruido de Supabase**, no drift real. Es un event trigger que el dashboard instala para habilitar RLS en tablas nuevas. Ignorar en diffs futuros.
+- **Heredocs `@"..."@` de PowerShell expanden `$` y backticks.** Para bloques con `${}` o backticks de TS, usar heredoc de comillas simples `@'...'@` o construir con `$lines = @(...) -join`.
+- **Pastes duplicados** de bloques largos ocurren con frecuencia en esta sesión. Si pasa, `Ctrl+C` para salir del modo continuación, y verificar con `Get-Item Length` que el archivo final quedó correcto. `WriteAllText` es idempotente, no corrompe.
+
+## Cierre E3 — 2026-10-31
+
+**Cerrado: catálogo local CRUD + seed de marcas/modelos.**
+
+- Backend: `lib/schemas/servicioEmpresaSchema.ts`, `lib/schemas/productoEmpresaSchema.ts`, `lib/servicios-empresa-actions.ts`, `lib/productos-empresa-actions.ts` (listar / obtener / crear / editar). **Sin eliminar** (D-E3a-1).
+- Tests: 17 schema + 26 actions = 43 nuevos. Suite 133 → 176.
+- UI: `/catalogo` (índice), `/catalogo/servicios` (lista + nuevo + editar), `/catalogo/productos` (lista + nuevo + editar). Link "Catálogo" en sidebar.
+- Migración `017_seed_marcas_modelos.sql`: 10 marcas faltantes + 70 modelos populares en Paraguay. Total: 15 fabricantes, 15 marcas, 73 modelos.
+
+**Verificación:**
+- `npx tsc --noEmit`: 0 errores.
+- `npm test`: 176/176 verdes (17 archivos).
+- `npm run build`: OK (22 rutas, incluye las 7 nuevas del catálogo).
+- Encoding: 0 BOM, 0 mojibake en 18 archivos.
+- `supabase db push`: 017 aplicada y verificada (15/15 fabricantes con marca, 73 modelos).
+
+**Deuda generada:**
+- Soft-delete de catálogo local: falta migración 018 con columna `activo` + actions `eliminarX`.
+- Catálogo técnico profundo (versiones, motorizaciones, especificaciones): vacío, deuda v2.
+- Productos globales con `marca = [PENDIENTE]`: requiere verificación real, deuda v2.
+- Stock: solo columnas `stock_actual`/`stock_minimo`; UI de movimientos pendiente.
+
+**Commits:** `b399b28` (feat E3), `[pendiente]` (docs cierre E3).
+
+**Lecciones:**
+- La tabla `servicio_empresa` es más simple de lo que el resumen mental asumía: solo `nombre + descripcion`, sin `precio_base` ni `activo`. Leer `types.ts` de las tablas involucradas **antes** de planificar, no confiar en resúmenes.
+- `orden_servicio` y `orden_producto` tienen las columnas FK (`servicio_empresa_id`, etc.) **sin FK declarada** en la migración (comentario en `005_orden_trabajo.sql` dice "se agregan en 005b o 006" pero nunca se agregaron). La DB real sí las tiene (probablemente aplicadas a mano vía dashboard). No bloquea hoy, pero deuda de housekeeping.
+- `supabase db query --linked` es el comando correcto para queries ad-hoc (no `db execute`).
+- Heredocs `@'...'@` de PowerShell insertan LF, no CRLF. Si el archivo destino tiene CRLF, el `.Replace()` falla silenciosamente. Solución: construir strings con `[char]13 + [char]10` o comparar por líneas, no por bloques.
+
+## Prueba cruzada A/B — 2026-10-31
+
+**Gate E1 cruzado cerrado (punto 8-10).**
+
+Setup:
+- Usuario A: `importjapanencar@gmail.com` (Luis, Import Japan). Password: `ImportJapan-2026` (recordada en esta sesión).
+- Usuario B: `test-b-user@example.com` (Taller Prueba B). Creado vía Auth Admin API con `sb_secret_` y `User-Agent: kua­ti­auto-script/1.0` (evita el bloqueo "Forbidden use of secret API key in browser").
+- Empresa B + cliente B: creados vía SQL directo (`supabase db query --file`). IDs documentados en STATUS.md.
+
+Pruebas ejecutadas:
+1. Login A y login B (ventanas separadas) → cada uno ve solo sus propios clientes.
+2. B → URL directa `localhost:3000/clientes/<id-cliente-A>` → "Cliente no encontrado." ✅
+3. A → URL directa `localhost:3000/clientes/<id-cliente-B>` → "Cliente no encontrado." ✅
+
+**Resultado:** RLS aísla correctamente. Gate E1 pasa de 7/10 a 9/10. Falta solo 2FA del propietario para el 10/10.
+
+**Lecciones:**
+- Las nuevas API keys de Supabase (`sb_publishable_`, `sb_secret_`) **no son JWT**. El header `Authorization: Bearer <key>` falla si se usa con ellas en endpoints de Auth. La key va solo en `apikey`. Para REST queries con JWT de usuario, `apikey` = publishable, `Authorization` = JWT del usuario.
+- La `sb_secret_` solo funciona fuera del navegador (User-Agent de script). Desde Chrome DevTools, Supabase la rechaza con "Forbidden use of secret API key in browser". Usar PowerShell/curl con User-Agent custom.
+- La prueba cruzada real se hace en la UI (login A, login B, intentar acceder por URL), no con scripts que peleen con keys. Fue más rápido y confiable.
+- Crear usuarios de prueba: Auth Admin API (`POST /auth/v1/admin/users`) + SQL para vincular a empresa. Reutilizable para futuras pruebas cruzadas.
+- Password de Luis: `ImportJapan-2026`. Guardar en gestor de contraseñas del propietario.
+
+## Cierre E4a — 2026-10-31
+
+**Cerrado: directorio publico + establecimientos publicos. Gate 10/10.**
+
+- Migracion `018_establecimiento_publico.sql`: revoke all on establecimiento_publico from anon + grant select to anon (H-E4a-1).
+- `lib/schemas/establecimientoSchema.ts` + 16 tests.
+- `lib/establecimiento-actions.ts` (listar, obtener, crear, editar, publicarMiEstablecimiento) + 20 tests.
+- `components/EstablecimientoForm.tsx` + `components/PublicarButton.tsx`.
+- `app/(dashboard)/establecimientos/{page,nuevo/page,[id]/page}.tsx`.
+- Link "Establecimientos" en sidebar.
+- `lib/directorio-actions.ts` + `directorioSchema.ts`: rename establecimiento_id -> establecimiento_publico_id.
+- `app/directorio/page.tsx`: `await searchParams` (Next 16).
+
+**Hallazgos:**
+
+| ID | Severidad | Descripcion | Estado |
+|---|---|---|---|
+| H-E4a-1 | Alto | anon con GRANT ALL en establecimiento_publico | Corregido en 018 |
+| H-E4a-2 | Bajo | UI /establecimientos no oculta Nuevo para admin_general | Diferido a E5 |
+| H-E4a-3 | Medio | editarEstablecimiento no creaba fila publica si no existia | Corregido con upsert |
+| H-E4a-4 | Alto | params.id sin await en establecimientos/[id] -> 404 | Corregido |
+| H-E4a-5 | Alto | auditar params/searchParams en todas las paginas | Verificado: 8/8 con await |
+| H-E4a-6 | - | falsa alarma coordenadas con coma | Descartado |
+| H-E4a-7 | Medio | directorio arranca en Asuncion sin selector de ciudad | Diferido a E4b/E5 |
+| H-E4a-8 | Alto | searchParams sin await en /directorio -> defaults silenciosos | Corregido |
+
+**Prueba cruzada A/B (gate punto 9):**
+
+| # | Prueba | Resultado |
+|---|---|---|
+| 1 | A crea/edita establecimiento | OK |
+| 2 | A publica | OK |
+| 3 | B crea, no ve el de A | OK |
+| 4 | B -> URL de A -> 404 | OK |
+| 5 | A -> URL de B -> 404 | OK |
+| 6 | Directorio publico muestra A (publicado) | OK |
+| 7 | Despublicar A -> desaparece | OK |
+
+**Verificacion:** `tsc --noEmit` 0 errores, `npm test` 212/212, `npm run build` OK (25 rutas). Migracion 018 aplicada y verificada contra DB real (anon solo SELECT).
+
+**Lecciones:**
+
+- Next 16: `params` y `searchParams` son Promise. Sin `await`, dan error o defaults silenciosos. Cualquier pagina nueva debe `await params` / `await searchParams`.
+- `upsert` con `onConflict` es la forma correcta de asegurar fila hija cuando no existe. `update` afecta 0 filas y devuelve `ok: true` silenciosamente.
+- Vitest 5: `vi.clearAllMocks()` NO limpia las colas de `mockResolvedValueOnce`. Usar `vi.resetAllMocks()` + re-setear mocks base en `beforeEach`.
+- Supabase por defecto otorga GRANT ALL a `anon` en tablas nuevas. Toda migracion que cree tablas publicas debe revocar explicitamente.
+- El directorio publico necesita coordenadas; si `lat_aproximada` es NULL, la fila no aparece aunque este publicada.
+
+## Cierre E1 — 2026-11-01
+
+**E1 (auth completo + multiempresa + shell + rate limit + audit) cerrada. Gate 10/10.**
+
+- Prueba cruzada A/B completada el 2026-10-31 (aislamiento RLS verificado).
+- Punto 10 del gate: 2FA activada en el gestor de contrasenas del propietario (Bitwarden, 2026-11-01).
+- No hubo cambios de codigo en este cierre: solo se cumplio la accion externa pendiente.
+
+**Estado final E1:** 212/212 tests, tsc 0, build OK (25 rutas). Prueba cruzada A/B 7/7.
+
+## Cierre E3 — 2026-11-01
+
+**E3 (Catálogo global + local) cerrada. Gate 10/10.**
+
+- Prueba cruzada A/B: Empresa A creó "Servicio Test A" y Empresa B "Servicio Test B".
+- Listado en UI: A solo ve su servicio, B no aparece en la lista.
+- Acceso directo por URL (IDOR) a `/catalogo/servicios/<id-de-B>` estando como A: devuelve 404. Aislamiento RLS correcto.
+- Datos de prueba eliminados de la DB tras la validación.
+
+**Estado final E3:** 212/212 tests, tsc 0, build OK. RLS validada en UI y DB.
+
+## Cierre E2b2 — 2026-11-01
+
+**E2b2 (Órdenes de trabajo + UI) cerrada. Gate 10/10.**
+
+- Prueba cruzada A/B: se crearon órdenes de prueba para Empresa A y B.
+- Listado en UI: Luis solo ve la orden de su empresa (Orden Test A).
+- Acceso directo por URL (IDOR) a la orden de B: devuelve 404.
+- Datos de prueba eliminados tras la validación.
+
+**Deudas aceptadas (no bloquean el gate):**
+- `editarOrden` y `crearOrden` sin transacción SQL real (delete + insert). Mitigado con audit_log. Se migrará a RPC en futura sesión si hay bug.
+- Inmutabilidad de orden `completada` bloqueada solo en UI, no en backend.
+
+**Estado final E2b2:** 212/212 tests, tsc 0, build OK (25 rutas).
+
+## E4b (wip) — 2026-11-01
+
+**Portal del conductor: backend + UI creados. Pendiente prueba cruzada por caida de Supabase (502).**
+
+- Migracion `019_historial_compartido_consentimiento.sql`: autorizado default false + 3 funciones SECURITY DEFINER (proponer, aceptar, revocar).
+- Backend: `lib/conductor-actions.ts` + `conductorSchema.ts`.
+- UI: `(portal)/layout.tsx` + `/mi-garage`, `/mi-garage/vehiculos`, `/mi-garage/historial`, `register-conductor`.
+- Componentes: `VehiculoConductorForm`, `ProponerHistorialForm`.
+- Fix: login redirige a `/mi-garage` si el usuario es conductor (antes caia en `/clientes`).
+
+**Lecciones:**
+- Supabase API keys nuevas (`sb_secret_`) van solo en `apikey`, sin `Authorization: Bearer`.
+- Crear usuarios con contraseña por Auth Admin API (`/auth/v1/admin/users`). SQL directo no hashea bien.
+- Supabase free tier puede dar 502 temporal. Reintentar.
+
+## Cierre E4b — 2026-11-01
+
+**Portal del conductor cerrado. Gate 10/10.**
+
+- **Integracion UI cerrada en esta sesion:**
+  - `ProponerHistorialForm` importado y renderizado en `/vehiculos/[id]` (empresa propone historial al conductor).
+  - `HistorialAccionesClient` (nuevo componente) con botones Aceptar/Revocar, integrado en `/mi-garage/historial`.
+- **Fix de paso:** el `href` de `/ordenes/nuevo?vehiculo_id=` en `/vehiculos/[id]` habia perdido el `{vehiculo.id}` en E2b2. Corregido.
+- **Bug de escritura resuelto durante la sesion:** `Set-Content`/`WriteAllLines` con strings de comillas simples en un array multilinea puede perder la **primera** comilla simple del archivo (caso real: `'use client';` se escribio como `use client`;). Workaround: detectar con `.StartsWith('use client')` y reparar con `[char]39`.
+
+**Prueba cruzada A/B (2026-11-01, DB real):**
+
+| # | Paso | Resultado |
+|---|---|---|
+| 1 | Login conductor2 -> redirige a /mi-garage (no /clientes) | OK |
+| 2 | `/mi-garage/vehiculos` muestra Fiat Uno (2015) TEST-CON2 | OK |
+| 3 | `/mi-garage/historial` muestra 'Ningun taller ha solicitado acceso' (vacio) | OK |
+| 4 | Luis propone via `ProponerHistorialForm` -> token generado | OK |
+| 5 | DB: fila en `historial_compartido` con `autorizado=false` | OK |
+| 6 | Conductor2 recarga -> ve 'Pendiente de autorizacion' + boton 'Aceptar' | OK |
+| 7 | Conductor2 Aceptar -> estado 'Autorizado' + boton 'Revocar'; DB `autorizado=true` | OK |
+| 8 | Conductor2 Revocar -> vuelve a 'Pendiente'; DB `autorizado=false` | OK |
+
+**Hallazgos:**
+
+| ID | Severidad | Descripcion | Estado |
+|---|---|---|---|
+| H-E4b-1 | Bajo (UX) | Form de login deja el boton sin feedback ~3s durante server action | Diferido a E5 |
+| H-E4b-2 | Medio (cosmetico) | `/mi-garage/historial` muestra 'Taller' y 'Vehiculo:' vacios. Causa: RLS bloquea join anidado `empresa:empresa_id(nombre)` en PostgREST (conductor no pertenece a empresa). Datos criticos (autorizado, token) OK. Fix: migracion 020 con denormalizacion o RPC `listar_historial_compartido()` SECURITY DEFINER | A sesion corta posterior |
+| D-E4b-1 | Deuda UX | Precargar email del cliente dueño en `ProponerHistorialForm` si existe | E5/v2 |
+
+**Verificacion:** 212/212 tests, tsc 0, build OK (25 rutas). Encoding limpio.
+
+**Lecciones:**
+
+- **RLS en joins anidados de PostgREST falla silenciosamente:** si el usuario autenticado no puede SELECT en la tabla relacionada, el join devuelve `null` sin error. No es un bug de PostgREST, es RLS haciendo su trabajo. Los datos que el usuario necesita ver deben estar denormalizados en la tabla puente o accederse via SECURITY DEFINER.
+- **`supabase db query --linked` con UNION ALL funciona** para chequear dos tablas en una query (usado para verificar `conductor` + `usuario` en un solo paso).
+- **`[System.IO.File]::ReadAllBytes(C:\Users\Admin\proyectos\kuatiauto\docs\proyecto\BITACORA.md)[0..2]` es el chequeo de BOM mas confiable** en PS 5.x (`Get-Content` miente sobre encoding, como ya documentado en E2b2).
+- **`[char]39`** es la forma segura de meter una comilla simple en strings de PowerShell sin pelear con el parser.
+
+## Fix H-E4b-2 — 2026-11-01
+
+**Fix del display vacio de taller/vehiculo en /mi-garage/historial.**
+
+**Causa:** el select() con joins anidados (empresa:empresa_id(nombre), vehiculo:vehiculo_empresa_id(marca, modelo)) devolvia null silenciosamente. PostgREST aplica RLS del usuario actual a los joins anidados, y el conductor no pertenece a la empresa, asi que las policies de empresa y vehiculo bloquean la lectura sin tirar error.
+
+**Fix:**
+
+- Migracion 020_listar_historial_compartido.sql: RPC SECURITY DEFINER con search_path controlado. Solo devuelve los campos necesarios (nombre_empresa, vehiculo_marca, vehiculo_modelo, vehiculo_anio, vehiculo_patente). GRANT EXECUTE solo a authenticated, revoke de public.
+- lib/conductor-actions.ts: listarHistorialCompartido() usa la RPC en lugar de joins anidados.
+- app/(portal)/mi-garage/historial/page.tsx: campos cambiados a nombre_empresa, vehiculo_marca, vehiculo_modelo.
+- lib/supabase/types.ts: regenerado (incluye la funcion nueva). En PS 5.x, supabase gen types produce UTF-16 LE con BOM al redirigir; re-guardado a UTF-8 sin BOM con WriteAllText.
+
+**Verificacion:**
+
+- Funcion creada con security_type = DEFINER (query a information_schema.routines).
+- UI: /mi-garage/historial muestra 'Import Japan - Autorepuestos' y 'Vehículo: Toyota Ractis' correctamente.
+- Flujo aceptar -> revocar sigue funcionando tras el cambio a RPC.
+- 212/212 tests, tsc 0, build OK (25 rutas).
+
+**Lecciones:**
+
+- RLS bloquea joins anidados en PostgREST silenciosamente. Si necesitas datos de tablas donde el usuario autenticado no tiene SELECT, la solucion es SECURITY DEFINER con search_path controlado (no desactivar RLS).
+- Set-Content / WriteAllLines con strings de comillas simples en array multilinea puede perder la PRIMERA comilla simple del archivo. Patron para reescribir archivos: WriteAllText con heredoc simple (comillas simples).
+- supabase gen types > file en PS 5.x produce UTF-16 LE con BOM. Re-guardar con ReadAllText + WriteAllText + UTF8Encoding(false) para normalizar.
+- List.Add con backticks dobles () los comen: en PS el backtick es escape, asi que doble backtick = un backtick literal. Para CHANGELOG/BITACORA con code inline, mejor evitar backticks o usar [char]96.
+
+
+## Cierre E5a — 2026-11-02
+
+**Notificaciones reales cableadas y verificadas contra Resend.**
+
+- enviarBienvenida cableada en crearEmpresa (fire-and-forget).
+- enviarHistorialCompartido cableada en revocarHistorial (fire-and-forget).
+- enviarRecordatorioMantenimiento cableada en completarOrden (fire-and-forget).
+- RESEND_API_KEY configurada en .env.local. Envio de prueba a pirovanipedrojose@gmail.com: OK (id real de Resend, mock=false).
+- tsx agregado como devDependency para scripts sueltos.
+
+**Deudas:**
+
+- RESEND_FROM usa onboarding@resend.dev (solo permite enviar al email de la cuenta Resend). Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
+- Vercel no configurado; cuando se deploye, replicar RESEND_API_KEY y RESEND_FROM en env vars del proyecto.
+- Cron de recordatorios automaticos no implementado (solo envio manual al completar orden).
+
+**Verificacion:** 212/212 tests, tsc 0, build OK (25 rutas). Envio real OK (mock=false).
+
+**Lecciones:**
+
+- PS 5.x: comandos con ReadAllText + regex anidados rompen el parser; usar variables intermedias.
+- Add-Content -Encoding UTF8 en PS 5.x no agrega BOM; WriteAllText con UTF8Encoding(false) es mas confiable.
+- tsx como devDependency: util para scripts sueltos (envio directo contra API).
+- process.exit en tsx/Windows genera Assertion failed al cerrar, pero el proceso termino OK.
+
+## Cierre E5b (wip) — 2026-11-02
+
+**Panel admin: dashboard funcional. Wip, faltan listas de entidades.**
+
+- lib/auth-actions.ts: redirect post-login. Orden: admin_general -> /admin, conductor -> /mi-garage, sin empresa -> /crear-empresa, con empresa -> /clientes. Fix adicional: usuarios sin empresa ahora van a /crear-empresa (antes caian en /clientes).
+- app/(admin)/layout.tsx: auth check server-side. notFound() si no es admin_general. Sidebar con link Panel + logout via server action. Links Empresas/Usuarios/Catalogo retirados del sidebar (rutas no existentes) con TODO para E5b-futuro.
+- app/(admin)/admin/page.tsx: dashboard con 4 contadores (empresas, usuarios, establecimientos publicados, ordenes).
+- lib/admin-actions.ts: obtenerContadoresAdmin(). Usa createClient() con RLS: is_admin_general() ya esta en las policies de empresa y usuario, no hizo falta service_role.
+
+**Verificacion:** login como pirovanipedrojose@gmail.com -> /admin. Contadores reales: Empresas 2, Usuarios 5, Establecimientos publicados 0, Ordenes 0. tsc 0, build OK (26 rutas, incluye /admin).
+
+**Pendiente (E5b-futuro):** /admin/empresas, /admin/usuarios, /admin/catalogo, links del sidebar.
+
+
+
+===== docs\proyecto\CHANGELOG.md =====
+
+## [E5b-wip] - 2026-11-02 - Panel admin (dashboard funcional)
+
+### Added
+- app/(admin)/layout.tsx: auth check server-side. notFound() si no es admin_general.
+- app/(admin)/admin/page.tsx: dashboard con contadores (empresas, usuarios, establecimientos publicados, ordenes).
+- lib/admin-actions.ts: obtenerContadoresAdmin().
+
+### Changed
+- lib/auth-actions.ts: redirect post-login con orden admin -> conductor -> sin-empresa -> clientes. Fix: usuarios sin empresa ahora van a /crear-empresa.
+
+### Verified
+- Login admin -> /admin con contadores reales. tsc 0, build OK (26 rutas).
+
+### Pendiente
+- /admin/empresas, /admin/usuarios, /admin/catalogo. Links del sidebar.
+
+## [E5a] - 2026-11-02 - Notificaciones reales cableadas
+
+### Added
+- enviarBienvenida cableada en lib/empresa-actions.ts (crearEmpresa, fire-and-forget).
+- enviarHistorialCompartido cableada en lib/conductor-actions.ts (revocarHistorial, fire-and-forget).
+- enviarRecordatorioMantenimiento cableada en lib/ordenes-actions.ts (completarOrden, fire-and-forget).
+- tsx (devDependency) para scripts sueltos.
+
+### Changed
+- .env.local: RESEND_API_KEY y RESEND_FROM configuradas (RESEND_FROM usa onboarding@resend.dev para tests a email propio).
+
+### Verified
+- Envio real contra API Resend: OK (mock=false, id devuelto por la API).
+- 212/212 tests, tsc 0, build OK (25 rutas).
+
+### Deudas
+- RESEND_FROM usa onboarding@resend.dev (solo tests al email de la cuenta). Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
+- Vercel no configurado; replicar RESEND_API_KEY y RESEND_FROM en env vars cuando se deploye.
+- Cron de recordatorios automaticos no implementado.
+
+## [E4b] - 2026-11-01 - Portal del conductor (gate 10/10)
+
+### Added
+- supabase/migrations/020_listar_historial_compartido.sql: RPC SECURITY DEFINER para que el conductor vea nombre de empresa y datos del vehiculo sin que RLS bloquee los joins anidados de PostgREST (H-E4b-2).
+- components/HistorialAccionesClient.tsx: botones Aceptar/Revocar en el portal del conductor.
+
+### Changed
+- app/(dashboard)/vehiculos/[id]/page.tsx: ProponerHistorialForm importado y renderizado. Fix del href de /ordenes/nuevo?vehiculo_id= (perdia vehiculo.id desde E2b2).
+- app/(portal)/mi-garage/historial/page.tsx: HistorialAccionesClient integrado; campos a nombre_empresa / vehiculo_marca / vehiculo_modelo (planos del RPC).
+- lib/conductor-actions.ts: listarHistorialCompartido() usa la RPC en lugar de joins anidados.
+- lib/supabase/types.ts: regenerado desde Supabase (incluye la funcion nueva). Normalizado a UTF-8 sin BOM (supabase gen types produce UTF-16 LE con BOM en PS 5.x).
+
+### Verified
+- Prueba cruzada A/B: Luis propone -> token generado -> conductor2 acepta -> revoca -> re-acepta. Estado reversible, DB consistente.
+- /mi-garage/historial muestra nombre del taller y datos del vehiculo (fix H-E4b-2 confirmado en UI).
+- 212/212 tests, tsc --noEmit 0 errores, npm run build OK (25 rutas).
+- Encoding limpio: 0 mojibake, 0 BOM en archivos nuevos/modificados.
+
+### Hallazgos
+- **H-E4b-1** (bajo, UX): form de login deja el boton sin feedback ~3s durante el server action. Diferido a E5.
+- **H-E4b-2** (medio, cosmetico): RESUELTO. Causa: RLS bloqueaba joins anidados en PostgREST; conductor no pertenece a empresa. Fix: RPC SECURITY DEFINER con search_path controlado, GRANT EXECUTE solo a authenticated.
+
+### Deuda
+- **D-E4b-1** (UX): precargar email del cliente dueño en ProponerHistorialForm si existe. E5/v2.
+
+## [E4b-wip] - 2026-11-01 - Portal del conductor (en progreso)
+
+### Added
+- `supabase/migrations/019_historial_compartido_consentimiento.sql`.
+- `lib/conductor-actions.ts`, `lib/schemas/conductorSchema.ts`.
+- `app/(portal)/layout.tsx`, `/mi-garage/*`, `app/register-conductor/page.tsx`.
+- `components/VehiculoConductorForm.tsx`, `components/ProponerHistorialForm.tsx`.
+
+### Fixed
+- `lib/auth-actions.ts`: login redirige a `/mi-garage` si es conductor.
+
+### Pendiente
+- Prueba cruzada A/B (bloqueada por Supabase 502).
+
+## [E2b2] - 2026-11-01 - Cierre formal (gate 10/10)
+
+### Verified
+- Prueba cruzada A/B contra DB real (órdenes): aislamiento RLS confirmado en listado y acceso por URL (404).
+- `STATUS.md`: fila de órdenes actualizada a `completo`.
+
+### Notas
+- No hubo cambios de código. Cierre administrativo del gate.
+- Deudas aceptadas: transacciones no atómicas, inmutabilidad de completadas (UI only).
+- Datos de prueba eliminados.
+
+## [E3] - 2026-11-01 - Cierre formal (gate 10/10)
+
+### Verified
+- Prueba cruzada A/B contra DB real (catálogo local): aislamiento RLS confirmado en listado y en acceso directo por URL (404).
+- `STATUS.md`: filas de catálogo global y local actualizadas a `completo`.
+
+### Notas
+- No hubo cambios de código. Cierre administrativo del gate de E3.
+- Datos de prueba insertados para la prueba cruzada fueron eliminados.
+
+## [E1] - 2026-11-01 - Cierre formal (gate 10/10)
+
+### Changed
+- `SESSION-STATE.md`: E1 pasa de `wip (gate 9/10)` a `cerrada (gate 10/10)`.
+- `STATUS.md`: fila E1 auth pasa a `completo`.
+
+### Verified
+- 2FA activada en el gestor de contrasenas del propietario (Bitwarden).
+- Prueba cruzada A/B (2026-10-31) sigue vigente: aislamiento bidireccional verificado.
+
+### Notas
+- No hubo cambios de codigo. Cierre administrativo del gate de E1.
+
+## [E4a] - 2026-10-31 - Directorio + establecimientos publicos
+
+### Added
+- `supabase/migrations/018_establecimiento_publico.sql`: revoke all from anon + grant select to anon.
+- `lib/schemas/establecimientoSchema.ts` + 16 tests.
+- `lib/establecimiento-actions.ts`: listar, obtener, crear, editar, publicarMiEstablecimiento. 20 tests.
+- `components/EstablecimientoForm.tsx`, `components/PublicarButton.tsx`.
+- `app/(dashboard)/establecimientos/page.tsx`, `nuevo/page.tsx`, `[id]/page.tsx`.
+- Link "Establecimientos" en sidebar de `(dashboard)/layout.tsx`.
+
+### Changed
+- `lib/schemas/directorioSchema.ts`: `establecimiento_id` -> `establecimiento_publico_id`.
+- `lib/directorio-actions.ts`: lee el campo renombrado.
+- `lib/establecimiento-actions.ts` `editarEstablecimiento`: usa `upsert` con `onConflict: "establecimiento_id"` para crear fila publica si no existe (H-E4a-3).
+- `lib/establecimiento-actions.ts` `obtenerEstablecimiento`: `limit(1)` + normalizacion de join (H-E4a-4).
+
+### Fixed
+- `app/(dashboard)/establecimientos/[id]/page.tsx`: `await params` (Next 16, H-E4a-4).
+- `app/directorio/page.tsx`: `await searchParams` (Next 16, H-E4a-8).
+- `lib/establecimiento-actions.test.ts`: `vi.resetAllMocks()` + re-setup en `beforeEach` (H-E4a-test).
+
+### Verified
+- `npx tsc --noEmit`: 0 errores.
+- `npm test`: 212/212 (19 archivos).
+- `npm run build`: OK (25 rutas).
+- Migracion 018 aplicada y verificada contra DB real: anon solo SELECT en establecimiento_publico.
+- Prueba cruzada A/B (7/7) contra DB real: aislamiento bidireccional verificado, directorio publico muestra solo publicados.
+
+### Deuda
+- H-E4a-2: `/establecimientos` no oculta "Nuevo" para admin_general (falla con "Sin empresa"). Diferido a E5.
+- H-E4a-7: directorio arranca en Asuncion sin selector de ciudad ni geolocalizacion. Diferido a E4b/E5.
+
+## [E2a-bis] - 2026-10-31 - Saneamiento: Supabase real + flujo piloto end-to-end
+
+### Added
+- Proyecto Supabase real `kuatiauto` (`wzfukuzcousihslfgelr`, us-east-1). 15 migraciones aplicadas (001–015).
+- `lib/supabase/types.ts` generado (83 KB, 27 tablas, 12 funciones).
+- `lib/rate-limit.test.ts` (8 tests: buildClave + checkRateLimit con fail-open).
+- `lib/empresa-actions.test.ts` (5 tests: validación Zod, sin sesión, RPC OK, RPC falla).
+- `components/EmpresaForm.tsx` + `app/(dashboard)/crear-empresa/page.tsx`: form para que el propietario cree su empresa.
+- `app/(dashboard)/dashboard/page.tsx`: redirect a `/` (parche del 404).
+- `supabase/migrations/_cuarentena/` con `001_clientes.sql` (scaffold blueprint) + README explicativo.
+
+### Changed
+- `@supabase/ssr`: 0.5.2 → 0.12.7. Resuelve bug `never` en queries (Postgrest 14.18).
+- `<Database>` cableado en `lib/supabase/server.ts` y `lib/supabase/client.ts`.
+- `lib/directorio-actions.ts`: params RPC `null` → `undefined` (3 reemplazos).
+- `lib/empresa-actions.ts`: reformateado (era 1 línea), `Datos inválidos` (corregido), params RPC `undefined`.
+- `app/(dashboard)/page.tsx`: reescrito sin mojibake, condicional (crear empresa vs gestionar clientes), link `/clientes`.
+- `app/(dashboard)/clientes/page.tsx`, `nuevo/page.tsx`, `[id]/page.tsx`, `components/ClienteForm.tsx`, `lib/clientes-actions.ts`, `lib/vehiculos-actions.ts`: links `/dashboard/clientes` → `/clientes`.
+- `package.json` / `package-lock.json`: `supabase` como devDependency.
+- `.gitignore`: `supabase/.temp/` (config local CLI).
+
+### Fixed
+- `lib/schemas/vehiculoSchema.test.ts`: test `default km_actual a 0` reemplazado por 2 tests (`optional` → `undefined`; `0` explícito).
+- `components/ClienteForm.test.tsx`: reescrito contra interfaz nueva (action plano, no FormData).
+- 23 errores de `never` en `tsc` al cablear `Database` (resueltos con `@supabase/ssr@0.12.7`).
+- 6 errores de `null` en params RPC (resueltos con `?? undefined`).
+
+### Verified
+- `npx vitest run`: **89/89** tests verdes (11 archivos).
+- `npx tsc --noEmit`: 0 errores.
+- Encoding: 0 BOM, 0 mojibake en archivos modificados/creados.
+- **Flujo piloto validado end-to-end** contra Supabase real:
+  - Luis María Delvalle Ramírez (`importjapanencar@gmail.com`, rol `propietario`).
+  - Empresa `Import Japan - Autorepuestos` (`adbcd23e-f296-435c-b835-e9ce837a9d95`).
+  - Cliente `María José Bitar Balletbo`.
+  - `audit_log`: `crear/empresa` + `crear/cliente`.
+
+### Removed
+- `supabase/migrations/001_clientes.sql` (movido a `_cuarentena/`, no pertenece a KuatiAuto).
+- `scripts/`, `blueprints/`, `.github/workflows/ci.yml` del repo del studio (movimiento de repos, no de KuatiAuto).
+
+### Pendiente
+- UI vehículos + layout dashboard (E2b1).
+- Órdenes + empleados (E2b2).
+- Prueba cruzada A/B (E1-cierre).
+- `RESEND_API_KEY` (E2b2, cuando haya cuenta).
+- `npm audit` 19 vulns (revisar al cerrar E2b).
+# CHANGELOG — KuatiAuto (provisional)
+
+## [E2a] - 2026-10-31 - Gestion core: clientes + vehiculos backend
+
+### Added
+- lib/schemas/clienteSchema.ts + clienteSchema.test.ts (12 tests).
+- lib/clientes-actions.ts + clientes-actions.test.ts (10 tests): listar, crear, editar, soft-delete.
+- lib/schemas/vehiculoSchema.ts + vehiculoSchema.test.ts (12 tests).
+- lib/vehiculos-actions.ts + vehiculos-actions.test.ts (11 tests): listar por cliente, crear, editar, soft-delete.
+- supabase/migrations/014_cliente_activo.sql: soft-delete en cliente.
+- supabase/migrations/015_vehiculo_activo.sql: soft-delete en vehiculo.
+- components/ClienteForm.tsx: formulario reescrito (objeto plano, no FormData).
+- app/(dashboard)/clientes/page.tsx, nuevo/page.tsx, [id]/page.tsx reescritos.
+- app/page.tsx: home real KuatiAuto (reemplaza blueprint).
+- app/directorio/page.tsx: directorio movido desde route group (resuelve colision /).
+
+### Changed
+- lib/schemas/vehiculoSchema.ts: km_actual de default(0) a optional().
+- .gitignore: docs/_*.txt (outputs de tests/tsc).
+
+### Removed
+- lib/cliente-actions.ts (viejo, pre-multiempresa).
+
+### Verified
+- tsc --noEmit: 0 errores.
+- vitest: 71/73 (2 tests desactualizados por cambio de schema).
+- App funcional end-to-end: login, directorio, CRUD clientes.
+
+### Pendiente
+- vehiculoSchema.test.ts: 1 test espera km_actual: 0, ahora es optional.
+- ClienteForm.test.tsx: test escrito para componente viejo, reescribir.
+- UI vehiculos: 3 paginas + VehiculoForm.tsx.
+- Layout dashboard con navegacion.
+- Links de clientes apuntan a /dashboard/clientes, ruta real es /clientes.
+## [E1] - 2026-10-30 - Fundamentos (wip)
+
+### Added
+- lib/rate-limit.ts: helper checkRateLimit + buildClave. Fail-open en dev.
+- lib/audit.ts: helper auditLog con service_role. No-op sin key.
+- lib/empresa-actions.ts: server action crearEmpresa via crear_empresa_con_establecimiento.
+
+### Changed
+- lib/auth-actions.ts: tildes corregidas, resetPassword agregado, rate limit en login/register/resetPassword.
+- lib/notificaciones-actions.ts: empresa_id cableado en 2 de 3 actions (enviarBienvenida deja null).
+- app/layout.tsx: metadata KuatiAuto.
+- app/dashboard/ movido a app/(dashboard)/ (route group).
+- .env.example: NEXT_PUBLIC_APP_URL, SENTRY_DSN, RATE_LIMIT_FAIL_MODE.
+- .gitignore: *.bak, *.bak-template, docs/_dump-continuacion.txt.
+- docs/proyecto/STATUS.md: E1 a wip con nota de cierre.
+
+### Verified
+- tsc --noEmit: 0 errores.
+- npm run test: 28/28.
+- Encoding: 0 mojibake, 0 BOM.
+
+### Pendiente
+- Tests de rate-limit y empresa-actions (E2).
+- Prueba cruzada A/B (requiere Supabase real).
+- Cerrar E1 (commit de cierre).
+
+## [F14] - 2026-10-30 - Plan de implementacion - EN PROGRESO
+
+### Added
+- docs/proyecto/F14-PLAN.md (alcance, D-F14-1..5, criterios de aceptacion).
+- docs/proyecto/IMPLEMENTATION-PLAN.md (etapas, modulos, dependencias, prioridades, entregables, criterios de "modulo completo").
+- STATUS.md reescrito como tablero macro de modulos (reemplaza template del studio).
+
+### Changed
+- DECISIONES.md: D-F13-1..5 a APROBADA (cierre formal F13).
+- SESSION-STATE.md / CHANGELOG.md / BITACORA.md: F13 a COMPLETADA (saneamiento).
+- ROADMAP.md: F14 EN PROGRESO.
+
+### Pendiente
+- Cerrar F14 (ROADMAP COMPLETADA, commit de cierre).
+
+Registro de cambios por fase. Formato: Keep a Changelog adaptado. Fechas en ISO 8601.
+
+## [F13] - 2026-10-30 - Operacion y continuidad - COMPLETADA
+
+### Added
+- docs/proyecto/F13-PLAN.md: alcance, decisiones D-F13-1..5, criterios de aceptacion.
+- docs/proyecto/MANTENIMIENTO.md: runbook completo (entornos, despliegues, backups, monitorizacion, incidentes S1/S2/S3, continuidad, accesos).
+- docs/ciclo-de-vida/MANTENIMIENTO.md: stub que apunta al nuevo runbook.
+- ARCHITECTURE.md §Operacion (F13 - 2026-10-30): contrato operativo y resumen D-F13-1..5.
+- DECISIONES.md D-F13-1..5 (PROPUESTA).
+
+### Changed
+- ROADMAP.md: F13 marcado EN PROGRESO; deuda de docs saneada (BUSINESS-LOGIC resuelto F12, MANTENIMIENTO resuelto F13).
+- SESSION-STATE.md: estado actual, proximos pasos y deuda F13.
+- BITACORA.md: entrada 2026-10-30 F13.
+
+### Fixed
+- Encoding en SESSION-STATE.md, BITACORA.md y CHANGELOG.md: doble codificacion cp1252 -> utf8 eliminada (mojibake A-tilde), em-dash preservados.
+
+### Verified
+- Encoding post-fix: C3-83(mojibake)=0 en los 3 archivos.
+
+### Cerrado
+- D-F13-1..5 APROBADAS (2026-10-30, arranque F14, por delegacion).
+- ROADMAP.md F13 COMPLETADA. Commit de cierre: 3684ff2.
+## [F12] - 2026-10-30 - Modelo comercial - COMPLETADA
+
+### Added
+- docs/proyecto/F12-PLAN.md: alcance F12, decisiones D-F12-1..5, criterios de aceptacion.
+- BUSINESS-LOGIC.md �Modelo comercial: planes, limites, premium, estrategia, suscripciones.
+- DECISIONES.md D-F12-1..5 (PROPUESTA).
+
+### Changed
+- ROADMAP.md: F12 marcado EN PROGRESO.
+- SESSION-STATE.md: F12 en curso.
+
+### Verified
+- D-F12-1..5 APROBADAS.
+- BUSINESS-LOGIC.md �Modelo comercial completo.
+
+## [F11] - 2026-10-30 - Notificaciones (stub + mocks) - COMPLETADA
+
+### Added
+- `docs/proyecto/F11-PLAN.md`: alcance F11a (stub + mocks), qué incluye, qué no, orden de implementación, criterios de aceptación.
+- `ARCHITECTURE.md` §Notificaciones: cliente Resend con fallback mock, templates, tabla `notificacion_log`, server actions, cron (diseño), idempotencia, rate limiting, reintentos, trazabilidad, RLS.
+- `DECISIONES.md` D-F11-1 a D-F11-5 (PROPUESTA).
+
+### Changed
+- `ROADMAP.md`: F11 marcado como EN PROGRESO con docs 5a-5b; F11-PLAN.md como doc principal.
+- `SESSION-STATE.md`: D-F11-* como PROPUESTA; próximos 3 pasos actualizados.
+
+### Codigo (F11a)
+- Migracion 013_notificaciones.sql (tabla, indices, RLS).
+- lib/email/resend.ts (cliente + fallback mock).
+- lib/email/templates/ (recordatorio, bienvenida, historial).
+- lib/supabase/admin.ts (service_role, solo server-side).
+- lib/schemas/notificacionesSchema.ts (Zod).
+- lib/notificaciones-actions.ts (3 server actions con idempotencia + rate limit).
+- Tests: notificacionesSchema.test.ts, resend.test.ts, notificaciones-actions.test.ts.
+
+### Verified
+- vitest: 28/28.
+- tsc --noEmit: 0 errores.
+- next build: verde.
+
+### Decisiones
+- D-F11-1..5 APROBADAS.
+
+## [F10] — 2026-10-30 — Directorio y geolocalización
+
+Ver `BITACORA.md` §Fase 10. Resumen: búsqueda por distancia (earthdistance + cube), Leaflet + OSM, migración `012_busqueda_directorio.sql`, `lib/directorio-actions.ts`, `components/directorio/MapaDirectorio.tsx`, `app/(directorio)/page.tsx`.
+
+## [F9] — 2026-10-30 — Privacidad y protección de datos
+
+Ver `BITACORA.md` §Fase 9. Ley 6534/2020, retención, derechos, consentimientos.
+
+## [F8] — 2026-10-30 — Costes y sostenibilidad
+
+Ver `BITACORA.md` §Fase 8. Free tier, único costo real: dominio `.com.py`.
+
+## [F7] — 2026-10-30 — Stack tecnológico
+
+Ver `BITACORA.md` §Fase 7. Next.js 16, React 19, Tailwind 4, Supabase, Zod, Vitest, Vercel, Resend, Leaflet + OSM, Vercel Analytics, Sentry, GitHub Actions.
+
+## [E2b1] — 2026-10-31 — UI vehículos + layout dashboard
+
+Ver `BITACORA.md` §Cierre E2b1. Layout dashboard con sidebar, `VehiculoForm` crear/editar, 3 rutas de vehículos, `listarVehiculosEmpresa()` en backend. Panel logueado movido a `/dashboard`. Registro manda `nombre` a `raw_user_meta_data`.
+
+## [F6a] — 2026-10-30 — Catálogo automotriz
+
+Ver `BITACORA.md` §Fase 6a. Fuentes aceptables niveles 1-3, validación por admin_general, alcance inicial acotado.
+
+## [F5] — 2026-10-30 — Modelo de datos (F5a, F5b, F5c)
+
+Ver `BITACORA.md` §Fases 5a, 5b, 5c. Migraciones 001-006, RLS, audit_log, rate_limit, seed del catálogo.
+
+## [F4] — 2026-10-30 — Arquitectura de seguridad
+
+Ver `BITACORA.md` §Fase 4. OWASP Top 10 + ASVS nivel 2, límites de confianza, rate limiting, auditoría, recuperación.
+
+## [F3] — 2026-10-30 — Arquitectura multiempresa
+
+Ver `BITACORA.md` §Fase 3. RLS por empresa_id, SECURITY DEFINER, pruebas cruzadas.
+
+## [F2] — 2026-10-30 — Usuarios, roles y permisos
+
+Ver `BITACORA.md` §Fase 2. Roles MVP: admin_general, propietario, empleado, conductor, visitante.
+
+## [F1] — 2026-10-30 — Definición del producto
+
+Ver `BITACORA.md` §Fase 1. Alcance MVP confirmado: gestión + directorio + portal + catálogo + inventario.
+
+## [F0] — 2026-10-30 — Punto de partida
+
+Ver `BITACORA.md` §Fase 0. Metodología, nombre provisional, repo único modular.
+## [E2b2-s2] — 2026-10-31 — UI de órdenes
+
+Ver `BITACORA.md` §Cierre E2b2 sesión 2. Lista `/ordenes`, form `/ordenes/nuevo` con precarga vía `?vehiculo_id=`, detalle `/ordenes/[id]` con acciones (completar / anular / eliminar borrador). `OrdenLineas` respeta schema real (servicios sin cantidad, productos sin descripción). Link "Órdenes" en sidebar. Botón "Nueva orden para este vehículo" en `/vehiculos/[id]`. Commit `64c6b23`. 133/133 tests, tsc 0, build OK.
+
+## [E3] — 2026-10-31 — Catálogo local + seed de marcas/modelos
+
+Ver `BITACORA.md` §Cierre E3. CRUD de servicios y productos propios de la empresa (`/catalogo/servicios`, `/catalogo/productos`), backend con 4 actions cada uno, 43 tests nuevos (suite 176). Migración `017` con 10 marcas faltantes + 70 modelos populares en Paraguay. Commit `b399b28`.
+
+
+===== PROMPT DE CONTINUACION =====
+
+Retomo KuatiAuto. Leé el dump completo (SESSION-STATE + STATUS + BITACORA + CHANGELOG, incluidos arriba).
+
+**Estado:**
+- F0-F14 cerradas. E1 cerrada (gate 10/10). E2a-bis wip. E2b1 wip. E2b2, E3, E4a, E4b cerradas (gate 10/10). E5a cerrada (2026-11-02). E5b wip (dashboard admin funcional 2026-11-02, faltan listas). E5c pendiente.
+- Verificacion: 212/212 tests, tsc 0, build OK (26 rutas: incluye /admin), 20 migraciones aplicadas.
+- Ultimo commit: 9364e9a (E5b-wip panel admin dashboard).
+
+**Usuarios de prueba en DB real:**
+- importjapanencar@gmail.com (Luis, Import Japan, propietario) - pass: ImportJapan-2026
+- test-b-user@example.com (Taller Prueba B, propietario) - pass: TestB1234!Segura
+- pirovanipedrojose@gmail.com (CEO, admin_general, sin empresa) - panel /admin funciona
+- conductor2@example.com (Conductor Test 2, conductor) - pass: TestConductor123!
+
+**Proximo paso inmediato - E5b-futuro (listas del panel admin):**
+1. /admin/empresas: lista + detalle con contadores por empresa.
+2. /admin/usuarios: lista + cambio de rol / desactivacion.
+3. /admin/catalogo: moderacion de servicio_global y producto_global.
+4. Re-agregar los 3 links al sidebar de app/(admin)/layout.tsx.
+
+**Deudas activas:**
+- E5b-futuro: 3 paginas admin (arriba).
+- E5a: RESEND_FROM usa onboarding@resend.dev (solo tests al email de la cuenta Resend). Cambiar a no-reply@kuatiauto.com.py cuando se registre y verifique el dominio en NIC.py + Resend.
+- E5a: Vercel no configurado; replicar RESEND_API_KEY y RESEND_FROM en env vars cuando se deploye.
+- E5a: cron de recordatorios automaticos no implementado.
+- H-E4b-1: form de login sin feedback ~3s durante server action.
+- H-E4a-2: /establecimientos no oculta 'Nuevo' a admin_general.
+- H-E4a-7: directorio arranca en Asuncion sin selector de ciudad.
+- D-E4b-1: precargar email del cliente duenio en ProponerHistorialForm.
+- H-E5b-1 (nueva): verificar en flujo real que el redirect post-login a /crear-empresa funciona para usuarios sin empresa.
+
+**Archivos clave para retomar:**
+- app/(admin)/layout.tsx (auth check admin_general, sidebar con Panel + logout).
+- app/(admin)/admin/page.tsx (dashboard con 4 contadores).
+- lib/admin-actions.ts (obtenerContadoresAdmin, RLS via is_admin_general).
+- lib/auth-actions.ts (redirect post-login admin/conductor/sin-empresa/clientes).
+- lib/email/resend.ts + lib/notificaciones-actions.ts (E5a).
+- lib/conductor-actions.ts (E4b).
+- lib/ordenes-actions.ts (E2b2).
+- lib/supabase/types.ts (regenerado 2026-11-01, UTF-8 sin BOM).
+- supabase/migrations/020_listar_historial_compartido.sql.
+
+**Protocolo PowerShell 5.x:**
+- Un comando por mensaje. Corto, verificado antes del siguiente.
+- -LiteralPath para paths con [id]. Para System.IO.File usar Join-Path (Get-Location).
+- Nunca pegar TS/TSX en la consola. Va por VS Code o WriteAllText.
+- Nunca pegar el prompt PS ni el >> en la consola.
+- npm test: usar cmd /c con redireccion a archivo, leer con Get-Content.
+- Encoding: UTF-8 sin BOM. Verificar con ReadAllBytes (Get-Content miente).
+- Caché .next: si tsc falla en .next/dev/types, borrar .next y reintentar.
+- Heredocs fragiles. Preferir List.Add + WriteAllText o WriteAllLines.
+- .Replace() multilinea: si no matchea, verificar CRLF vs LF primero.
+- Backticks dobles en strings de comillas dobles no sobreviven en PS (escape).
+- Para docs largos: List.Add + WriteAllText + UTF8Encoding(false).
+- Comandos mayores a 1500 chars rompen el parser en PS 5.x: partir en 2-3.
+- process.exit en tsx/Windows genera Assertion failed al cerrar, pero termina OK.
+
+Repo: C:\Users\Admin\proyectos\kuatiauto. Remote: github.com/pjpirovani-soft/kuatiauto.
+
+Supabase CLI 2.122.0 linkeado a wzfukuzcousihslfgelr (us-east-1). API keys sb_secret_ solo en header apikey, NO en Authorization Bearer. Docker Desktop corriendo para db diff. Free tier puede dar 502 temporal.
+
+**Como retomar:** pegar este dump completo en la nueva conversacion y decir 'sigamos'.
+
