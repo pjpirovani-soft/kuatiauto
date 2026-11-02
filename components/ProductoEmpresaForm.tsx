@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { crearProductoEmpresa, editarProductoEmpresa } from "@/lib/productos-empresa-actions";
+import { IconLoader2 } from "@tabler/icons-react";
 
 type ProductoData = {
   id?: string;
@@ -63,98 +64,117 @@ export default function ProductoEmpresaForm(props: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
-      <label className="flex flex-col gap-1">
-        <span className="text-sm font-medium">Nombre</span>
+    <form onSubmit={handleSubmit} className='space-y-5 max-w-2xl bg-kuati-blanco p-6 md:p-8 rounded-xl border border-kuati-borde shadow-sm'>
+      <div>
+        <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='nombre'>Nombre</label>
         <input
-          type="text"
-          className="border rounded px-2 py-1"
+          id='nombre'
+          type='text'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           maxLength={120}
           required
           disabled={enviando}
+          placeholder='Ej. Aceite Mobil 5W-30'
         />
-      </label>
+      </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Marca (opcional)</span>
+      <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+        <div>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='marca'>Marca (opcional)</label>
           <input
-            type="text"
-            className="border rounded px-2 py-1"
+            id='marca'
+            type='text'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
             value={marca}
             onChange={(e) => setMarca(e.target.value)}
             maxLength={80}
             disabled={enviando}
+            placeholder='Mobil, Shell, etc.'
           />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Tipo (opcional)</span>
+        </div>
+        <div>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='tipo'>Tipo (opcional)</label>
           <input
-            type="text"
-            className="border rounded px-2 py-1"
+            id='tipo'
+            type='text'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
             value={tipo}
             onChange={(e) => setTipo(e.target.value)}
             maxLength={40}
-            placeholder="aceite, filtro, repuesto..."
             disabled={enviando}
+            placeholder='aceite, filtro, etc.'
           />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Viscosidad (opcional)</span>
+        </div>
+        <div>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='viscosidad'>Viscosidad (opcional)</label>
           <input
-            type="text"
-            className="border rounded px-2 py-1"
+            id='viscosidad'
+            type='text'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
             value={viscosidad}
             onChange={(e) => setViscosidad(e.target.value)}
             maxLength={20}
-            placeholder="5W-30"
             disabled={enviando}
+            placeholder='5W-30, 10W-40...'
           />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Unidad</span>
+        </div>
+        <div>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='unidad'>Unidad</label>
           <input
-            type="text"
-            className="border rounded px-2 py-1"
+            id='unidad'
+            type='text'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
             value={unidad}
             onChange={(e) => setUnidad(e.target.value)}
             maxLength={20}
             disabled={enviando}
+            placeholder='unidad, litros, etc.'
           />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Stock actual</span>
+        </div>
+        <div>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='stock_actual'>Stock actual</label>
           <input
-            type="number"
-            min="0"
-            step="1"
-            className="border rounded px-2 py-1"
+            id='stock_actual'
+            type='number'
+            min='0'
+            step='1'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
             value={stockActual}
             onChange={(e) => setStockActual(e.target.value)}
             disabled={enviando}
           />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Stock mínimo</span>
+        </div>
+        <div>
+          <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='stock_minimo'>Stock mínimo</label>
           <input
-            type="number"
-            min="0"
-            step="1"
-            className="border rounded px-2 py-1"
+            id='stock_minimo'
+            type='number'
+            min='0'
+            step='1'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
             value={stockMinimo}
             onChange={(e) => setStockMinimo(e.target.value)}
             disabled={enviando}
           />
-        </label>
+        </div>
       </div>
 
-      {error && <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded p-2">{error}</p>}
+      {error && (
+        <div className='text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3'>{error}</div>
+      )}
 
-      <button type="submit" disabled={enviando} className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50">
-        {enviando ? "Guardando..." : (props.modo === "crear" ? "Crear producto" : "Guardar cambios")}
-      </button>
+      <div className='pt-2'>
+        <button 
+          type='submit' 
+          disabled={enviando} 
+          className='w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-petroleo/90 disabled:opacity-70 transition-colors'
+        >
+          {enviando && <IconLoader2 size={18} className='animate-spin' />}
+          {enviando ? 'Guardando...' : (props.modo === 'crear' ? 'Crear producto' : 'Guardar cambios')}
+        </button>
+      </div>
     </form>
   );
 }

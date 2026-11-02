@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { crearServicioEmpresa, editarServicioEmpresa } from "@/lib/servicios-empresa-actions";
+import { IconLoader2 } from "@tabler/icons-react";
 
 type ServicioData = {
   id?: string;
@@ -43,36 +44,55 @@ export default function ServicioEmpresaForm(props: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
-      <label className="flex flex-col gap-1">
-        <span className="text-sm font-medium">Nombre</span>
+    <form onSubmit={handleSubmit} className='space-y-5 max-w-xl bg-kuati-blanco p-6 md:p-8 rounded-xl border border-kuati-borde shadow-sm'>
+      <div>
+        <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='nombre'>
+          Nombre
+        </label>
         <input
-          type="text"
-          className="border rounded px-2 py-1"
+          id='nombre'
+          type='text'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           maxLength={120}
           required
           disabled={enviando}
+          placeholder='Ej. Cambio de aceite de motor'
         />
-      </label>
+      </div>
 
-      <label className="flex flex-col gap-1">
-        <span className="text-sm font-medium">Descripción (opcional)</span>
+      <div>
+        <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='descripcion'>
+          Descripción (opcional)
+        </label>
         <textarea
-          className="border rounded px-2 py-1 min-h-[80px]"
+          id='descripcion'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all min-h-[100px] resize-y'
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           maxLength={500}
           disabled={enviando}
+          placeholder='Detalles del servicio...'
         />
-      </label>
+      </div>
 
-      {error && <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded p-2">{error}</p>}
+      {error && (
+        <div className='text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3'>
+          {error}
+        </div>
+      )}
 
-      <button type="submit" disabled={enviando} className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50">
-        {enviando ? "Guardando..." : (props.modo === "crear" ? "Crear servicio" : "Guardar cambios")}
-      </button>
+      <div className='pt-2'>
+        <button 
+          type='submit' 
+          disabled={enviando} 
+          className='w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-petroleo/90 disabled:opacity-70 transition-colors'
+        >
+          {enviando && <IconLoader2 size={18} className='animate-spin' />}
+          {enviando ? 'Guardando...' : (props.modo === 'crear' ? 'Crear servicio' : 'Guardar cambios')}
+        </button>
+      </div>
     </form>
   );
 }
