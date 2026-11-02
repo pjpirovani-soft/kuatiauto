@@ -917,3 +917,47 @@ Pruebas ejecutadas:
 - CI GitHub Actions: smokes en cada PR, flows solo en `main`.
 - ADR-007 (Playwright) y ADR-008 (Fase E8) en `DECISIONES.md`.
 - `STATUS.md` y `SESSION-STATE.md` están desactualizados (fechados 2026-10-31 y 2026-11-01, no reflejan v0.4.2 ni los smokes E2E).
+---
+
+## 2026-11-02 — Cierre formal de D parcial (CI verde + v0.4.3)
+
+**D parcial cerrada formalmente.** CI en GitHub Actions verde, tag `v0.4.3` pusheado.
+
+**Commits finales:**
+- `de40447` — setup Playwright + 6 smokes + docs (16 files).
+- `4f5f0e7` — workflow `e2e-smoke.yml` (55 lines).
+- `163e40e` — alineación a Node 22 (engines + nvmrc + CI). CI verde.
+
+**Tag `v0.4.3`** (2026-11-02): smokes E2E + CI + Node 22.
+
+**CI en GitHub Actions (verde):**
+- Workflow: `.github/workflows/e2e-smoke.yml`.
+- Trigger: push a main, PR a main, workflow_dispatch.
+- Node 22, `npm ci`, `npx playwright install --with-deps chromium`.
+- 10 secrets configurados (via `gh secret set -f github_secrets.env`).
+- Run #3 (`163e40e`): ✅ 6/6 smokes passed, 2m 6s.
+
+**Fix de Node 22 (lección):**
+- `npm ci` fallaba con ~20 warnings de `EBADENGINE` en Node 20 porque `@supabase/*`, `vitest@5`, `jsdom@30` requieren Node 22.
+- `.nvmrc` decía `20`, `package.json` no tenía `engines` (inconsistente con deps reales).
+- Fix: `.nvmrc` → `22`, `package.json` + `engines: { node: ">=22" }`, workflow `node-version: 22`.
+- **Nota:** `npm run build` local sigue teniendo un cuelgue en `runAfterProductionCompile` (Sentry probablemente). **No es bloqueante:** Vercel compila con Node 22 y el CI no usa build local.
+
+**Lecciones nuevas (críticas):**
+- **`[System.IO.File]::WriteAllText` + `UTF8Encoding(false)`** es el único método confiable en PS 5.x para escribir archivos que otras herramientas (gh, git) van a leer sin BOM. `Out-File -Encoding UTF8` **agrega BOM** → `gh secret set -f` falla con `unexpected character "»"`.
+- **`gh secret set -f archivo.env`** requiere que el archivo exista en el CWD. Si se borra antes, falla con `file not found`.
+- **Los smokes contra prod con rate limit 5/min** (`D-F4-3`): 6 tests en 2m 6s en GitHub Actions no dan 429 (la latencia natural de CI renueva la ventana). En local, 18s, tampoco (verificado). Pero un CI muy rápido (workers paralelos) podría fallar; `workers: 1` lo previene.
+- **Primer run de CI con secrets mal configurados:** el primer intento falló con "Faltan E2E_USER_ADMIN_EMAIL". El `gh secret list` mostró solo 2 secrets (los reales). Los 8 nuevos se cargaron en el segundo intento con `WriteAllLines`.
+
+**Estado final de D parcial:**
+- ✅ Setup Playwright (config + fixtures + .env.e2e.local).
+- ✅ 6 smokes read-only contra prod (4 roles + analytics + dashboard).
+- ✅ Workflow CI (push/PR/dispatch) con Node 22.
+- ✅ 10 secrets en GitHub.
+- ✅ Tag `v0.4.3`.
+- ⏳ Pendiente próxima sesión: flows de escritura contra Supabase local (`registro → empresa → establecimiento → publicar → directorio`).
+
+**Deuda menor (a anotar):**
+- `npm run build` local se cuelga en `runAfterProductionCompile` (no bloqueante, Vercel lo corre bien).
+- `package.json` dice `version: "0.4.0"` pero el tag es `v0.4.3` (deuda de bumping).
+- `.github/workflows/backup-db.yml` con `SUPABASE_DB_URL` no fue tocado.

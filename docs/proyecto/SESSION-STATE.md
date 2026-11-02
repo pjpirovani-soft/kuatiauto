@@ -31,11 +31,11 @@
 | pirovanipedrojose@gmail.com | admin_general | — | (no usada en tests) |
 | conductor2@example.com | conductor | — | TestConductor123! |
 
-## Próximos 3 pasos
+## Próximos 3 pasos (2026-11-02, post-D parcial)
 
-1. **Smoke test manual del panel admin en navegador.** Recorrer /admin, /admin/empresas, /admin/usuarios, /admin/catalogo/servicios y /admin/catalogo/productos con pirovanipedrojose@gmail.com. Crear, editar, eliminar un servicio y un producto.
-2. **E5c (Sentry + Vercel Analytics + backups automatizados).**
-3. **Cierre formal de gates de E2a-bis y E2b1** (no bloqueante, solo papeleo).
+1. **Flows de escritura contra Supabase local.** Setup supabase start + seed de usuarios + escribir e2e/flows/registro-publicar.spec.ts: registro -> empresa -> establecimiento -> publicar -> directorio. Ver BITACORA.md (cierre D parcial).
+2. **Cierre formal de gates de E2a-bis y E2b1** (no bloqueante, solo papeleo).
+3. **Pulir deuda UX acumulada** (H-E4b-1 login feedback, H-E4a-2 /establecimientos para admin, H-E4a-7 selector ciudad directorio, D-E4b-1 precarga email, H-E5b-4 HTML min vs Zod min).
 
 ## Deuda pendiente
 
