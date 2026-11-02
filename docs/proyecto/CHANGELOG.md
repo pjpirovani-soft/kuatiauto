@@ -502,3 +502,6 @@ Cerrado funcionalmente: `/admin/empresas`, `/admin/usuarios`, `/admin/catalogo/s
 - Vercel Analytics (`@vercel/analytics`) en el root layout.
 - Workflow de GitHub Actions para backups semanales de la base de datos (`.github/workflows/backup-db.yml`).
 - Archivo `app/global-error.tsx` para capturar errores de React.
+
+### Fixed
+- Deploy inicial en Vercel: configuradas las variables de entorno de producción que faltaban para Supabase y Sentry.

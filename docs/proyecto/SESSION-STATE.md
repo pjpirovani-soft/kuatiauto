@@ -96,3 +96,10 @@ Pegar el PROMPT DE CONTINUACION del dump actualizado.
 - **E5c-2 (Sentry):** Configurado en client/server/edge. DSN en `.env.local`. Sampling 0.1 en prod, PII bloqueada. Commit `f1dfae9`.
 - **E5c-3 (Backups):** Workflow de GitHub Actions (`.github/workflows/backup-db.yml`) corriendo semanalmente (domingos 00:00 PY). Commit `40abb74`. Secret `SUPABASE_DB_URL` configurado con Session Pooler.
 - **Deudas abiertas:** Deploy en Vercel (E6), dominio `.com.py`, variables de producción para Sentry, 18 vulnerabilidades moderadas de `npm audit`.
+
+---
+## Actualización 2026-11-02 — Primer Deploy en Vercel (E6 parcial)
+- **Deploy:** Proyecto importado en Vercel (`kuatiauto.vercel.app`). Build verde.
+- **Variables:** Cargadas `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_DSN`, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`.
+- **Estado:** App funcionando en producción. Sentry y Analytics reportando.
+- **Deuda:** Dominio `.com.py` pendiente de DNS.
