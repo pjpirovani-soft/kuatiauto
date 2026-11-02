@@ -28,3 +28,11 @@ supabase/.temp/
 handoff-*.txt
 docs/_*.sql
 docs/proyecto/_dump-continuacion.txt
+
+# Outputs de verificacion en raiz (tsc, vitest, etc)
+tsc_out.txt
+test_out.txt
+
+# Dumps parciales en docs/proyecto
+docs/proyecto/_dump-*.txt
+docs/proyecto/_*.txt
