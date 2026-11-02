@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
+import pkg from '@/package.json';
 import { usePathname, useRouter } from 'next/navigation';
 import { IconCar, IconHistory, IconLogout } from '@tabler/icons-react';
 import { createClient } from '@/lib/supabase/client';
@@ -39,9 +40,9 @@ export default function SidebarConductor() {
                   : 'hover:bg-kuati-petroleo/80 text-kuati-blanco/80 hover:text-kuati-blanco')
               }
             >
-              <Icon 
-                size={20} 
-                stroke={isActive ? 2.5 : 1.5} 
+              <Icon
+                size={20}
+                stroke={isActive ? 2.5 : 1.5}
                 className={isActive ? 'drop-shadow-[0_0_8px_rgba(163,217,0,0.6)]' : ''}
               />
               <span>{item.name}</span>
@@ -50,10 +51,10 @@ export default function SidebarConductor() {
         })}
       </nav>
       <div className='px-4 pb-2 text-center text-xs text-kuati-blanco/40 font-mono'>
-        v{process.env.NEXT_PUBLIC_APP_VERSION}
+        v{pkg.version}
       </div>
       <div className='p-4 border-t border-white/20'>
-        <button 
+        <button
           onClick={handleLogout}
           className='w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/20 text-red-300 hover:text-red-100 transition-colors'
         >
@@ -64,5 +65,3 @@ export default function SidebarConductor() {
     </aside>
   );
 }
-
-

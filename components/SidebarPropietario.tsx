@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
+import pkg from '@/package.json';
 import { usePathname, useRouter } from 'next/navigation';
 import { IconLayoutDashboard, IconUsers, IconCar, IconClipboardList, IconBox, IconBuildingStore, IconLogout } from '@tabler/icons-react';
 import { createClient } from '@/lib/supabase/client';
@@ -57,7 +58,7 @@ export default function SidebarPropietario() {
         })}
       </nav>
       <div className='px-4 pb-2 text-center text-xs text-kuati-blanco/40 font-mono'>
-        v{process.env.NEXT_PUBLIC_APP_VERSION}
+        v{pkg.version}
       </div>
       <div className='p-4 border-t border-white/20'>
         <button
@@ -71,5 +72,3 @@ export default function SidebarPropietario() {
     </aside>
   );
 }
-
-
