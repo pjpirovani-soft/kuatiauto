@@ -10,12 +10,9 @@ export default function MobileSidebarWrapper({ children }: { children: React.Rea
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then((registration) => {
-        // Detectar si hay una nueva versión esperando
         if (registration.waiting) {
           setUpdateAvailable(true);
         }
-
-        // Escuchar futuras actualizaciones
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           if (newWorker) {
@@ -47,16 +44,16 @@ export default function MobileSidebarWrapper({ children }: { children: React.Rea
       <div className='md:hidden fixed top-4 left-4 z-50'>
         <button
           onClick={() => setIsOpen(true)}
-          className='p-2 bg-kuati-petroleo text-kuati-blanco rounded-lg shadow-md'
+          className='p-2 bg-kuati-petroleo text-kuati-blanco rounded-lg shadow-md hover:bg-kuati-petroleo/90 transition-colors'
           aria-label='Abrir menú'
         >
           <IconMenu2 size={24} />
         </button>
       </div>
 
-      {/* Botón de actualización (visible si hay nueva versión) */}
+      {/* Botón de actualización (si hay nueva versión) */}
       {updateAvailable && (
-        <div className='fixed bottom-4 left-1/2 -translate-x-1/2 z-50 animate-bounce'>
+        <div className='fixed bottom-4 left-1/2 -translate-x-1/2 z-50'>
           <button
             onClick={handleUpdate}
             className='flex items-center gap-2 bg-kuati-lima text-kuati-petroleo px-6 py-3 rounded-full font-bold shadow-lg hover:bg-kuati-lima/90 transition-colors'
@@ -78,18 +75,18 @@ export default function MobileSidebarWrapper({ children }: { children: React.Rea
       {/* Contenedor del Sidebar */}
       <div
         className={
-          'fixed md:static inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out ' +
+          'fixed md:static inset-y-0 left-0 z-50 w-72 md:w-64 transform transition-transform duration-300 ease-in-out bg-kuati-petroleo ' +
           (isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0')
         }
       >
         {/* Botón de cerrar (solo en celular) */}
-        <div className='md:hidden absolute top-4 right-[-48px]'>
+        <div className='md:hidden absolute top-4 right-4 z-10'>
           <button
             onClick={() => setIsOpen(false)}
-            className='p-2 bg-kuati-petroleo text-kuati-blanco rounded-lg shadow-md'
+            className='p-2 bg-kuati-petroleo/50 text-kuati-blanco rounded-lg hover:bg-kuati-petroleo/80 transition-colors'
             aria-label='Cerrar menú'
           >
-            <IconX size={24} />
+            <IconX size={20} />
           </button>
         </div>
         {children}
