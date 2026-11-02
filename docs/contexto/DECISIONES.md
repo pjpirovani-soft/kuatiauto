@@ -227,3 +227,19 @@ Detectadas durante la lectura de docs para iniciar fase D:
 - `STATUS.md` fechado 2026-10-31, decía 18 migraciones (real: 20). **Actualizado a 2026-11-02.**
 - `SESSION-STATE.md` fechado 2026-11-01, decía 19 migraciones y 212 tests (real: 20 migraciones, 279 Vitest + 6 Playwright). **Actualizado a 2026-11-02 con sección nueva arriba.**
 - `SESSION-PROTOCOL.md`: residuo `$13.` en pasos 3 y 3b de arranque y cierre. **Deuda menor, a corregir en próxima sesión.**
+## ADR-009: WARN aceptados de Supabase Advisors (2026-11-02)
+
+**Contexto:** Ejecutado `npx supabase db advisors --linked --type security` en el proyecto `kuatiauto` (2026-11-02). Se detectaron ~30 WARN iniciales. Después de las migraciones 022 y 023, quedan ~13 WARN que **se aceptan explícitamente** por decisión de diseño.
+
+| ID | Advertencia | Estado | Justificación |
+|---|---|---|---|
+| D-ADV-1 | `auth_leaked_password_protection` | ACEPTADO | Requiere plan Pro (pago). Plan Free no lo soporta. Documentado como deuda hasta que el producto valide ingresos. |
+| D-ADV-2 | `extension_in_public` (cube, earthdistance) | ACEPTADO | Mover las extensiones a otro schema rompe las funciones de distancia del directorio (`buscar_establecimientos`). Riesgo mayor que el WARN. |
+| D-ADV-3 | `actualizar_stock` ejecutable por `authenticated` | ACEPTADO | Es un trigger que corre con los permisos del usuario que crea/edita una orden. Revocarlo rompe el stock. |
+| D-ADV-4 | `anon_security_definer_function_executable` en `check_rate_limit` | ACEPTADO | `auth-actions.ts` lo llama **antes** de `signInWithPassword`/`signUp`. Revocarlo de `anon` rompe el login. |
+| D-ADV-5 | `anon_security_definer_function_executable` en `buscar_establecimientos` | ACEPTADO | Función pública del directorio (visitantes anónimos buscan lubricentros). Es intencional. |
+| D-ADV-6 | `anon_security_definer_function_executable` en `publicar_establecimiento`, `proponer_historial_compartido`, `aceptar_historial_compartido`, `revocar_historial_compartido`, `current_empresa_id`, `is_admin_general`, `handle_new_user`, `handle_new_conductor`, `poblar_vehiculo_identidad`, `rls_auto_enable`, `listar_historial_compartido` | ACEPTADO | Todas validan `auth.uid()` internamente. El WARN es "puede ser ejecutada por anon", pero el cuerpo de la función rechaza si no hay sesión. Es defensa en profundidad. |
+
+**Conclusión:** los WARN restantes son **aceptados por diseño** y **documentados**. No representan vulnerabilidades explotables. El WARN naranja del dashboard de Supabase va a seguir visible, pero ahora es **ruido conocido** y no un problema sin analizar.
+
+**Revisión:** reevaluar en cada release minor (o si el producto pasa a plan Pro).

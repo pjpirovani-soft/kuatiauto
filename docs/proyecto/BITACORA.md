@@ -961,3 +961,60 @@ Pruebas ejecutadas:
 - `npm run build` local se cuelga en `runAfterProductionCompile` (no bloqueante, Vercel lo corre bien).
 - `package.json` dice `version: "0.4.0"` pero el tag es `v0.4.3` (deuda de bumping).
 - `.github/workflows/backup-db.yml` con `SUPABASE_DB_URL` no fue tocado.
+---
+
+## 2026-11-02 — Etapa II (Dashboard propietario) + Advisors de seguridad
+
+**Mejoras funcionales y cierre de advisors de Supabase.**
+
+**Etapa II — Dashboard del propietario (commit `768b535`):**
+- `lib/propietario-metricas-actions.ts` extendido: 5 queries paralelas (`Promise.all`) con filtro explícito por `empresa_id` (defensivo, no confía solo en RLS):
+  - `clientes` (count)
+  - `vehiculos` (count)
+  - `ordenesCompletadasMes` (count, filtrado por `fecha >= inicio_mes`)
+  - `ordenesPendientes` (count, estado `borrador`)
+  - `ultimasOrdenes` (5 últimas, JOIN anidado `orden_trabajo → vehiculo → cliente`)
+- `app/(dashboard)/dashboard/page.tsx` reescrito:
+  - 4 cards de métricas reales (grid responsive `grid-cols-2 md:grid-cols-4`).
+  - 2 botones de acción ("Nueva orden", "Nuevo cliente").
+  - Tabla de últimas 5 órdenes con badge de estado, cliente, vehículo, importe.
+  - Estado vacío amable ("Todavía no hay órdenes").
+  - Bloque "Empecemos" (sin empresa) intacto.
+  - `<h1>Panel Principal</h1>` mantenido → smoke `dashboard-propietario` sigue verde.
+- Degradación elegante: si el JOIN anidado falla por RLS/FK, `ultimasOrdenes` = `[]` y se muestra el estado vacío.
+
+**Advisors de seguridad (commits `6d1d28e`, migraciones 022 + 023):**
+
+Ejecutado `npx supabase db advisors --linked --type security` (2026-11-02). ~30 WARN iniciales.
+
+**Arreglados (migración 022):**
+- `set_updated_at`: `security invoker` + `set search_path = ''` → elimina WARN `function_search_path_mutable`.
+- `cleanup_rate_limit`, `actualizar_stock`, `crear_empresa_con_establecimiento`: revocados de `anon` y `PUBLIC` (no se llaman desde flujos anónimos).
+- **`check_rate_limit` NO se revoca de `anon`**: `auth-actions.ts` lo llama antes de `signInWithPassword`/`signUp` (usuario anónimo).
+
+**Arreglados (migración 023):**
+- `cleanup_rate_limit`: revocado de `authenticated` (solo se llama desde cron/service role).
+
+**WARN aceptados (documentados en ADR-009):**
+- `actualizar_stock` en `authenticated` (trigger de stock).
+- `extension_in_public` (cube, earthdistance) — mover rompe mapas.
+- `anon_security_definer_function_executable` en `check_rate_limit`, `buscar_establecimientos`, y ~8 funciones más (necesarias o validan `auth.uid()`).
+- `auth_leaked_password_protection` — plan Free.
+
+**Verificación:**
+- `tsc --noEmit`: 0 errores.
+- `npm test`: 279/279 passed (7.67s).
+- `npx playwright test --project=smoke-prod`: 7/7 passed (19.6s).
+- `npx supabase db push`: 021, 022, 023 aplicadas en prod.
+- `npx supabase db advisors`: `cleanup_rate_limit` y `function_search_path_mutable` eliminados.
+
+**Lecciones:**
+- `supabase db push` **aplica todas las migraciones pendientes**, no solo la última. La 021 se había aplicado manualmente en prod pero no estaba en el historial de `db push`; se reaplicó (idempotente).
+- El WARN `function_search_path_mutable` es de los más fáciles de arreglar (`set search_path = ''`) y de los más importantes (evita ataques de schema hijacking).
+- Revocar `anon` de `check_rate_limit` **rompe el login** (porque se llama antes de autenticar). Verificar siempre quién llama a cada función antes de revocar.
+
+**Deuda pendiente (para próxima sesión):**
+- Actualizar Supabase CLI v2.122.0 → v3.0.0 (warning persistente).
+- Etapa III (recepción rápida de vehículos).
+- Etapa V (libreta digital del conductor).
+- Deuda menor: `package.json` dice `version: "0.4.0"` pero el tag es `v0.4.3`.
