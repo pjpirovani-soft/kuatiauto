@@ -1,7 +1,8 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { listarClientes } from '@/lib/clientes-actions';
+import { IconPlus, IconUser, IconMail, IconPhone } from '@tabler/icons-react';
 
 export default async function ClientesPage() {
   const supabase = await createClient();
@@ -10,50 +11,55 @@ export default async function ClientesPage() {
 
   const result = await listarClientes();
   if (!result.ok) {
-    return <div className="p-8 text-red-600">Error cargando clientes: {result.error}</div>;
+    return <div className='p-8 text-red-600'>Error cargando clientes: {result.error}</div>;
   }
 
   const clientes = result.data as Array<{ id: string; nombre: string; email: string | null; telefono: string | null }>;
 
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-5xl mx-auto">
-        <header className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold">Mis clientes</h1>
-            <p className="text-gray-600 text-sm">Gestiona tu cartera de clientes.</p>
-          </div>
-          <Link href="/clientes/nuevo" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 text-sm">
-            + Nuevo cliente
-          </Link>
-        </header>
+    <main className='max-w-5xl mx-auto'>
+      <header className='flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4'>
+        <div>
+          <h1 className='text-3xl font-bold text-kuati-petroleo'>Mis clientes</h1>
+          <p className='text-kuati-grafito/70 text-sm'>Gestioná tu cartera de clientes.</p>
+        </div>
+        <Link 
+          href='/clientes/nuevo' 
+          className='inline-flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-4 py-2 rounded-lg hover:bg-kuati-petroleo/90 text-sm font-semibold transition-colors shadow-md'
+        >
+          <IconPlus size={18} />
+          Nuevo cliente
+        </Link>
+      </header>
 
-        {clientes.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-500">
-            <p>Todavia no tenes clientes cargados.</p>
-            <Link href="/clientes/nuevo" className="text-blue-600 hover:underline mt-4 inline-block">
-              Crear el primero
-            </Link>
-          </div>
-        ) : (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-200 text-sm text-gray-600">
+      {clientes.length === 0 ? (
+        <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-12 text-center text-kuati-grafito/70 shadow-sm'>
+          <p>Todavía no tenés clientes cargados.</p>
+          <Link href='/clientes/nuevo' className='text-kuati-petroleo font-semibold hover:underline mt-4 inline-block'>
+            Crear el primero
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* VISTA ESCRITORIO: Tabla */}
+          <div className='hidden md:block bg-kuati-blanco rounded-xl border border-kuati-borde overflow-hidden shadow-sm'>
+            <table className='w-full text-left'>
+              <thead className='bg-kuati-fondo border-b border-kuati-borde text-sm text-kuati-grafito'>
                 <tr>
-                  <th className="px-6 py-3 font-medium">Nombre</th>
-                  <th className="px-6 py-3 font-medium">Email</th>
-                  <th className="px-6 py-3 font-medium">Telefono</th>
-                  <th className="px-6 py-3 font-medium text-right">Acciones</th>
+                  <th className='px-6 py-4 font-semibold'>Nombre</th>
+                  <th className='px-6 py-4 font-semibold'>Email</th>
+                  <th className='px-6 py-4 font-semibold'>Teléfono</th>
+                  <th className='px-6 py-4 font-semibold text-right'>Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className='divide-y divide-kuati-borde'>
                 {clientes.map((cliente) => (
-                  <tr key={cliente.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium">{cliente.nombre}</td>
-                    <td className="px-6 py-4 text-gray-600">{cliente.email ?? '-'}</td>
-                    <td className="px-6 py-4 text-gray-600">{cliente.telefono ?? '-'}</td>
-                    <td className="px-6 py-4 text-right">
-                      <Link href={`/clientes/${cliente.id}`} className="text-blue-600 hover:underline text-sm">
+                  <tr key={cliente.id} className='hover:bg-kuati-fondo/50 transition-colors'>
+                    <td className='px-6 py-4 font-medium text-kuati-petroleo'>{cliente.nombre}</td>
+                    <td className='px-6 py-4 text-kuati-grafito/80'>{cliente.email ?? '-'}</td>
+                    <td className='px-6 py-4 text-kuati-grafito/80'>{cliente.telefono ?? '-'}</td>
+                    <td className='px-6 py-4 text-right'>
+                      <Link href={`/clientes/${cliente.id}`} className='text-kuati-petroleo font-semibold hover:text-kuati-lima transition-colors text-sm'>
                         Editar
                       </Link>
                     </td>
@@ -62,14 +68,40 @@ export default async function ClientesPage() {
               </tbody>
             </table>
           </div>
-        )}
 
-        <div className="mt-6">
-          <Link href="/" className="text-gray-500 hover:text-black text-sm">
-            Volver al panel
-          </Link>
-        </div>
-      </div>
+          {/* VISTA CELULAR: Tarjetas */}
+          <div className='grid md:hidden gap-4'>
+            {clientes.map((cliente) => (
+              <div key={cliente.id} className='bg-kuati-blanco rounded-xl border border-kuati-borde p-5 shadow-sm flex flex-col gap-3'>
+                <div className='flex items-center gap-3 border-b border-kuati-borde pb-3'>
+                  <div className='w-10 h-10 bg-kuati-petroleo/5 rounded-full flex items-center justify-center text-kuati-petroleo'>
+                    <IconUser size={20} />
+                  </div>
+                  <h3 className='font-bold text-kuati-petroleo text-lg'>{cliente.nombre}</h3>
+                </div>
+                <div className='space-y-1 text-sm text-kuati-grafito/80'>
+                  <p className='flex items-center gap-2'>
+                    <IconMail size={16} className='text-kuati-grafito/50' />
+                    {cliente.email ?? 'Sin email'}
+                  </p>
+                  <p className='flex items-center gap-2'>
+                    <IconPhone size={16} className='text-kuati-grafito/50' />
+                    {cliente.telefono ?? 'Sin teléfono'}
+                  </p>
+                </div>
+                <div className='pt-2 flex justify-end'>
+                  <Link 
+                    href={`/clientes/${cliente.id}`} 
+                    className='text-kuati-petroleo font-bold text-sm bg-kuati-fondo px-4 py-2 rounded-lg hover:bg-kuati-borde transition-colors'
+                  >
+                    Editar cliente
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </main>
   );
 }

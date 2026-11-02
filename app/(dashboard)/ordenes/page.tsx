@@ -1,7 +1,8 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { listarOrdenesEmpresa } from "@/lib/ordenes-actions";
 import { listarVehiculosEmpresa } from "@/lib/vehiculos-actions";
 import { listarClientes } from "@/lib/clientes-actions";
+import { IconPlus, IconCar, IconCalendar, IconCash, IconRoad } from '@tabler/icons-react';
 
 type OrdenRow = {
   id: string;
@@ -26,11 +27,11 @@ type ClienteRow = { id: string; nombre: string | null };
 
 function badgeEstado(estado: string): string {
   switch (estado) {
-    case "borrador": return "bg-gray-100 text-gray-800";
-    case "en_curso": return "bg-blue-100 text-blue-800";
-    case "completada": return "bg-green-100 text-green-800";
-    case "anulada": return "bg-red-100 text-red-800";
-    default: return "bg-gray-100 text-gray-800";
+    case "borrador": return "bg-gray-100 text-gray-700 border-gray-200";
+    case "en_curso": return "bg-blue-50 text-blue-700 border-blue-200";
+    case "completada": return "bg-kuati-lima/20 text-kuati-petroleo border-kuati-lima/50";
+    case "anulada": return "bg-red-50 text-red-700 border-red-200";
+    default: return "bg-gray-100 text-gray-700 border-gray-200";
   }
 }
 
@@ -57,65 +58,112 @@ export default async function OrdenesPage() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <header className="mb-6 flex items-center justify-between">
+    <div className='max-w-6xl mx-auto'>
+      <header className='flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4'>
         <div>
-          <Link href="/dashboard" className="text-sm text-gray-600 hover:text-black underline">← Panel</Link>
-          <h1 className="text-3xl font-bold mt-2">Órdenes</h1>
+          <h1 className='text-3xl font-bold text-kuati-petroleo'>Órdenes</h1>
         </div>
-        <Link href="/ordenes/nuevo" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
+        <Link 
+          href='/ordenes/nuevo' 
+          className='inline-flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-4 py-2 rounded-lg hover:bg-kuati-petroleo/90 text-sm font-semibold transition-colors shadow-md'
+        >
+          <IconPlus size={18} />
           Nueva orden
         </Link>
       </header>
 
       {ordenes.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center space-y-3">
-          <p className="text-gray-600">Todavía no hay órdenes cargadas.</p>
-          <Link href="/ordenes/nuevo" className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 inline-block">
+        <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-12 text-center space-y-4 shadow-sm'>
+          <p className='text-kuati-grafito/70'>Todavía no hay órdenes cargadas.</p>
+          <Link href='/ordenes/nuevo' className='inline-flex items-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-2 rounded-lg hover:bg-kuati-petroleo/90 transition-colors'>
             Crear la primera orden
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-left">
-              <tr>
-                <th className="px-4 py-2 font-medium">Fecha</th>
-                <th className="px-4 py-2 font-medium">Vehículo</th>
-                <th className="px-4 py-2 font-medium">Km</th>
-                <th className="px-4 py-2 font-medium">Estado</th>
-                <th className="px-4 py-2 font-medium">Importe</th>
-                <th className="px-4 py-2 font-medium">Observaciones</th>
-                <th className="px-4 py-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {ordenes.map((o) => {
-                const vehEtiqueta = etiquetaPorVehiculo.get(o.vehiculo_id) ?? "(vehículo desconocido)";
-                const obs = o.observaciones && o.observaciones.length > 60
-                  ? o.observaciones.slice(0, 60) + "…"
-                  : (o.observaciones ?? "");
-                return (
-                  <tr key={o.id} className="border-t hover:bg-gray-50">
-                    <td className="px-4 py-2 font-mono">{o.fecha}</td>
-                    <td className="px-4 py-2">{vehEtiqueta}</td>
-                    <td className="px-4 py-2">{o.km_servicio}</td>
-                    <td className="px-4 py-2">
-                      <span className={`inline-block px-2 py-0.5 rounded text-xs font-mono ${badgeEstado(o.estado)}`}>
-                        {o.estado}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2">{o.importe_total !== null ? `$${o.importe_total.toFixed(2)}` : "—"}</td>
-                    <td className="px-4 py-2 text-gray-600">{obs}</td>
-                    <td className="px-4 py-2 text-right">
-                      <Link href={`/ordenes/${o.id}`} className="text-blue-600 hover:underline">Ver</Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          {/* VISTA ESCRITORIO: Tabla */}
+          <div className='hidden md:block bg-kuati-blanco rounded-xl border border-kuati-borde overflow-hidden shadow-sm'>
+            <table className='w-full text-sm text-left'>
+              <thead className='bg-kuati-fondo text-kuati-grafito border-b border-kuati-borde'>
+                <tr>
+                  <th className='px-6 py-4 font-semibold'>Fecha</th>
+                  <th className='px-6 py-4 font-semibold'>Vehículo</th>
+                  <th className='px-6 py-4 font-semibold'>Km</th>
+                  <th className='px-6 py-4 font-semibold'>Estado</th>
+                  <th className='px-6 py-4 font-semibold'>Importe</th>
+                  <th className='px-6 py-4 font-semibold text-right'>Acción</th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-kuati-borde'>
+                {ordenes.map((o) => {
+                  const vehEtiqueta = etiquetaPorVehiculo.get(o.vehiculo_id) ?? "(vehículo desconocido)";
+                  return (
+                    <tr key={o.id} className='hover:bg-kuati-fondo/50 transition-colors'>
+                      <td className='px-6 py-4 font-mono text-kuati-grafito'>{o.fecha}</td>
+                      <td className='px-6 py-4 text-kuati-grafito'>{vehEtiqueta}</td>
+                      <td className='px-6 py-4 text-kuati-grafito'>{o.km_servicio.toLocaleString('es-PY')}</td>
+                      <td className='px-6 py-4'>
+                        <span className={`inline-block px-2.5 py-1 rounded-md text-xs font-semibold border ${badgeEstado(o.estado)}`}>
+                          {o.estado.replace('_', ' ')}
+                        </span>
+                      </td>
+                      <td className='px-6 py-4 text-kuati-grafito'>{o.importe_total !== null ? `Gs. ${o.importe_total.toLocaleString('es-PY')}` : '—'}</td>
+                      <td className='px-6 py-4 text-right'>
+                        <Link href={`/ordenes/${o.id}`} className='text-kuati-petroleo font-semibold hover:text-kuati-lima transition-colors text-sm'>
+                          Ver
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* VISTA CELULAR: Tarjetas */}
+          <div className='grid md:hidden gap-4'>
+            {ordenes.map((o) => {
+              const vehEtiqueta = etiquetaPorVehiculo.get(o.vehiculo_id) ?? "(vehículo desconocido)";
+              return (
+                <div key={o.id} className='bg-kuati-blanco rounded-xl border border-kuati-borde p-5 shadow-sm flex flex-col gap-3'>
+                  <div className='flex items-center justify-between border-b border-kuati-borde pb-3'>
+                    <div className='flex items-center gap-2 text-kuati-grafito font-mono font-semibold'>
+                      <IconCalendar size={16} className='text-kuati-grafito/50' />
+                      {o.fecha}
+                    </div>
+                    <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border ${badgeEstado(o.estado)}`}>
+                      {o.estado.replace('_', ' ')}
+                    </span>
+                  </div>
+                  
+                  <div className='space-y-1.5 text-sm text-kuati-grafito/80'>
+                    <p className='flex items-center gap-2'>
+                      <IconCar size={16} className='text-kuati-grafito/50' />
+                      <span className='font-medium text-kuati-petroleo'>{vehEtiqueta}</span>
+                    </p>
+                    <p className='flex items-center gap-2'>
+                      <IconRoad size={16} className='text-kuati-grafito/50' />
+                      {o.km_servicio.toLocaleString('es-PY')} km
+                    </p>
+                    <p className='flex items-center gap-2'>
+                      <IconCash size={16} className='text-kuati-grafito/50' />
+                      {o.importe_total !== null ? `Gs. ${o.importe_total.toLocaleString('es-PY')}` : 'Sin importe'}
+                    </p>
+                  </div>
+                  
+                  <div className='pt-2 flex justify-end'>
+                    <Link 
+                      href={`/ordenes/${o.id}`} 
+                      className='text-kuati-petroleo font-bold text-sm bg-kuati-fondo px-4 py-2 rounded-lg hover:bg-kuati-borde transition-colors'
+                    >
+                      Ver orden
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
   );
