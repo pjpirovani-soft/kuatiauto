@@ -29,7 +29,6 @@ export default function MapaDirectorio({ establecimientos, centro }: Props) {
     import("leaflet").then((mod) => {
       L = mod.default ?? mod;
 
-      // Importar CSS de Leaflet (una sola vez)
       if (!document.getElementById("leaflet-css")) {
         const link = document.createElement("link");
         link.id = "leaflet-css";
@@ -42,7 +41,7 @@ export default function MapaDirectorio({ establecimientos, centro }: Props) {
         mapRef.current.remove();
       }
 
-      const c = centro ?? { lat: -25.3, lng: -57.6 }; // Asunción por defecto
+      const c = centro ?? { lat: -25.3, lng: -57.6 };
       const map = L.map(ref.current!).setView([c.lat, c.lng], 12);
       mapRef.current = map;
 
@@ -55,7 +54,7 @@ export default function MapaDirectorio({ establecimientos, centro }: Props) {
         if (e.lat_aproximada && e.lng_aproximada) {
           const marker = L.marker([e.lat_aproximada, e.lng_aproximada]).addTo(map);
           marker.bindPopup(
-            `<strong>${e.nombre}</strong><br/>${e.direccion_aproximada ?? ""}<br/>${e.ciudad ?? ""}<br/>${e.telefono ?? ""}`
+            `<strong>${e.nombre}</strong><br/>${e.direccion_aproximada ?? ""}<br/>${e.ciudad ?? ""}<br/>${e.telefono ?? ""}<br/><a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat_aproximada},${e.lng_aproximada}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;font-weight:600">🧭 Cómo llegar</a>`
           );
         }
       });

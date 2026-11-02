@@ -1,4 +1,5 @@
-﻿import MapaDirectorio from "@/components/directorio/MapaDirectorio";
+import MapaDirectorio from "@/components/directorio/MapaDirectorio";
+import MiUbicacionButton from "@/components/directorio/MiUbicacionButton";
 import { buscarEstablecimientos } from "@/lib/directorio-actions";
 
 export const dynamic = "force-dynamic";
@@ -58,6 +59,7 @@ export default async function DirectorioPage({ searchParams }: { searchParams: P
         <input type="hidden" name="lng" value={lng} />
         <input type="hidden" name="radio" value={radio} />
         <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded">Buscar</button>
+        <MiUbicacionButton />
       </form>
       <div className="mb-4">
         <MapaDirectorio establecimientos={establecimientos} centro={{ lat, lng }} />
@@ -66,5 +68,3 @@ export default async function DirectorioPage({ searchParams }: { searchParams: P
     </main>
   );
 }
-
-
