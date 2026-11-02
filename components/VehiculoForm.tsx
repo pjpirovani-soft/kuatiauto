@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -18,11 +18,15 @@ type VehiculoData = {
   notas: string | null;
 };
 
-type Props =
+type Props = (
   | { modo: 'crear'; clientes: Cliente[]; initialData?: undefined }
-  | { modo: 'editar'; clientes: Cliente[]; initialData: VehiculoData };
+  | { modo: 'editar'; clientes: Cliente[]; initialData: VehiculoData }
+) & {
+  /** Si se pasa, se llama al crear/editar exitosamente en vez de redirigir. */
+  onSuccess?: (data: { id: string }) => void;
+};
 
-export default function VehiculoForm({ modo, clientes, initialData }: Props) {
+export default function VehiculoForm({ modo, clientes, initialData, onSuccess }: Props) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -52,6 +56,11 @@ export default function VehiculoForm({ modo, clientes, initialData }: Props) {
 
     if (!res.ok) {
       setError(res.error);
+      return;
+    }
+
+    if (onSuccess) {
+      onSuccess({ id: res.data.id });
       return;
     }
 

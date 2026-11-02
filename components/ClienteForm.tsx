@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -17,9 +17,17 @@ interface ClienteFormProps {
   };
   title: string;
   redirectTo?: string;
+  /** Si se pasa, se llama al crear/editar exitosamente en vez de redirigir. */
+  onSuccess?: (data: { id: string; nombre: string }) => void;
 }
 
-export function ClienteForm({ action, initialData, title, redirectTo = '/clientes' }: ClienteFormProps) {
+export function ClienteForm({
+  action,
+  initialData,
+  title,
+  redirectTo = '/clientes',
+  onSuccess,
+}: ClienteFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -40,6 +48,10 @@ export function ClienteForm({ action, initialData, title, redirectTo = '/cliente
       const result = await action(input);
       if (!result.ok) {
         setError(result.error);
+        return;
+      }
+      if (onSuccess) {
+        onSuccess({ id: result.data.id, nombre: String(input.nombre) });
         return;
       }
       window.location.href = redirectTo;
