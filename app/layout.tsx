@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
-import AppShell from '../components/AppShell';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -13,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body>
-        <AppShell>{children}</AppShell>
+        {children}
         <Analytics />
         <script
           dangerouslySetInnerHTML={{
