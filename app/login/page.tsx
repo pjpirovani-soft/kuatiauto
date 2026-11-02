@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Logo from '@/components/brand/Logo';
 import { login } from '@/lib/auth-actions';
 import { IconEye, IconEyeOff, IconLoader2 } from '@tabler/icons-react';
 
@@ -24,7 +25,7 @@ export default function LoginPage() {
     <main className='min-h-screen flex items-center justify-center bg-kuati-petroleo p-4'>
       <div className='w-full max-w-md bg-kuati-blanco rounded-xl shadow-xl p-8 border border-kuati-borde'>
         <div className='text-center mb-8'>
-          <h1 className='text-3xl font-bold text-kuati-petroleo mb-2'>KuatiAuto</h1>
+          <Logo variant='horizontal' theme='light' priority className='h-12 w-auto mx-auto mb-4' />
           <p className='text-kuati-grafito/70'>Accedé al panel de gestión.</p>
         </div>
 
@@ -89,3 +90,4 @@ export default function LoginPage() {
     </main>
   );
 }
+

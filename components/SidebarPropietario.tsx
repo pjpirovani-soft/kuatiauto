@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import Link from 'next/link';
+import Logo from '@/components/brand/Logo';
 import { usePathname, useRouter } from 'next/navigation';
 import { IconLayoutDashboard, IconUsers, IconCar, IconClipboardList, IconBox, IconBuildingStore, IconLogout } from '@tabler/icons-react';
 import { createClient } from '@/lib/supabase/client';
@@ -26,9 +27,7 @@ export default function SidebarPropietario() {
 
   return (
     <aside className='w-64 min-h-screen bg-kuati-petroleo text-kuati-blanco flex flex-col'>
-      <div className='p-6 text-2xl font-bold tracking-wider border-b border-white/20'>
-        KuatiAuto
-      </div>
+      <div className='p-6 border-b border-white/20'><Logo variant='isotipo' theme='dark' showText={true} href='/dashboard' /></div>
       <nav className='flex-1 p-4 space-y-2'>
         {menuItems.map((item) => {
           const isActive = item.exact
@@ -72,4 +71,5 @@ export default function SidebarPropietario() {
     </aside>
   );
 }
+
 

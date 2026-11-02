@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ClienteForm } from './ClienteForm';
@@ -27,7 +27,7 @@ describe('ClienteForm', () => {
     expect(screen.getByRole('heading', { name: /editar cliente/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/nombre/i)).toHaveValue('Juan Perez');
     expect(screen.getByLabelText(/email/i)).toHaveValue('juan@example.com');
-    expect(screen.getByLabelText(/telefono/i)).toHaveValue('+595981123456');
+    expect(screen.getByLabelText(/tel[eé]fono/i)).toHaveValue('+595981123456');
     expect(screen.getByLabelText(/notas/i)).toHaveValue('Cliente frecuente');
     expect(screen.getByRole('button', { name: /guardar/i })).toBeEnabled();
     expect(screen.getByRole('link', { name: /cancelar/i })).toHaveAttribute(
@@ -119,3 +119,5 @@ describe('ClienteForm', () => {
     });
   });
 });
+
+

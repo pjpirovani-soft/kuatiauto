@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
+import Logo from '@/components/brand/Logo';
 import { usePathname } from 'next/navigation';
 import {
   IconLayoutDashboard,
@@ -13,11 +14,11 @@ import {
 
 const menuItems = [
   { name: 'Dashboard', href: '/dashboard', icon: IconLayoutDashboard },
-  { name: 'Vehículos', href: '/vehiculos', icon: IconCar },
+  { name: 'VehÃ­culos', href: '/vehiculos', icon: IconCar },
   { name: 'Clientes', href: '/clientes', icon: IconUsers },
   { name: 'Servicios', href: '/catalogo/servicios', icon: IconTool },
-  { name: 'Órdenes', href: '/ordenes', icon: IconCalendarEvent },
-  { name: 'Configuración', href: '/admin', icon: IconSettings },
+  { name: 'Ã“rdenes', href: '/ordenes', icon: IconCalendarEvent },
+  { name: 'ConfiguraciÃ³n', href: '/admin', icon: IconSettings },
 ];
 
 export default function Sidebar() {
@@ -25,9 +26,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 min-h-screen bg-kuati-petroleo text-kuati-blanco flex flex-col">
-      <div className="p-6 text-2xl font-bold tracking-wider border-b border-kuati-petroleo/50">
-        KuatiAuto
-      </div>
+      <div className="p-6 border-b border-white/20"><Logo variant="isotipo" theme="dark" showText={true} href="/dashboard" /></div>
       <nav className="flex-1 p-4 space-y-2">
         {menuItems.map((item) => {
           const isActive = pathname.startsWith(item.href);

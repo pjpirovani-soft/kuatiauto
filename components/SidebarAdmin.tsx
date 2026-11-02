@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import Link from 'next/link';
+import Logo from '@/components/brand/Logo';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   IconLayoutDashboard, 
@@ -31,9 +32,7 @@ export default function SidebarAdmin() {
 
   return (
     <aside className='w-64 min-h-screen bg-kuati-petroleo text-kuati-blanco flex flex-col'>
-      <div className='p-6 text-2xl font-bold tracking-wider border-b border-white/20'>
-        KuatiAuto Admin
-      </div>
+      <div className='p-6 border-b border-white/20 flex items-center gap-3'><Logo variant='isotipo' theme='dark' showText={false} href='/admin' /><span className='text-xs uppercase tracking-widest text-kuati-blanco/60 font-semibold'>Admin</span></div>
       <nav className='flex-1 p-4 space-y-2'>
         {menuItems.map((item) => {
           // Si es exact, solo activo si coincide exacto. Si no, activo si empieza con el href.
@@ -78,5 +77,6 @@ export default function SidebarAdmin() {
     </aside>
   );
 }
+
 
 
