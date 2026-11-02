@@ -1,4 +1,4 @@
-@import '@fontsource/inter/400.css';
+﻿@import '@fontsource/inter/400.css';
 @import '@fontsource/inter/600.css';
 @import '@fontsource/inter/700.css';
 @import 'tailwindcss';
@@ -21,4 +21,14 @@
 body {
   background-color: var(--color-kuati-fondo);
   color: var(--color-kuati-grafito);
+}
+
+/* Scroll horizontal para tablas en celular */
+@media (max-width: 768px) {
+  .overflow-hidden {
+    overflow-x: auto;
+  }
+  table {
+    min-width: 600px; /* Fuerza un ancho mínimo para que no se achiquen las columnas */
+  }
 }
