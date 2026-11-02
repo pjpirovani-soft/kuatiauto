@@ -737,3 +737,9 @@ Ver `SPEC.md` sección 9 "Flujos del MVP".
 - Renombrar `clientes` a `establecimientos` en el scaffold: F3.
 - `vehiculo_identidad`: decidir en F5 si se puebla automáticamente por trigger o en server action.
 - Catálogo global seed: contenido exacto de los ~20-30 servicios/productos → F6.
+
+---
+## §Operación (E5c)
+- **Sentry:** Configurado con `@sentry/nextjs` (App Router). `withSentryConfig` en `next.config.mjs`.
+- **Analytics:** `@vercel/analytics/next` montado en `app/layout.tsx`.
+- **Backups:** GitHub Actions (`supabase db dump`) con cron semanal. Requiere el secret `SUPABASE_DB_URL` en GitHub.

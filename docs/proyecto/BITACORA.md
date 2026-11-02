@@ -869,3 +869,8 @@ Pruebas ejecutadas:
 - Invariantes de rol: propietario/empleado => empresa_id NOT NULL, conductor => empresa_id NULL. Validar en backend (no solo en UI) y con tests.
 - El smoke test manual encontro un bug real que los 277 tests unitarios no podian detectar. Justifica el gate de 10 puntos.
 - Turbopack a veces necesita hard reload (Ctrl+F5) para reflejar cambios de client components que no se recompilaron.
+---
+## 2026-11-02 — Fase E5c (Observabilidad y Backups)
+- **E5c-1:** Instalado `@vercel/analytics`, montado en el root layout.
+- **E5c-2:** Wizard de Sentry ejecutado. Reescritos `instrumentation-client.ts`, `sentry.server.config.ts` y `sentry.edge.config.ts` para usar env vars (`SENTRY_DSN`) en vez del DSN hardcodeado. Corregido `lang="es"` en `app/global-error.tsx`. Build y `tsc` verdes.
+- **E5c-3:** Creado workflow de backup. Debuggeado el error `password authentication failed` (era el usuario del pooler y los corchetes en el string). Workflow #2 corrió en verde.

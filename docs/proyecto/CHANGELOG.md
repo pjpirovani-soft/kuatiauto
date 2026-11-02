@@ -496,3 +496,9 @@ Cerrado funcionalmente: `/admin/empresas`, `/admin/usuarios`, `/admin/catalogo/s
 ### Pending
 - Smoke test manual del panel admin en navegador.
 - E5c: Sentry + Vercel Analytics + backups automatizados.
+## [E5c] - 2026-11-02
+### Added
+- Sentry error monitoring (`@sentry/nextjs`) con DSN por variables de entorno.
+- Vercel Analytics (`@vercel/analytics`) en el root layout.
+- Workflow de GitHub Actions para backups semanales de la base de datos (`.github/workflows/backup-db.yml`).
+- Archivo `app/global-error.tsx` para capturar errores de React.

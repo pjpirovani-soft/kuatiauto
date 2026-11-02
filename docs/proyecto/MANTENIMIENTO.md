@@ -176,3 +176,9 @@ Todos documentados en gestor de contraseñas del propietario con 2FA:
 | Fecha | Qué se hizo | Quién | Referencia |
 |---|---|---|---|
 | 2026-10-30 | Creación del runbook F13 | Pedro J. Pirovani | F13-PLAN.md |
+
+---
+## §3. Observabilidad y Backups (E5c)
+- **Sentry:** Los errores se capturan automáticamente. El DSN está en `.env.local` (`NEXT_PUBLIC_SENTRY_DSN`). En prod, usar `SENTRY_DSN` para server/edge.
+- **Vercel Analytics:** Activo en el layout. Requiere deploy en Vercel para reportar.
+- **Backups:** El workflow `.github/workflows/backup-db.yml` hace un dump semanal de Supabase (roles, schema, data) y lo guarda como artifact por 90 días. Para restaurar, descargar el artifact y aplicar los `.sql` con `psql`.
