@@ -196,3 +196,34 @@ Registro de decisiones del proyecto. Cada decisión tiene un estado:
 | D-F13-4 | Incidentes: 3 severidades. S1 (caída total o pérdida de datos) respuesta < 2 h; S2 (funcionalidad crítica degradada) < 24 h; S3 (bug menor o cosmético) próximo sprint. Canal único: email + WhatsApp del propietario. Post-mortem obligatorio para S1. | APROBADA |
 | D-F13-5 | Continuidad: RTO 24 h, RPO 24 h. Accesos críticos (Vercel, Supabase, GitHub, dominio .com.py, Resend) documentados en gestor de contraseñas del propietario con 2FA. Plan de recuperación documentado en MANTENIMIENTO.md. | APROBADA |
 **Nota:** D-F13-1..5 APROBADAS 2026-10-30 (por delegacion, arranque F14). F13 cerrada.
+
+## ADR-007: Playwright E2E (2026-11-02, Fase D)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| ADR-007 | Adoptar `@playwright/test` para tests E2E. Alternativas evaluadas: Cypress (descartado: peor DX en Next 16 + React Server Components; peso de bundle), Vitest browser mode (descartado: aún experimental en la fecha, sin `storageState` ni multi-project robusto). Playwright gana por: soporte first-class de Next 16 App Router, multi-browser opcional, `storageState` para reutilizar login (crítico por rate limit D-F4-3), traza HTML/video/screenshot nativos, y CI runner oficial (`mcr.microsoft.com/playwright`). | APROBADA por delegación |
+| D-D-1 | Estrategia híbrida: smokes **read-only** contra `kuatiauto.vercel.app` (prod) + flows de escritura contra Supabase local + `npm run dev`. Nunca escritura contra prod (D-F4-5, D-F13-2). | APROBADA por delegación |
+| D-D-2 | `workers: 1` + `fullyParallel: false` en `smoke-prod` por rate limiting 5/min (D-F4-3). `storageState` compartido cuando se agreguen más smokes del mismo rol. | APROBADA por delegación |
+| D-D-3 | `.env.e2e.local` con credenciales de prueba (gitignored por `.env.*.local`). No se hardcodean credenciales en specs (AI-RULES.md: "nunca imprimir el VALOR de una key"). | APROBADA por delegación |
+| D-D-4 | `serviceWorkers: 'block'` en tests por SW v2 de PWA (Fase E8) que muestra banner "nueva versión" intermitente. | APROBADA por delegación |
+
+**Nota:** ADR-007 y D-D-1..4 APROBADAS 2026-11-02 (por delegación, cierre parcial de D). 6/6 smokes verdes contra prod (18.1s). Flows de escritura y CI quedan para próxima sesión.
+
+## ADR-008: Fase E8 — Design System, métricas, legal y PWA (2026-11-02, cierre retroactivo)
+
+| ID | Decisión | Estado |
+|---|---|---|
+| ADR-008 | Fase E8 ejecutada 2026-11-02 (no documentada en su momento). Alcance: Design System unificado (paleta corporativa kuati-*), responsive completo (sidebars con hamburguesa, tablas con vista de tarjetas), panel de métricas del CEO (`/admin/analytics`) y del Propietario (`/dashboard`), páginas legales (`/terminos`, `/privacidad` Ley 6534/2020), centro de ayuda (`/ayuda`), PWA con SW v2 (botón "nueva versión disponible"), versión visible en sidebars (`NEXT_PUBLIC_APP_VERSION`). | APROBADA retroactivamente |
+| D-E8-1 | Paleta corporativa: `kuati-petroleo`, `kuati-lima`, `kuati-grafito`, `kuati-borde`, `kuati-blanco`. Definidas en `tailwind.config` y aplicadas al 100% de la app. | APROBADA retroactivamente |
+| D-E8-2 | Métricas separadas por rol: CEO ve métricas globales, Propietario ve métricas de su empresa. No se mezclan (RLS + views separadas). | APROBADA retroactivamente |
+| D-E8-3 | PWA: SW v2 con estrategia de cache "nueva versión disponible" (no auto-refresh para evitar perder datos de formulario). Versión visible en sidebars para diagnóstico. | APROBADA retroactivamente |
+
+**Nota:** ADR-008 y D-E8-1..3 APROBADAS retroactivamente el 2026-11-02. La fase E8 se ejecutó pero no quedó documentada en `DECISIONES.md` en su momento; este ADR regulariza el estado.
+
+## Adenda 2026-11-02 — Corrección de deudas de documentación
+
+Detectadas durante la lectura de docs para iniciar fase D:
+
+- `STATUS.md` fechado 2026-10-31, decía 18 migraciones (real: 20). **Actualizado a 2026-11-02.**
+- `SESSION-STATE.md` fechado 2026-11-01, decía 19 migraciones y 212 tests (real: 20 migraciones, 279 Vitest + 6 Playwright). **Actualizado a 2026-11-02 con sección nueva arriba.**
+- `SESSION-PROTOCOL.md`: residuo `$13.` en pasos 3 y 3b de arranque y cierre. **Deuda menor, a corregir en próxima sesión.**

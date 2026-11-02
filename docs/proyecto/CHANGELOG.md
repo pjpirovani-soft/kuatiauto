@@ -1,3 +1,34 @@
+## [D] - 2026-11-02 - Playwright E2E (smokes contra prod)
+
+### Added
+- Setup Playwright Test (`@playwright/test`, `dotenv`) como devDependencies.
+- `playwright.config.ts`: 2 projects (`smoke-prod` contra kuatiauto.vercel.app, `flows-local` contra localhost:3000). `serviceWorkers: 'block'` por PWA SW v2. `workers: 1` en smoke-prod por rate limit D-F4-3. `locale: es-PY`, `timezoneId: America/Asuncion`.
+- `e2e/fixtures/auth.ts`: helpers `loginAs()` y `getCreds()` para reuso en smokes y flows.
+- 6 smokes read-only contra producción (todos verdes, 18.1s total):
+  - `login-propietario` → `/clientes`
+  - `login-propietario-b` → `/clientes` (aislamiento A/B)
+  - `login-admin` → `/admin`
+  - `login-conductor` → `/mi-garage`
+  - `analytics-admin` → `/admin/analytics` (Métricas Globales)
+  - `dashboard-propietario` → `/dashboard` (Panel Principal)
+- `.env.e2e.local` con credenciales de prueba (gitignored por `.env.*.local`).
+- Entradas en `.gitignore` para `e2e/.auth/`, `e2e/report/`, `e2e/test-results/`, `e2e/blob-report/`, `playwright-report/`, `test-results/`, `playwright_out.txt`.
+
+### Changed
+- `.gitignore`: +13 líneas (artefactos Playwright).
+- `package.json`: +2 devDependencies (`@playwright/test`, `dotenv`).
+
+### Verified
+- 6/6 smokes passed en 18.1s contra prod (kuatiauto.vercel.app).
+- `npx tsc --noEmit` sin errores (config typea bien).
+- Rate limit 5/min (D-F4-3) no bloqueó los 6 logins en 18s.
+
+### Pendiente (próxima sesión)
+- Flows de escritura contra Supabase local: `registro → empresa → establecimiento → publicar → directorio`.
+- CI en GitHub Actions (smokes en PR, flows en main).
+- ADR-007 Playwright en `DECISIONES.md`.
+- ADR-008 Fase E8 (faltaba en `DECISIONES.md`).
+- Actualizar `STATUS.md` y `SESSION-STATE.md` (fechados 2026-10-31 y 2026-11-01, desactualizados).
 ## [E5b] - 2026-11-02 - Panel admin completo (smoke test + fix H-E5b-3)
 
 ### Verified

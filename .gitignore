@@ -38,3 +38,16 @@ docs/proyecto/_dump-*.txt
 docs/proyecto/_*.txt
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Playwright E2E (auth state, reportes, artefactos)
+e2e/.auth/
+e2e/report/
+e2e/test-results/
+e2e/blob-report/
+playwright-report/
+test-results/
+# Output temporal de runs de Playwright
+playwright_out.txt
+
+# Output temporal de runs de Playwright
+playwright_out.txt

@@ -1,8 +1,17 @@
 # Session State — KuatiAuto (provisional)
 
-**Actualizado:** 2026-11-01
+**Actualizado:** 2026-11-02
 
 > Este archivo es el handoff entre sesiones. Leerlo primero al arrancar. Actualizarlo al cerrar.
+
+## Estado actual (2026-11-02, post-fase D)
+
+- `v0.4.2` EN PRODUCCIÓN (kuatiauto.vercel.app). `HEAD = fde7fc3`. Tag `v0.4.2` = HEAD.
+- **Fase D (Playwright E2E) CERRADA parcialmente**: setup + 6 smokes read-only contra prod (4 roles + analytics + dashboard). Flows de escritura y CI pendientes.
+- **Tests:** 279/279 Vitest + 6/6 Playwright smokes. **tsc --noEmit:** 0 errores. **build:** OK (25 rutas).
+- **Supabase real:** proyecto kuatiauto (wzfukuzcousihslfgelr, us-east-1). 20 migraciones aplicadas.
+- **Usuario de prueba admin (con password):** pirovanipedrojose@gmail.com / AdminKuati-2026!.
+- **Bloqueado por:** nada.
 
 ## Estado actual (30 segundos)
 

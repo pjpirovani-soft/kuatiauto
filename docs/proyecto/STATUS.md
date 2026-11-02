@@ -1,6 +1,6 @@
 # STATUS — KuatiAuto (provisional)
 
-**Actualizado:** 2026-10-31
+**Actualizado:** 2026-11-02
 **Propósito:** tablero macro de módulos. `SESSION-STATE.md` sigue siendo el handoff operativo entre sesiones. No se duplican (D-F14-5).
 **Regla:** un módulo se marca `completo` solo tras pasar el gate de seguridad de 10 puntos (`ARCHITECTURE.md` §Gate de seguridad por módulo). Sin gate, se commitea como `wip` con nota acá.
 
@@ -15,6 +15,7 @@
 
 | Etapa | Módulo | Estado | Bloqueantes | Hallazgos |
 |---|---|---|---|---|
+| D | Playwright E2E (smokes read-only contra prod) | **completo** | — | 6/6 smokes verdes 2026-11-02 (18.1s), 4 roles + analytics + dashboard |
 | E1 | auth completo (registro/login/reset/confirmación) | **completo** | — | prueba cruzada A/B ✅ 2026-10-31; 2FA en Bitwarden activada 2026-11-01 |
 | E1 | multiempresa (crear empresa + establecimiento) | wip | — | validado end-to-end (Luis) |
 | E1 | shell + route groups + layout base | wip | — | layout dashboard es E2b1 |

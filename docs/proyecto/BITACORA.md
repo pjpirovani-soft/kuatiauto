@@ -874,3 +874,46 @@ Pruebas ejecutadas:
 - **E5c-1:** Instalado `@vercel/analytics`, montado en el root layout.
 - **E5c-2:** Wizard de Sentry ejecutado. Reescritos `instrumentation-client.ts`, `sentry.server.config.ts` y `sentry.edge.config.ts` para usar env vars (`SENTRY_DSN`) en vez del DSN hardcodeado. Corregido `lang="es"` en `app/global-error.tsx`. Build y `tsc` verdes.
 - **E5c-3:** Creado workflow de backup. Debuggeado el error `password authentication failed` (era el usuario del pooler y los corchetes en el string). Workflow #2 corrió en verde.
+
+---
+
+## 2026-11-02 — Fase D (Playwright E2E, smokes contra prod)
+
+**Setup Playwright + 6 smokes verdes contra producción.** La fase D arranca con cobertura read-only de los 4 roles + 2 pantallas clave. Flows de escritura y CI quedan para la próxima sesión.
+
+**Setup:**
+- `@playwright/test` y `dotenv` instalados como devDependencies.
+- `playwright.config.ts` con 2 projects: `smoke-prod` (kuatiauto.vercel.app) y `flows-local` (localhost:3000, aún sin tests).
+- Decisiones aplicadas del dump y DECISIONES.md: `serviceWorkers: 'block'` por SW v2 (Fase E8), `workers: 1` en smoke-prod por rate limit D-F4-3 (5/min), `locale: es-PY`, `timezoneId: America/Asuncion`, retries 2 solo en CI, trace/screenshot/video en fallo.
+- `e2e/fixtures/auth.ts`: helpers `loginAs(page, email, password)` y `getCreds(prefix)` que lee `process.env`.
+- `.env.e2e.local` con credenciales de los 4 usuarios (gitignored por `.env.*.local`).
+- `.gitignore` extendido: `e2e/.auth/`, `e2e/report/`, `e2e/test-results/`, `e2e/blob-report/`, `playwright-report/`, `test-results/`, `playwright_out.txt`.
+
+**Smokes (6 tests, 18.1s total, todos verdes):**
+- `login-propietario` → `/clientes`
+- `login-propietario-b` → `/clientes` (aislamiento A/B básico)
+- `login-admin` → `/admin`
+- `login-conductor` → `/mi-garage`
+- `analytics-admin` → `/admin/analytics` (heading "Métricas Globales")
+- `dashboard-propietario` → `/dashboard` (heading "Panel Principal")
+
+**Verificación:**
+- 6/6 smokes passed contra prod.
+- `npx tsc --noEmit`: sin errores.
+- Rate limit 5/min no bloqueó los 6 logins en 18s.
+
+**Hallazgos / ajustes en sesión:**
+- 1er intento del smoke conductor falló por strict mode violation: el regex `/garage|vehículo|vehiculo|historial/i` matcheaba 2 headings (`<h2>Mis Vehículos</h2>` y `<h2>Historial Compartido</h2>`). Fix: `/^Mis Vehículos$/i` (heading exacto). Lección: siempre anclar regex de heading con `^...$` para evitar strict mode.
+- Falta de `dotenv`: Playwright no carga `.env.*` automáticamente. Instalado + configurado en `playwright.config.ts` con `loadEnv({ path: ".env.e2e.local" })`.
+
+**Lecciones PowerShell 5.x (nuevas):**
+- **`[System.IO.File]::ReadAllText/WriteAllText/AppendAllText` NO resuelven paths relativos contra `$PWD` de PowerShell.** Usan `[System.Environment]::CurrentDirectory`, que es `C:\Users\<user>` por default. Fix: `Join-Path $PWD.Path "docs\proyecto\ARCHIVO.md"` para path absoluto. Sin esto, falla con "No se puede encontrar una parte de la ruta de acceso".
+- **`Start-Job { ... }` multilínea se cuelga en PS 5.x con paste largo.** Fallback: `cmd /c "comando > out.txt 2>&1"` en una sola línea.
+- **Cuando el prompt muestra `>>` residual**, Ctrl+C antes de pegar el próximo comando. Pasar output pegado como si fuera comando genera 6-10 errores rojos de "término no reconocido" (cosmético, no daña archivos).
+- Los smokes contra prod tardan ~2-4s cada uno (SSR Next 16 + Lambda caliente). El primer run en frío tardó 6.5s.
+
+**Pendiente próxima sesión:**
+- Flows de escritura contra Supabase local: `registro → empresa → establecimiento → publicar → directorio`. Requiere setup de Supabase local + seed de usuarios.
+- CI GitHub Actions: smokes en cada PR, flows solo en `main`.
+- ADR-007 (Playwright) y ADR-008 (Fase E8) en `DECISIONES.md`.
+- `STATUS.md` y `SESSION-STATE.md` están desactualizados (fechados 2026-10-31 y 2026-11-01, no reflejan v0.4.2 ni los smokes E2E).
