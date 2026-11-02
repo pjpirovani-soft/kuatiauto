@@ -5,6 +5,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'KuatiAuto',
   description: 'Plataforma SaaS multiempresa para mantenimiento automotor en Paraguay.',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -13,6 +14,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <Analytics />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js');
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
