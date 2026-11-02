@@ -27,3 +27,4 @@ supabase/.temp/
 # (NO ignorar: se versiona con README explicativo)
 handoff-*.txt
 docs/_*.sql
+docs/proyecto/_dump-continuacion.txt
