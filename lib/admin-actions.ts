@@ -375,3 +375,127 @@ export async function desactivarUsuario(
 
   return { ok: true };
 }
+// ─── Catalogo global: servicios ──────────────────────────────────────────
+
+export type ServicioGlobalRow = {
+  id: string;
+  nombre: string;
+  descripcion: string | null;
+  intervalo_km_sugerido: number | null;
+  intervalo_meses_sugerido: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ListarServiciosGlobalesResult =
+  | { ok: true; data: ServicioGlobalRow[] }
+  | { ok: false; error: string };
+
+export type ServicioGlobalActionResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+export async function listarServiciosGlobalesAdmin(): Promise<ListarServiciosGlobalesResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("servicio_global")
+    .select("id, nombre, descripcion, intervalo_km_sugerido, intervalo_meses_sugerido, created_at, updated_at")
+    .order("nombre", { ascending: true });
+
+  if (error) return { ok: false, error: "Error al listar servicios" };
+  return { ok: true, data: data ?? [] };
+}
+
+export async function crearServicioGlobal(input: {
+  nombre: string;
+  descripcion?: string;
+  intervalo_km_sugerido?: number;
+  intervalo_meses_sugerido?: number;
+}): Promise<ServicioGlobalActionResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  const nombre = input.nombre?.trim() ?? "";
+  if (nombre.length < 2 || nombre.length > 120) {
+    return { ok: false, error: "Nombre invalido (2 a 120 caracteres)" };
+  }
+  if (input.intervalo_km_sugerido !== undefined && input.intervalo_km_sugerido <= 0) {
+    return { ok: false, error: "Intervalo en km debe ser positivo" };
+  }
+  if (input.intervalo_meses_sugerido !== undefined && input.intervalo_meses_sugerido <= 0) {
+    return { ok: false, error: "Intervalo en meses debe ser positivo" };
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin.from("servicio_global").insert({
+    nombre,
+    descripcion: input.descripcion?.trim() || null,
+    intervalo_km_sugerido: input.intervalo_km_sugerido ?? null,
+    intervalo_meses_sugerido: input.intervalo_meses_sugerido ?? null,
+  });
+  if (error) return { ok: false, error: "Error al crear servicio" };
+  return { ok: true };
+}
+
+export async function editarServicioGlobal(input: {
+  id: string;
+  nombre: string;
+  descripcion?: string;
+  intervalo_km_sugerido?: number;
+  intervalo_meses_sugerido?: number;
+}): Promise<ServicioGlobalActionResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  if (!input.id) return { ok: false, error: "ID invalido" };
+  const nombre = input.nombre?.trim() ?? "";
+  if (nombre.length < 2 || nombre.length > 120) {
+    return { ok: false, error: "Nombre invalido (2 a 120 caracteres)" };
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("servicio_global")
+    .update({
+      nombre,
+      descripcion: input.descripcion?.trim() || null,
+      intervalo_km_sugerido: input.intervalo_km_sugerido ?? null,
+      intervalo_meses_sugerido: input.intervalo_meses_sugerido ?? null,
+    })
+    .eq("id", input.id);
+  if (error) return { ok: false, error: "Error al editar servicio" };
+  return { ok: true };
+}
+
+export async function eliminarServicioGlobal(id: string): Promise<ServicioGlobalActionResult> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+  if (!id) return { ok: false, error: "ID invalido" };
+
+  const admin = createAdminClient();
+  const { error } = await admin.from("servicio_global").delete().eq("id", id);
+  if (error) return { ok: false, error: "Error al eliminar servicio" };
+  return { ok: true };
+}
+
+export async function obtenerServicioGlobalAdmin(id: string): Promise<
+  | { ok: true; data: ServicioGlobalRow }
+  | { ok: false; error: string; notFound?: boolean }
+> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+  if (!id) return { ok: false, error: "ID invalido" };
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("servicio_global")
+    .select("id, nombre, descripcion, intervalo_km_sugerido, intervalo_meses_sugerido, created_at, updated_at")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) return { ok: false, error: "Error al leer servicio" };
+  if (!data) return { ok: false, error: "Servicio no encontrado", notFound: true };
+  return { ok: true, data };
+}

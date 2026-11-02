@@ -436,3 +436,23 @@ Ver `BITACORA.md` §Cierre E3. CRUD de servicios y productos propios de la empre
 ### Pending
 - /admin/catalogo: moderacion de servicio_global y producto_global.
 - Link "Catalogo" en el sidebar.
+## [E5b-wip4] - 2026-11-02 - Catalogo global: servicios (CRUD)
+
+### Added
+- `lib/schemas/catalogoGlobalSchema.ts`: Zod para servicios globales.
+- `lib/admin-actions.ts`: `listarServiciosGlobalesAdmin`, `obtenerServicioGlobalAdmin`, `crearServicioGlobal`, `editarServicioGlobal`, `eliminarServicioGlobal`.
+- `components/ServicioGlobalForm.tsx`: client form crear/editar.
+- `components/EliminarServicioGlobalButton.tsx`: boton de eliminacion con confirm.
+- `app/(admin)/admin/catalogo/page.tsx`: indice.
+- `app/(admin)/admin/catalogo/servicios/page.tsx` + `nuevo/page.tsx` + `[id]/page.tsx`.
+- `lib/schemas/catalogoGlobalSchema.test.ts`: 11 tests.
+- `lib/admin-catalogo-servicios-actions.test.ts`: 13 tests.
+- Link "Catalogo" en `app/(admin)/layout.tsx`.
+
+### Verified
+- 257/257 tests verdes (23 archivos, +24 nuevos).
+- `tsc --noEmit`: exit 0.
+- `npm run build`: OK (8 rutas admin).
+
+### Pending
+- /admin/catalogo/productos: CRUD completo (marca, tipo, viscosidad).

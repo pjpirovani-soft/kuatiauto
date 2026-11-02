@@ -780,3 +780,35 @@ Pruebas ejecutadas:
 **Lecciones:**
 - PowerShell: backticks de escape (\`r\`n) NO se interpretan en strings con comillas simples, solo en comillas dobles. Para construir lineas con salto embebido, usar comillas dobles y escapar las internas con backtick.
 - Tests aislados en archivo propio (admin-usuarios-actions.test.ts) en vez de extender admin-actions.test.ts: evita riesgo de romper tests verdes y permite iterar sin tocar el mock base.
+## E5b-futuro parte 3a — 2026-11-02
+
+**Catalogo global: servicios (CRUD).**
+
+**Codigo nuevo:**
+- lib/schemas/catalogoGlobalSchema.ts: Zod para crear/editar servicios globales (nombre 2-120, descripcion opcional, intervalos km/meses positivos).
+- lib/admin-actions.ts extendido: listarServiciosGlobalesAdmin, obtenerServicioGlobalAdmin, crearServicioGlobal, editarServicioGlobal, eliminarServicioGlobal. Tipos ServicioGlobalRow y resultados.
+- components/ServicioGlobalForm.tsx: client component crear/editar con validacion nativa + Zod server-side. useTransition.
+- components/EliminarServicioGlobalButton.tsx: client component con confirm + alert.
+- app/(admin)/admin/catalogo/page.tsx: indice con 2 cards (servicios, productos).
+- app/(admin)/admin/catalogo/servicios/page.tsx: lista con badge de intervalos y boton Eliminar.
+- app/(admin)/admin/catalogo/servicios/nuevo/page.tsx + [id]/page.tsx: crear/editar.
+- Link "Catalogo" en app/(admin)/layout.tsx.
+
+**Decisiones tomadas:**
+- CRUD sin columna `activo` (no existe en el schema). Eliminar es delete real, con confirm. Deuda: si hace falta despublicar sin borrar, migracion 021 con activo.
+- El form usa validacion HTML nativa (required, minLength, maxLength) + validacion server-side en la action. Sin Zod en el cliente (no se reenvia el schema al bundle).
+- `requireAdmin()` reutilizado en las 5 actions.
+
+**Verificacion:**
+- 257/257 tests verdes (23 archivos, +24 nuevos: 11 schema + 13 actions).
+- tsc --noEmit: exit 0.
+- npm run build: OK (8 rutas admin, incluye /admin/catalogo/servicios/nuevo y /[id]).
+
+**Pendiente (E5b-futuro parte 3b):**
+- /admin/catalogo/productos: CRUD completo (marca, tipo, viscosidad).
+- Link "Productos" ya esta en el indice de catalogo.
+
+**Lecciones:**
+- `supabase gen types` con `Test-Path`/`Select-String` sin `-LiteralPath` falla con `[id]` como wildcard. Usar `-LiteralPath` siempre en paths con corchetes.
+- Test-Path con paths `[id]` retorna False aunque el directorio exista. Usar `[System.IO.Directory]::Exists` para verificar.
+- `confirm()` y `alert()` en client components funcionan sin configuración extra (solo en handler, no en render).
