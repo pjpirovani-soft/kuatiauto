@@ -4,7 +4,7 @@ import { IconBuilding, IconUsers, IconClipboardList, IconCar, IconUserCheck } fr
 export default async function AdminAnalyticsPage() {
   const res = await obtenerMetricasAdmin();
   
-  if (!res.ok) {
+  if (!res.ok || !res.data) {
     return (
       <div className='p-8 text-red-600'>
         <h1 className='text-2xl font-bold mb-2'>Error de acceso</h1>
@@ -85,3 +85,4 @@ export default async function AdminAnalyticsPage() {
     </div>
   );
 }
+
