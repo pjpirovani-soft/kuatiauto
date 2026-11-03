@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { registerConductor } from "@/lib/auth-actions";
 import { redirect } from "next/navigation";
-import { IconCar, IconArrowLeft } from "@tabler/icons-react";
+import { IconCar, IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 
 export default function RegisterConductorPage() {
   async function handleRegister(formData: FormData) {
@@ -88,8 +88,9 @@ export default function RegisterConductorPage() {
           <div className="mt-6 pt-6 border-t border-kuati-borde space-y-3 text-sm text-center">
             <p className="text-kuati-grafito/70">
               ¿Sos lubricentro?{' '}
-              <Link href="/register" className="text-kuati-petroleo font-semibold hover:underline">
+              <Link href="/register" className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-kuati-lima/10 text-kuati-petroleo font-semibold hover:bg-kuati-lima/20 transition-all animate-pulse-slow">
                 Registrate acá
+                <IconArrowRight size={14} />
               </Link>
             </p>
             <p className="text-kuati-grafito/60 text-xs">

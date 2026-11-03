@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
 import { register } from '@/lib/auth-actions';
-import { IconEye, IconEyeOff, IconLoader2, IconBuildingStore, IconArrowLeft } from '@tabler/icons-react';
+import { IconEye, IconEyeOff, IconLoader2, IconBuildingStore, IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
@@ -116,8 +116,9 @@ export default function RegisterPage() {
           <div className='mt-6 pt-6 border-t border-kuati-borde space-y-3 text-sm text-center'>
             <p className='text-kuati-grafito/70'>
               ¿Sos conductor?{' '}
-              <Link href='/register-conductor' className='text-kuati-petroleo font-semibold hover:underline'>
+              <Link href='/register-conductor' className='inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-kuati-lima/10 text-kuati-petroleo font-semibold hover:bg-kuati-lima/20 transition-all animate-pulse-slow'>
                 Registrate acá
+                <IconArrowRight size={14} />
               </Link>
             </p>
             <p className='text-kuati-grafito/60 text-xs'>
