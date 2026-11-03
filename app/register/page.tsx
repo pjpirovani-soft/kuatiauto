@@ -1,10 +1,10 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
 import { register } from '@/lib/auth-actions';
-import { IconEye, IconEyeOff, IconLoader2 } from '@tabler/icons-react';
+import { IconEye, IconEyeOff, IconLoader2, IconBuildingStore, IconArrowLeft } from '@tabler/icons-react';
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
@@ -24,90 +24,111 @@ export default function RegisterPage() {
 
   return (
     <main className='min-h-screen flex items-center justify-center bg-kuati-petroleo p-4'>
-      <div className='w-full max-w-md bg-kuati-blanco rounded-xl shadow-xl p-8 border border-kuati-borde'>
-        <div className='text-center mb-8'>
-          <Logo variant='horizontal' theme='light' priority size='lg' className='mx-auto mb-4' />
-          <h1 className='text-3xl font-bold text-kuati-petroleo mb-2'>Crear cuenta</h1>
-          <p className='text-kuati-grafito/70'>Registrate para gestionar tu lubricentro.</p>
-        </div>
+      <div className='w-full max-w-md'>
+        <Link
+          href='/empezar'
+          className='inline-flex items-center gap-2 text-kuati-blanco/60 hover:text-kuati-lima mb-4 text-sm transition-colors'
+        >
+          <IconArrowLeft size={16} /> Volver
+        </Link>
 
-        <form action={handleSubmit} className='space-y-4'>
-          <div>
-            <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='nombre'>
-              Nombre
-            </label>
-            <input
-              id='nombre'
-              name='nombre'
-              type='text'
-              required
-              maxLength={100}
-              className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
-              placeholder='Tu nombre completo'
-            />
-          </div>
-          <div>
-            <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='email'>
-              Email
-            </label>
-            <input
-              id='email'
-              name='email'
-              type='email'
-              required
-              className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
-              placeholder='tu@email.com'
-            />
-          </div>
-          <div>
-            <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='password'>
-              Contraseña
-            </label>
-            <div className='relative'>
-              <input
-                id='password'
-                name='password'
-                type={showPassword ? 'text' : 'password'}
-                required
-                minLength={6}
-                className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 pr-10 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
-                placeholder='••••••••'
-              />
-              <button
-                type='button'
-                onClick={() => setShowPassword(!showPassword)}
-                className='absolute right-3 top-1/2 -translate-y-1/2 text-kuati-grafito/50 hover:text-kuati-grafito transition-colors'
-                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-              >
-                {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
-              </button>
+        <div className='bg-kuati-blanco rounded-xl shadow-xl p-8 border border-kuati-borde'>
+          <div className='text-center mb-8'>
+            <div className='w-16 h-16 rounded-2xl bg-kuati-petroleo flex items-center justify-center mx-auto mb-4'>
+              <IconBuildingStore size={32} className='text-kuati-lima' />
             </div>
-            <p className='text-xs text-kuati-grafito/50 mt-1'>Mínimo 6 caracteres.</p>
+            <h1 className='text-2xl font-bold text-kuati-petroleo mb-2'>Crear cuenta de lubricentro</h1>
+            <p className='text-kuati-grafito/70 text-sm'>Gestioná tu taller con KuatiAuto.</p>
           </div>
 
-          {error && <p className='text-red-600 text-sm font-medium'>{error}</p>}
-          {success && <p className='text-green-700 text-sm font-medium'>{success}</p>}
+          <form action={handleSubmit} className='space-y-4'>
+            <div>
+              <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='nombre'>
+                Nombre
+              </label>
+              <input
+                id='nombre'
+                name='nombre'
+                type='text'
+                required
+                maxLength={100}
+                className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+                placeholder='Tu nombre completo'
+              />
+            </div>
+            <div>
+              <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='email'>
+                Email
+              </label>
+              <input
+                id='email'
+                name='email'
+                type='email'
+                required
+                className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+                placeholder='tu@email.com'
+              />
+            </div>
+            <div>
+              <label className='block text-sm font-semibold text-kuati-grafito mb-1.5' htmlFor='password'>
+                Contraseña
+              </label>
+              <div className='relative'>
+                <input
+                  id='password'
+                  name='password'
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  minLength={8}
+                  className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 pr-11 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+                  placeholder='Mínimo 8 caracteres'
+                />
+                <button
+                  type='button'
+                  onClick={() => setShowPassword(!showPassword)}
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-kuati-grafito/50 hover:text-kuati-grafito transition-colors'
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                </button>
+              </div>
+            </div>
 
-          <button
-            type='submit'
-            disabled={loading}
-            className='w-full bg-kuati-petroleo text-kuati-blanco font-semibold py-2.5 rounded-lg hover:bg-kuati-petroleo/90 disabled:opacity-70 transition-colors flex items-center justify-center gap-2'
-          >
-            {loading && <IconLoader2 size={18} className='animate-spin' />}
-            {loading ? 'Creando cuenta...' : 'Crear cuenta'}
-          </button>
-        </form>
+            {error && (
+              <p className='text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3'>{error}</p>
+            )}
+            {success && (
+              <p className='text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-3'>
+                {success}
+              </p>
+            )}
 
-        <p className='text-sm text-center text-kuati-grafito/70 mt-6'>
-          ¿Ya tenés cuenta?{' '}
-          <Link href='/login' className='text-kuati-petroleo font-semibold hover:underline'>
-            Iniciá sesión
-          </Link>
-        </p>
+            <button
+              type='submit'
+              disabled={loading}
+              className='w-full bg-kuati-petroleo text-kuati-blanco font-semibold py-2.5 rounded-lg hover:bg-kuati-petroleo/90 disabled:opacity-70 transition-colors flex items-center justify-center gap-2'
+            >
+              {loading && <IconLoader2 size={18} className='animate-spin' />}
+              {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+            </button>
+          </form>
+
+          <div className='mt-6 pt-6 border-t border-kuati-borde space-y-3 text-sm text-center'>
+            <p className='text-kuati-grafito/70'>
+              ¿Sos conductor?{' '}
+              <Link href='/register-conductor' className='text-kuati-petroleo font-semibold hover:underline'>
+                Registrate acá
+              </Link>
+            </p>
+            <p className='text-kuati-grafito/60 text-xs'>
+              ¿Ya tenés cuenta?{' '}
+              <Link href='/login' className='text-kuati-petroleo hover:underline'>
+                Iniciar sesión
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </main>
   );
 }
-
-
-

@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
 import { 
   IconTool, 
@@ -18,7 +18,7 @@ export default function Home() {
           <Link href='/login' className='px-4 py-2 text-sm font-medium hover:text-kuati-lima transition-colors'>
             Iniciar Sesión
           </Link>
-          <Link href='/register' className='bg-kuati-lima text-kuati-petroleo px-4 py-2 rounded-lg text-sm font-bold hover:bg-kuati-lima/90 transition-colors shadow-[0_0_10px_rgba(163,217,0,0.4)] hover:shadow-[0_0_15px_rgba(163,217,0,0.6)]'>
+          <Link href='/empezar' className='bg-kuati-lima text-kuati-petroleo px-4 py-2 rounded-lg text-sm font-bold hover:bg-kuati-lima/90 transition-colors shadow-[0_0_10px_rgba(163,217,0,0.4)] hover:shadow-[0_0_15px_rgba(163,217,0,0.6)]'>
             Registrarse
           </Link>
         </div>
@@ -36,7 +36,7 @@ export default function Home() {
               Gestioná clientes, vehículos y órdenes de trabajo. Conectá con tus clientes a través del portal del conductor y potenciá tu negocio en Paraguay.
             </p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-              <Link href='/register' className='bg-kuati-lima text-kuati-petroleo font-bold px-8 py-3 rounded-lg text-lg hover:bg-kuati-lima/90 transition-all shadow-[0_0_15px_rgba(163,217,0,0.3)] hover:shadow-[0_0_25px_rgba(163,217,0,0.6)] hover:-translate-y-1'>
+              <Link href='/empezar' className='bg-kuati-lima text-kuati-petroleo font-bold px-8 py-3 rounded-lg text-lg hover:bg-kuati-lima/90 transition-all shadow-[0_0_15px_rgba(163,217,0,0.3)] hover:shadow-[0_0_25px_rgba(163,217,0,0.6)] hover:-translate-y-1'>
                 Comenzar ahora
               </Link>
               <Link href='/directorio' className='border border-kuati-blanco/30 px-8 py-3 rounded-lg text-lg hover:bg-kuati-blanco/10 transition-all hover:-translate-y-1'>
