@@ -109,7 +109,7 @@ export default function RegisterPage() {
               className='w-full bg-kuati-petroleo text-kuati-blanco font-semibold py-2.5 rounded-lg hover:bg-kuati-petroleo/90 disabled:opacity-70 transition-colors flex items-center justify-center gap-2'
             >
               {loading && <IconLoader2 size={18} className='animate-spin' />}
-              {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+              {loading ? 'Creando cuenta...' : 'Empezar gratis'}
             </button>
           </form>
 

@@ -81,13 +81,13 @@ export default function RegisterConductorPage() {
               type="submit"
               className="w-full bg-kuati-lima text-kuati-petroleo font-semibold py-2.5 rounded-lg hover:bg-kuati-lima/90 transition-colors"
             >
-              Crear cuenta
+              Empezar gratis
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-kuati-borde space-y-3 text-sm text-center">
             <p className="text-kuati-grafito/70">
-              ¿Sos lubricentro?{' '}
+              ¿Tenés un lubricentro?{' '}
               <Link href="/register" className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-kuati-lima/10 text-kuati-petroleo font-semibold hover:bg-kuati-lima/20 transition-all animate-pulse-slow">
                 Registrate acá
                 <IconArrowRight size={14} />
