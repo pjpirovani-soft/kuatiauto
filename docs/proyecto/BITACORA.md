@@ -1096,3 +1096,80 @@ Sistema de documentación in-app con 4 páginas y contenido real por rol.
 - Etapa IV (cierre de orden con catálogo integrado) — pendiente.
 - Etapa V (libreta digital del conductor) — parcialmente cubierta por la guía del conductor.
 - Flows E2E de escritura contra Supabase local — pendiente.
+---
+
+## 2026-11-03 — Contacto del fundador + separación de registros + fix de sidebars
+
+**Tres mejoras de producto cerradas en la misma sesión.**
+
+### Contacto del fundador (commit `937da16`)
+
+Se agregó una sección de contacto del fundador en el Centro de Ayuda y en las 3 guías. Ahora el usuario tiene 3 canales para contactar al creador:
+- **WhatsApp:** +595 986 207 595 (con link `wa.me` y mensaje pre-cargado).
+- **Email:** kuatiauto.soporte@gmail.com (con reenvío a email personal).
+- **Portfolio:** https://portafolio-pjpirovani.vercel.app
+
+**Componente:** `components/ayuda/AyudaContacto.tsx` (reutilizable).
+**Datos:** `HUB_FUNDADOR` en `lib/ayuda/hub.ts`.
+
+**Por qué:** en fase MVP, el fundador atendiendo personalmente es un diferencial. Genera confianza y da un canal directo al usuario.
+
+### Separación de registros (commit `4cb7d38`)
+
+**Problema detectado:** los formularios de `/register` (lubricentro) y `/register-conductor` (conductor) se veían **exactamente iguales**. Mismo fondo petróleo, misma card blanca, mismo logo. El usuario no podía diferenciar en qué registro estaba.
+
+**Solución implementada:**
+
+1. **Nuevo hub `/empezar`** (público):
+   - 2 tarjetas grandes con iconos, título, descripción y bullets de beneficios.
+   - Lubricentro: fondo petróleo, icono `IconBuildingStore`, botón petróleo.
+   - Conductor: fondo lima, icono `IconCar`, botón lima.
+   - Redirección inteligente: si el usuario ya está logueado, lo manda a su panel (`/admin`, `/mi-garage`, `/crear-empresa`, `/dashboard`).
+   - Texto al pie: "¿Ya tenés cuenta? Iniciar sesión" + "¿Sos empleado? Pedile al dueño que te invite".
+
+2. **Rediseño de `/register` (lubricentro):**
+   - Fondo petróleo (mantenido).
+   - Icono de edificio arriba del título (nuevo).
+   - Título: "Crear cuenta de lubricentro" (antes "Crear cuenta").
+   - Link cruzado: "¿Sos conductor? → Registrate acá".
+   - Link "Volver" arriba → `/empezar`.
+
+3. **Rediseño de `/register-conductor`:**
+   - Fondo **grafito** (distinto al petróleo del lubricentro).
+   - Icono de auto arriba del título (nuevo).
+   - Título: "Crear cuenta de conductor" (antes "Registro de Conductor").
+   - Botón **lima** (distinto al petróleo del lubricentro).
+   - Link cruzado: "¿Sos lubricentro? → Registrate acá".
+   - Link "Volver" arriba → `/empezar`.
+
+4. **Landing actualizada:**
+   - Los 2 links "Registrarse" (navbar) y "Comenzar ahora" (hero) ahora apuntan a `/empezar` (antes `/register`).
+   - URLs existentes (`/register`, `/register-conductor`) siguen funcionando (no se rompen links externos).
+
+**Lógica de autenticación:** intacta. No se tocó `register(formData)` ni `registerConductor(formData)`. Solo cambios visuales (header, iconos, colores, links cruzados).
+
+### Fix de sidebars (commit pendiente)
+
+**Problema detectado:** el botón "Cerrar Sesión" en los sidebars no era visible en pantallas chicas (laptops). El `<aside>` tenía `min-h-screen` (altura mínima, no fija), por lo que crecía con el contenido del menú y empujaba el botón fuera de la pantalla.
+
+**Solución:** los 3 sidebars (`SidebarPropietario`, `SidebarConductor`, `SidebarAdmin`) ahora tienen:
+- `h-screen sticky top-0` en el `<aside>` → altura fija al viewport, no crece.
+- `shrink-0` en header, versión y footer → no se encogen.
+- `overflow-y-auto` en el `<nav>` → solo los links scrollean si son muchos.
+
+**Resultado:** el botón "Cerrar Sesión" está **siempre visible al fondo del sidebar**, sin importar cuántos items tenga el menú.
+
+**Verificación:** tsc 0 errores, 279/279 tests Vitest, 11/11 smokes Playwright.
+
+### Lecciones
+
+- **El registro es la puerta de entrada al producto.** Si el usuario se confunde acá, perdió la confianza antes de empezar. La diferenciación visual (colores, iconos, títulos) es crítica, no cosmética.
+- **Los sidebars en SaaS deben ser `sticky` con `h-screen` + `overflow-y-auto` en el nav.** Es la práctica estándar (Linear, Notion, Vercel, Stripe). Sin esto, el botón de logout se pierde en pantallas chicas.
+- **El botón "Cerrar Sesión" siempre debe ser visible.** Es un patrón de UX importante: el usuario tiene que poder salir en 1 click desde cualquier panel.
+- **Nunca romper URLs existentes.** Aunque la landing ahora apunte a `/empezar`, `/register` y `/register-conductor` siguen funcionando para links guardados o externos.
+
+### Estado final
+
+- **Commit HEAD:** `4cb7d38` (último del push) + `fix(sidebars)` (pendiente de commitear en este momento).
+- **Tests:** 279/279 Vitest, 11/11 Playwright.
+- **Vercel:** deployado con los 3 cambios (excepto el fix de sidebars, que se deploya con este commit).

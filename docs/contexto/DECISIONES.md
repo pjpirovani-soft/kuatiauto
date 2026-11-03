@@ -268,3 +268,40 @@ Detectadas durante la lectura de docs para iniciar fase D:
 - **Selectores de Playwright.** `getByRole('link', { name: /^Conductor$/ })` es demasiado estricto si el link tiene texto adicional (descripción adentro del `<a>`). Mejor regex sin ancla + `.first()`.
 
 **Estado:** implementado y deployado en prod. CI verde con 11/11 tests.
+## ADR-011: Registro diferenciado por rol (2026-11-03)
+
+**Contexto:** KuatiAuto tiene 4 roles (`admin_general`, `propietario`, `empleado`, `conductor`). Solo 2 se registran públicamente: propietario (`/register`) y conductor (`/register-conductor`). `admin_general` se crea por SQL y `empleado` lo invita el propietario. Los 2 formularios se veían **exactamente iguales**, lo que generaba confusión en el registro.
+
+**Decisión:** implementar un hub `/empezar` + rediseño diferenciado de los 2 registros.
+
+| ID | Decisión | Estado |
+|---|---|---|
+| ADR-011 | Hub público `/empezar` con 2 tarjetas (lubricentro destacado, conductor). Redirección inteligente si el usuario ya está logueado. | APROBADA |
+| D-REG-1 | **Diferenciación visual por paleta dominante:** lubricentro con fondo petróleo (`#123C46`) + botón petróleo. Conductor con fondo grafito (`#30363B`) + botón lima (`#A3D900`). Misma estructura de card, distinta colorimetría. | APROBADA |
+| D-REG-2 | **Iconos diferenciados:** `IconBuildingStore` (edificio) para lubricentro, `IconCar` (auto) para conductor. | APROBADA |
+| D-REG-3 | **Títulos explícitos:** "Crear cuenta de lubricentro" y "Crear cuenta de conductor" (antes "Crear cuenta" y "Registro de Conductor"). | APROBADA |
+| D-REG-4 | **Links cruzados:** cada registro tiene un link al otro ("¿Sos conductor?" / "¿Sos lubricentro?"). | APROBADA |
+| D-REG-5 | **Link "Volver"** a `/empezar` en ambos registros (no a la landing). | APROBADA |
+| D-REG-6 | **URLs existentes se mantienen:** `/register` y `/register-conductor` siguen funcionando (no redirigen a `/empezar`). Razón: no romper links guardados, emails, o marketing. | APROBADA |
+| D-REG-7 | **Landing apunta a `/empezar`:** los 2 CTAs ("Registrarse" y "Comenzar ahora") ahora llevan al hub, no directo a `/register`. | APROBADA |
+| D-REG-8 | **Lógica de auth intacta:** `register(formData)` y `registerConductor(formData)` no se tocaron. Solo cambios visuales. | APROBADA |
+| D-REG-9 | **Texto al pie sobre empleados:** "¿Sos empleado? Pedile al dueño que te invite". Aclara que el empleado no se registra solo. | APROBADA |
+
+**Por qué funciona:**
+
+| Aspecto | Lubricentro | Conductor |
+|---|---|---|
+| Fondo general | Petróleo (azul oscuro) | Grafito (gris oscuro) |
+| Icono | 🏢 `IconBuildingStore` | 🚗 `IconCar` |
+| Título | "Crear cuenta de lubricentro" | "Crear cuenta de conductor" |
+| Botón primario | Petróleo | Lima |
+| Link cruzado | "¿Sos conductor?" | "¿Sos lubricentro?" |
+
+**Regla mental del usuario:** "Si el fondo es azul → lubricentro. Si es gris → conductor. Si el botón es azul → lubricentro. Si es verde → conductor."
+
+**Lecciones:**
+- **El registro es la puerta de entrada.** La diferenciación visual no es cosmética: es UX crítica.
+- **Mantener URLs existentes.** Aunque la landing apunte a `/empezar`, `/register` y `/register-conductor` siguen funcionando.
+- **Redirección inteligente:** si el usuario ya está logueado, `/empezar` lo manda a su panel. Evita mostrar "crear cuenta" a quien ya tiene una.
+
+**Estado:** implementado y deployado en prod. 279/279 tests Vitest, 11/11 smokes Playwright.
