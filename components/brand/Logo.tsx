@@ -1,4 +1,4 @@
-﻿import Image from 'next/image';
+import Image from 'next/image';
 import Link from 'next/link';
 
 type LogoVariant = 'horizontal' | 'isotipo';
@@ -12,6 +12,7 @@ interface LogoProps {
   className?: string;
   priority?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'hero';
+  layout?: 'horizontal' | 'vertical';
 }
 
 const TEXT_COLOR: Record<LogoTheme, string> = {
@@ -26,8 +27,8 @@ const HORIZONTAL_SRC: Record<LogoTheme, string> = {
 
 const SIZE_CLASSES: Record<NonNullable<LogoProps['size']>, string> = {
   sm: 'h-8',
-  md: 'h-10',
-  lg: 'h-12',
+  md: 'h-12',
+  lg: 'h-16',
   hero: 'h-32 md:h-44',
 };
 
@@ -38,6 +39,7 @@ function LogoContent({
   priority = false,
   className = '',
   size = 'md',
+  layout = 'horizontal',
 }: Omit<LogoProps, 'href'>) {
   const isHorizontal = variant === 'horizontal';
   const shouldShowText = showText ?? isHorizontal;
@@ -57,17 +59,17 @@ function LogoContent({
   }
 
   return (
-    <span className={['inline-flex items-center gap-3', className].filter(Boolean).join(' ')}>
+    <span className={['inline-flex', layout === 'vertical' ? 'flex-col items-center gap-4' : 'items-center gap-3', className].filter(Boolean).join(' ')}>
       <Image
-        src="/branding/isotipo.png"
+        src={theme === 'light' ? '/branding/isotipo-petroleo.png' : '/branding/isotipo.png'}
         alt="KuatiAuto"
-        width={40}
-        height={40}
+        width={theme === 'light' ? 1153 : 512}
+        height={theme === 'light' ? 312 : 512}
         priority={priority}
-        className="h-10 w-10"
+        className={['w-auto', SIZE_CLASSES[size]].filter(Boolean).join(' ')}
       />
       {shouldShowText && (
-        <span className={['text-xl font-bold tracking-wide', TEXT_COLOR[theme]].join(' ')}>
+        <span className={['text-2xl font-bold tracking-wide', TEXT_COLOR[theme]].join(' ')}>
           KuatiAuto
         </span>
       )}
