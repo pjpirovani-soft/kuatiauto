@@ -1173,3 +1173,49 @@ Se agregó una sección de contacto del fundador en el Centro de Ayuda y en las 
 - **Commit HEAD:** `4cb7d38` (último del push) + `fix(sidebars)` (pendiente de commitear en este momento).
 - **Tests:** 279/279 Vitest, 11/11 Playwright.
 - **Vercel:** deployado con los 3 cambios (excepto el fix de sidebars, que se deploya con este commit).
+---
+
+## 2026-11-03 (segunda parte) — Fix de layout, CTA y corrección de textos
+
+**Cierre de sesión con 3 fixes adicionales después del primer cierre de hoy.**
+
+### Fix de layout de sidebars (commit `09dc183`)
+
+**Problema:** el botón "Cerrar Sesión" no se veía en pantallas chicas. El `<aside>` tenía `h-screen sticky top-0` pero el wrapper (`MobileSidebarWrapper`) era `md:static`, así que el sticky no funcionaba. El sidebar crecía con el contenido y empujaba el botón fuera del viewport.
+
+**Solución (3 archivos):**
+- `components/MobileSidebarWrapper.tsx`: `md:static` → `md:sticky md:top-0 md:h-screen md:shrink-0`. Agregado `overflow-y-auto md:overflow-visible` para que en mobile tenga scroll interno.
+- `components/SidebarPropietario.tsx`: `<aside>` con `w-full h-full md:h-screen` (el wrapper maneja el sticky y la altura).
+- `app/(dashboard)/layout.tsx`: contenedor con `h-screen overflow-hidden`, `<main>` con `h-screen overflow-y-auto` (main scrollea solo, sidebar fijo).
+
+**Verificación:** en PC funciona (captura confirma sidebar fijo, botón visible, versión `v0.4.3`). En mobile queda pendiente de verificar (problema de red/firewall, no del layout).
+
+### Corrección de CTA y textos (commit `1154a53`)
+
+**Problemas detectados:**
+1. El texto del link cruzado en `/register-conductor` decía "¿Sos lubricentro?" — **error de redacción** (un lubricentro es un lugar, no una persona).
+2. El CTA de ambos registros era "Crear cuenta" — **genérico y débil** según reglas de marketing.
+
+**Solución:**
+- **Texto del link cruzado:** "¿Sos lubricentro?" → "¿Tenés un lubricentro?" (natural, voseo paraguayo).
+- **CTA del botón:** "Crear cuenta" → "Empezar gratis" (en ambos registros). Razón:
+  - Comunica acción (empezar) + beneficio (gratis).
+  - Reduce fricción (elimina ansiedad de "¿me cobran?").
+  - Consistente entre los 2 registros.
+  - Alineado con el producto (KuatiAuto es gratis en MVP).
+  - Es lo que usan Stripe, Notion, Linear en sus inicios.
+
+### Lecciones
+
+- **El layout de sidebars en SaaS requiere 3 piezas:** wrapper `sticky` con `h-screen`, `<aside>` con `h-full`, `<main>` con `h-screen overflow-y-auto`. Si falta una, el layout se rompe.
+- **En mobile, el wrapper `fixed` necesita `overflow-y-auto`** para que el usuario pueda scrollear y llegar al botón de logout.
+- **El CTA debe ser específico del valor.** "Crear cuenta" es genérico. "Empezar gratis" comunica acción + beneficio.
+- **Los textos deben ser naturales.** "¿Sos lubricentro?" no tiene sentido. "¿Tenés un lubricentro?" sí.
+- **`Start-Process -Wait -NoNewWindow` es más robusto que `cmd /c` en PS 5.x** para correr Playwright. El `cmd /c` a veces se cuelga y recibe Ctrl+C sin que el usuario lo mande.
+
+### Estado final
+
+- **Commit HEAD:** `1154a53`.
+- **Tests:** 279/279 Vitest, 11/11 Playwright.
+- **Vercel:** deployado con todos los cambios (pendiente verificación manual en prod).
+- **Pendiente próxima sesión:** verificar layout y CTA en prod (PC y mobile), debug del celular (localhost vs IP local).

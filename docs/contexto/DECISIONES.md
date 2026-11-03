@@ -305,3 +305,35 @@ Detectadas durante la lectura de docs para iniciar fase D:
 - **Redirección inteligente:** si el usuario ya está logueado, `/empezar` lo manda a su panel. Evita mostrar "crear cuenta" a quien ya tiene una.
 
 **Estado:** implementado y deployado en prod. 279/279 tests Vitest, 11/11 smokes Playwright.
+## ADR-012: CTA "Empezar gratis" + corrección de textos (2026-11-03)
+
+**Contexto:** después de implementar el registro diferenciado (ADR-011), se detectaron 2 problemas:
+1. El texto del link cruzado en `/register-conductor` decía "¿Sos lubricentro?" — error de redacción (un lubricentro es un lugar, no una persona).
+2. El CTA de ambos registros era "Crear cuenta" — genérico, débil, no comunica valor.
+
+**Decisión:**
+
+| ID | Decisión | Estado |
+|---|---|---|
+| ADR-012 | Reemplazar el CTA "Crear cuenta" por "Empezar gratis" en ambos registros. | APROBADA |
+| D-CTA-1 | **"Empezar gratis"** en vez de "Crear cuenta". Razón: comunica acción + beneficio, reduce fricción (elimina ansiedad de cobro), consistente entre registros, alineado con el producto (gratis en MVP). | APROBADA |
+| D-CTA-2 | **Corregir "¿Sos lubricentro?"** → **"¿Tenés un lubricentro?"**. Razón: en español, un lubricentro es un lugar, no una persona. "Sos lubricentro" es incorrecto gramaticalmente. | APROBADA |
+| D-CTA-3 | **Mantener consistencia:** el CTA es el mismo en ambos registros ("Empezar gratis"). El texto del link cruzado se adapta al rol ("¿Sos conductor?" / "¿Tenés un lubricentro?"). | APROBADA |
+| D-CTA-4 | **Subtítulo "Sin tarjeta de crédito" diferido** a un segundo commit. Razón: primero validar el CTA principal, después agregar el subtítulo. | PENDIENTE |
+
+**Comparación de CTAs (evaluación de marketing):**
+
+| CTA | Pros | Contras | Veredicto |
+|---|---|---|---|
+| "Crear cuenta" | Estándar, claro | Genérico, no comunica valor | ❌ Descartado |
+| "Empezar gratis" | Acción + beneficio, reduce fricción | Un poco genérico | ✅ **Elegido** |
+| "Digitalizar mi lubricentro" | Específico del valor | Largo | ❌ Descartado |
+| "Probar gratis" | Reduce fricción | Implica que después se paga | ❌ Descartado |
+| "Quiero gestionar mi lubricentro" | Primera persona | Largo | ❌ Descartado |
+
+**Lecciones:**
+- **El CTA debe ser específico del valor.** "Crear cuenta" es lo que dice el 90% de los SaaS. No diferencia.
+- **Los textos deben ser naturales.** "¿Sos lubricentro?" es incorrecto. "¿Tenés un lubricentro?" es natural.
+- **La consistencia entre registros** ayuda a la claridad. El usuario ve el mismo CTA en ambos, pero el texto contextual se adapta al rol.
+
+**Estado:** implementado y pusheado (commit `1154a53`). Pendiente verificación en prod y agregar subtítulo "Sin tarjeta de crédito" en un segundo commit.
