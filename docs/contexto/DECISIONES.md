@@ -375,3 +375,42 @@ Detectadas durante la lectura de docs para iniciar fase D:
 - **Sin `<main> h-screen overflow-y-auto`:** el main crece con el contenido, empuja todo.
 
 **Estado:** implementado y pusheado (commit `09dc183`). Verificado en PC. Pendiente verificar en mobile (problema de red/firewall, no del layout).
+## ADR-015: Perfil de usuario con re-auth para cambio de contraseña (2026-11-03)
+
+**Contexto:** los usuarios no tenían forma de cambiar su nombre ni su contraseña desde la app. El nombre solo se definía al registrarse y la contraseña solo se podía recuperar por email (reset). Se necesitaba una página `/perfil` accesible desde los 3 roles (propietario, conductor, admin) con:
+- Ver email y rol (solo lectura).
+- Cambiar nombre.
+- Cambiar contraseña.
+
+**Decisión:**
+
+| ID | Decisión | Estado |
+|---|---|---|
+| ADR-015 | La página `/perfil` vive en la raíz (`app/perfil/page.tsx`), fuera de los grupos `(dashboard)`, `(portal)`, `(admin)`. Es compartida por los 3 roles. | APROBADA |
+| D-PERFIL-1 | **Re-auth obligatoria para cambio de contraseña:** antes de `supabase.auth.updateUser({ password })`, se valida la contraseña actual con `signInWithPassword`. Si falla, no se permite el cambio. | APROBADA |
+| D-PERFIL-2 | **Fuente única de email:** se lee de `auth.user.email`, no de `usuario.email` (redundante en la tabla). | APROBADA |
+| D-PERFIL-3 | **Fuente única de rol:** se lee de `usuario.rol`, con fallback a `'empleado'` si el valor no está en `ROLES_VALIDOS`. Consistente con `proxy.ts`. | APROBADA |
+| D-PERFIL-4 | **Server component + `useActionState`:** la page es server component (lee `obtenerPerfil`), el form es client component con 2 `useActionState` (uno por form). Mismo patrón que `logoutAction`. | APROBADA |
+| D-PERFIL-5 | **Link "Mi perfil" arriba del logout** en los 3 sidebars, dentro del mismo `<div>` del footer. Ícono `IconUser`. Href: `/perfil`. | APROBADA |
+| D-PERFIL-6 | **Sin layout propio:** el page arma su header con "← Volver al inicio" y "Ayuda" (según rol). Sigue el patrón de `/ayuda`, que tampoco tiene layout propio. | APROBADA |
+| D-PERFIL-7 | **Redirect a `/login` sin sesión:** `obtenerPerfil()` devuelve `null` y la page hace `redirect('/login')`. No se toca `proxy.ts` (que no protege `/perfil`). | APROBADA |
+| D-PERFIL-8 | **Trigger `updated_at`:** el `update({ nombre })` en `usuario` dispara `trg_usuario_updated_at` (función `set_updated_at()`). No se setea manualmente. | APROBADA |
+| D-PERFIL-9 | **Revalidación:** `actualizarNombre` hace `revalidatePath('/perfil')` + `revalidatePath('/', 'layout')` para reflejar el nuevo nombre en el sidebar. | APROBADA |
+
+**Alternativas descartadas:**
+
+| Alternativa | Razón de descarte |
+|---|---|
+| Cambio de contraseña sin re-auth | Riesgo de session hijacking: cualquiera con acceso a la sesión podría cambiar la contraseña. |
+| API route en vez de server action | Más boilerplate (validación, serialización, CSRF). Server action con `useActionState` es el patrón de React 19. |
+| Layout separado por rol (`/perfil`, `/mi-garage/perfil`, `/admin/perfil`) | 3 rutas, 3 layouts, 3 headers. Duplicación innecesaria para la misma funcionalidad. |
+| Cambiar contraseña con magic link | Complejidad extra (email round-trip). Para MVP, re-auth es más simple y seguro. |
+| Leer email de `usuario.email` | Redundante con `auth.user.email`. Divergencia potencial si uno de los dos se actualiza. |
+
+**Lecciones:**
+- **Re-auth es no negociable para cambio de contraseña.** Cuesta 3 líneas y elimina una clase entera de ataques.
+- **El trigger `updated_at` ahorra código y errores.** No setear `updated_at` manualmente (fuente de bugs).
+- **`useActionState` de React 19 es el patrón para formularios con feedback inline.** Sin `useState` + `useEffect` + fetch manual.
+- **Seguir el precedente de `/ayuda`:** páginas compartidas por roles van en la raíz, sin layout propio, con header autogestionado.
+
+**Estado:** implementado y deployado. 17 tests Vitest nuevos (`lib/perfil-actions.test.ts`), 2 smokes Playwright nuevos (`e2e/smoke/perfil.spec.ts`). Commit `26bd897`.

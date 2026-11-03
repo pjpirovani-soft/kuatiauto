@@ -1,3 +1,31 @@
+## [v0.4.4] - 2026-11-03 - Página /perfil con cambio de nombre y contraseña
+
+### Added
+- `lib/perfil-actions.ts`: server actions `obtenerPerfil`, `actualizarNombre`, `cambiarPassword`. `actualizarNombre` valida nombre (2-80 chars, trimmed). `cambiarPassword` valida longitud (8-72 chars), que la nueva sea distinta a la actual, y re-autentica con `signInWithPassword` antes de `updateUser`.
+- `app/perfil/page.tsx`: server component. Redirect a `/login` si no hay sesión. Header "← Volver al inicio" + "Ayuda" (según rol).
+- `components/perfil/PerfilForm.tsx`: client component con 2 `useActionState` (uno por form). Feedback inline (success/error) por form. Botones con `disabled` mientras `isPending`.
+- `lib/perfil-actions.test.ts`: 17 tests unitarios (obtenerPerfil, actualizarNombre, cambiarPassword).
+- `e2e/smoke/perfil.spec.ts`: 2 smokes contra prod (redirect sin sesión, render con sesión).
+- Link "Mi perfil" en los 3 sidebars (`SidebarPropietario`, `SidebarConductor`, `SidebarAdmin`), arriba del botón "Cerrar Sesión". Ícono `IconUser`.
+
+### Changed
+- `components/SidebarPropietario.tsx`, `components/SidebarConductor.tsx`, `components/SidebarAdmin.tsx`: +9 líneas cada uno (link "Mi perfil" + import de `IconUser`).
+- `docs/contexto/DECISIONES.md`: ADR-015 agregado (perfil con re-auth + fuente única de email/rol + precedente de `/ayuda`).
+- `docs/proyecto/BITACORA.md`: entrada "2026-11-03 (cuarta parte) — /perfil con cambio de nombre y contraseña".
+- `package.json` + `package-lock.json`: bump `0.4.3` → `0.4.4`.
+
+### Verified
+- `npx tsc --noEmit`: 0 errores.
+- `npm test`: 296/296 passing (antes 279, +17 nuevos).
+- `npx playwright test --project=smoke-prod`: 13/13 passing (antes 11, +2 nuevos). Verificado contra prod real (`kuatiauto.vercel.app`) post-deploy.
+- Schema de `usuario` verificado con `supabase db query`: `nombre` (text, nullable), `rol` (text, default `'empleado'`), `email` (text, not null, redundante con auth), `empresa_id` (uuid, nullable). Trigger `trg_usuario_updated_at` confirmado.
+
+### Pendiente (próxima sesión)
+- Verificar layout y CTA de `/empezar` en prod (PC y mobile).
+- Debug del celular (localhost vs IP local).
+- Etapa IV: cierre de orden con catálogo integrado.
+- Actualizar Supabase CLI v2.122 → v3.0.0.
+- Directorio: "cerca de mí" automático al cargar.
 ## [D] - 2026-11-02 - Playwright E2E (smokes contra prod)
 
 ### Added

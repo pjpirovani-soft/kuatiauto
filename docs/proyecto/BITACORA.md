@@ -1280,3 +1280,76 @@ Se agregó una sección de contacto del fundador en el Centro de Ayuda y en las 
   - Verificar en prod: logout, texto de `/empezar`, layout.
   - Debug del celular (localhost vs IP local).
   - Etapa IV (cierre de orden).
+## 2026-11-03 (cuarta parte) — /perfil con cambio de nombre y contraseña
+
+**Primer feature de gestión de cuenta del usuario. Cierra la deuda pendiente del cierre anterior.**
+
+### Implementación de /perfil (commit `26bd897`)
+
+**Motivación:** los usuarios no tenían forma de cambiar su nombre ni su contraseña desde la app. El nombre solo se definía al registrarse y la contraseña solo se podía recuperar por email (reset). Se necesitaba una página compartida por los 3 roles (propietario, conductor, admin).
+
+**Decisiones de arquitectura:**
+
+- **Ubicación:** `app/perfil/page.tsx` en la raíz, **fuera** de los grupos `(dashboard)`, `(portal)`, `(admin)`. Es compartida por los 3 roles. Sigue el precedente de `/ayuda`, que tampoco tiene layout propio.
+- **Header:** "← Volver al inicio" + "Ayuda" (según rol). Sin sidebar contextual.
+- **Re-auth:** antes de `updateUser({ password })`, se valida la contraseña actual con `signInWithPassword`. Si falla, no se permite el cambio.
+- **Fuente de email:** `auth.user.email` (no `usuario.email`, redundante).
+- **Fuente de rol:** `usuario.rol` (consistente con `proxy.ts`).
+- **Nombre:** `usuario.nombre` (nullable, fallback a `''`).
+
+**Archivos nuevos:**
+
+- `lib/perfil-actions.ts` — 3 server actions: `obtenerPerfil`, `actualizarNombre`, `cambiarPassword`.
+- `app/perfil/page.tsx` — server component, redirect a `/login` sin sesión.
+- `components/perfil/PerfilForm.tsx` — client component con 2 `useActionState` (nombre + contraseña).
+- `lib/perfil-actions.test.ts` — 17 tests unitarios.
+- `e2e/smoke/perfil.spec.ts` — 2 smokes (redirect sin sesión, render con sesión).
+
+**Archivos modificados:**
+
+- `components/SidebarPropietario.tsx` — link "Mi perfil" + `IconUser`.
+- `components/SidebarConductor.tsx` — idem.
+- `components/SidebarAdmin.tsx` — idem.
+
+### Verificación de schema (previa a escribir código)
+
+Antes de escribir una sola línea de código, se verificaron los hechos con `supabase db query`:
+
+- `usuario.nombre` — text, nullable. ✅
+- `usuario.rol` — text, default `'empleado'`, **no enum**. ✅
+- `usuario.email` — text, not null, **redundante con `auth.users.email`**. ✅
+- `usuario.empresa_id` — uuid, nullable. ✅
+- Trigger `trg_usuario_updated_at` en UPDATE, ejecuta `set_updated_at()`. ✅
+- `proxy.ts` no protege `/perfil`. ✅
+- `app/ayuda/` no tiene `layout.tsx` propio (precedente para `/perfil`). ✅
+
+**Lección:** verificar el schema real antes de escribir código evita 5 suposiciones (columna `nombre`, tipo de `rol`, trigger, protección de ruta, layout). El costo de `db query` es 30 segundos; el costo de escribir código con supuestos es 2 horas de debugging.
+
+### Tests
+
+- **Vitest:** 279 → **296** (+17). Todos passing.
+- **Playwright smokes:** 11 → **13** (+2). Todos passing contra prod.
+- **`tsc --noEmit`:** 0 errores.
+
+### Lecciones
+
+- **Re-auth es no negociable para cambio de contraseña.** `signInWithPassword` antes de `updateUser` cuesta 3 líneas y elimina una clase entera de ataques (session hijacking).
+- **El trigger `updated_at` ahorra código.** No setear `updated_at` manualmente: es fuente de bugs (formato, timezone, orden de ejecución). El trigger lo hace solo.
+- **`useActionState` de React 19** es el patrón para formularios con feedback inline. Sin `useState` + `useEffect` + fetch manual.
+- **Precedente de `/ayuda`:** páginas compartidas por roles van en la raíz, sin layout propio, con header autogestionado. Coherencia arquitectónica.
+- **Verificar el schema antes de escribir código** evita suposiciones costosas. `supabase db query` es más rápido que debuggear.
+- **El protocolo PowerShell del dump** (`WriteAllText` + `UTF8Encoding($false)` + `Test-Path` + `Join-Path`) funciona. Cero corrupción de encoding en 9 archivos.
+
+### Estado final
+
+- **Commit HEAD:** `26bd897`.
+- **Versión:** `0.4.4` (bump pendiente en el commit de docs).
+- **Tests:** 296/296 Vitest, 13/13 Playwright smokes.
+- **Vercel:** deployado, verificado con smoke E2E real contra `kuatiauto.vercel.app`.
+- **Pendiente próxima sesión:**
+  - Bump `package.json` + `package-lock.json` a `0.4.4` (en este cierre).
+  - Tag `v0.4.4`.
+  - Verificar layout y CTA de `/empezar` en prod (PC y mobile).
+  - Debug del celular (localhost vs IP local).
+  - Etapa IV (cierre de orden con catálogo integrado).
+  - Actualizar Supabase CLI v2.122 → v3.0.0.
