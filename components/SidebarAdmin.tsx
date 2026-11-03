@@ -9,7 +9,7 @@ import {
   IconBuilding,
   IconUsers,
   IconBox, IconChartBar, IconHelpCircle,
-  IconLogout
+  IconLogout, IconUser
 } from '@tabler/icons-react';
 import { logoutAction } from '@/lib/auth-actions';
 
@@ -64,6 +64,13 @@ export default function SidebarAdmin() {
         v{pkg.version}
       </div>
       <div className='p-4 border-t border-white/20 shrink-0'>
+        <Link
+          href='/perfil'
+          className='w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-kuati-petroleo/80 text-kuati-blanco/80 hover:text-kuati-blanco transition-colors'
+        >
+          <IconUser size={20} stroke={1.5} />
+          <span>Mi perfil</span>
+        </Link>
         <button
           onClick={handleLogout}
           className='w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/20 text-red-300 hover:text-red-100 transition-colors'
