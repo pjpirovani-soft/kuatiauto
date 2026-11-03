@@ -5,6 +5,16 @@ export const HUB_TITULO = 'Centro de Ayuda';
 export const HUB_SUBTITULO =
   'Guías paso a paso para aprovechar KuatiAuto al máximo. Elegí tu rol para empezar.';
 
+export const HUB_FUNDADOR = {
+  nombre: 'Pedro J. Pirovani',
+  rol: 'Fundador de KuatiAuto',
+  portfolio: 'https://portafolio-pjpirovani.vercel.app',
+  whatsapp: '+595 986 207 595',
+  whatsappLink: 'https://wa.me/595986207595?text=Hola%2C%20tengo%20una%20consulta%20sobre%20KuatiAuto',
+  email: 'kuatiauto.soporte@gmail.com',
+  horario: 'Lunes a viernes, 8:00 a 18:00 (hora Paraguay)',
+};
+
 export const HUB_ROLES: AyudaRolCardData[] = [
   {
     rol: 'propietario',
@@ -82,7 +92,7 @@ export const HUB_FAQS: AyudaFAQData[] = [
   {
     pregunta: '¿Cómo reporto un bug o sugiero una mejora?',
     respuesta:
-      'Escribinos a soporte@kuatiauto.com.py o usá el link de "Contacto" al final de esta página. Si es un bug, contanos:\n\n- Qué intentaste hacer.\n- Qué pasó (con captura de pantalla si podés).\n- Qué esperabas que pasara.\n- Navegador y dispositivo.\n\nCuanto más detalle, mejor podemos ayudarte.',
+      'Escribinos a kuatiauto.soporte@gmail.com o usá el link de "Contacto" al final de esta página. Si es un bug, contanos:\n\n- Qué intentaste hacer.\n- Qué pasó (con captura de pantalla si podés).\n- Qué esperabas que pasara.\n- Navegador y dispositivo.\n\nCuanto más detalle, mejor podemos ayudarte.',
   },
   {
     pregunta: '¿Tienen una versión para celular?',
@@ -95,9 +105,3 @@ export const HUB_FAQS: AyudaFAQData[] = [
       'Los datos operativos (clientes, vehículos, órdenes) se guardan mientras tu cuenta esté activa. Si eliminás tu empresa, se marca como desactivada y se anonimiza en un plazo de 30 días. Los logs de auditoría se guardan 1 año (por seguridad).',
   },
 ];
-
-export const HUB_CONTACTO = {
-  email: 'soporte@kuatiauto.com.py',
-  whatsapp: '+595 981 000 000',
-  horario: 'Lunes a viernes, 8:00 a 18:00 (hora Paraguay)',
-};

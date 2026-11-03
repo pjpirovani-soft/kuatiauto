@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { IconArrowLeft } from '@tabler/icons-react';
 import AyudaRolCard from '@/components/ayuda/AyudaRolCard';
-import { HUB_TITULO, HUB_SUBTITULO, HUB_ROLES, HUB_FAQS, HUB_CONTACTO } from '@/lib/ayuda/hub';
+import AyudaContacto from '@/components/ayuda/AyudaContacto';
+import { HUB_TITULO, HUB_SUBTITULO, HUB_ROLES, HUB_FAQS } from '@/lib/ayuda/hub';
 
 export default function AyudaPage() {
   return (
@@ -49,33 +50,7 @@ export default function AyudaPage() {
           </div>
         </section>
 
-        <section className='bg-kuati-petroleo text-kuati-blanco rounded-xl p-8 md:p-10'>
-          <div className='max-w-2xl mx-auto text-center'>
-            <h2 className='text-2xl font-bold mb-3'>¿Necesitás más ayuda?</h2>
-            <p className='text-kuati-blanco/80 mb-6'>
-              Nuestro equipo de soporte te responde en horario laboral.
-            </p>
-            <div className='grid sm:grid-cols-2 gap-4 text-sm text-kuati-blanco/90'>
-              <div>
-                <p className='font-semibold text-kuati-blanco'>Email</p>
-                <a href={'mailto:' + HUB_CONTACTO.email} className='hover:text-kuati-lima transition-colors'>
-                  {HUB_CONTACTO.email}
-                </a>
-              </div>
-              <div>
-                <p className='font-semibold text-kuati-blanco'>WhatsApp</p>
-                <p>{HUB_CONTACTO.whatsapp}</p>
-              </div>
-            </div>
-            <p className='text-xs text-kuati-blanco/60 mt-6'>{HUB_CONTACTO.horario}</p>
-            <a
-              href={'mailto:' + HUB_CONTACTO.email}
-              className='inline-block mt-6 bg-kuati-lima text-kuati-petroleo font-bold px-6 py-2.5 rounded-lg hover:bg-kuati-lima/90 transition-colors'
-            >
-              Contactar soporte
-            </a>
-          </div>
-        </section>
+        <AyudaContacto />
       </div>
     </div>
   );

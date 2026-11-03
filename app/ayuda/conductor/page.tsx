@@ -1,6 +1,7 @@
 import AyudaBreadcrumb from '@/components/ayuda/AyudaBreadcrumb';
 import AyudaSeccion from '@/components/ayuda/AyudaSeccion';
 import AyudaIndiceLateral from '@/components/ayuda/AyudaIndiceLateral';
+import AyudaContacto from '@/components/ayuda/AyudaContacto';
 import { GUIA_CONDUCTOR } from '@/lib/ayuda/conductor';
 
 export const metadata = {
@@ -29,17 +30,7 @@ export default function AyudaConductorPage() {
               <AyudaSeccion key={seccion.id} seccion={seccion} />
             ))}
 
-            <div className='bg-kuati-lima/10 border border-kuati-lima/30 rounded-xl p-6 text-center'>
-              <p className='text-kuati-grafito/90'>
-                Llegaste al final. Si todavia tenes dudas, escribinos a{' '}
-                <a
-                  href='mailto:soporte@kuatiauto.com.py'
-                  className='text-kuati-petroleo font-semibold hover:underline'
-                >
-                  soporte@kuatiauto.com.py
-                </a>
-              </p>
-            </div>
+            <AyudaContacto />
           </main>
 
           <AyudaIndiceLateral secciones={GUIA_CONDUCTOR.secciones} />
