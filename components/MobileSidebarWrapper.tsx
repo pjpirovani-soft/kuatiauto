@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { IconX } from '@tabler/icons-react';
@@ -23,7 +23,7 @@ export default function MobileSidebarWrapper({ children }: { children: React.Rea
       {/* Contenedor del Sidebar */}
       <div
         className={
-          'fixed md:static inset-y-0 left-0 z-50 w-72 md:w-64 transform transition-transform duration-300 ease-in-out ' +
+          'fixed md:sticky md:top-0 md:h-screen md:shrink-0 inset-y-0 left-0 z-50 w-72 md:w-64 transform transition-transform duration-300 ease-in-out overflow-y-auto md:overflow-visible ' +
           (isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0')
         }
       >

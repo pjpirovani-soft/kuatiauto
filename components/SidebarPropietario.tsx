@@ -29,7 +29,7 @@ export default function SidebarPropietario() {
   };
 
   return (
-    <aside className='w-64 h-screen sticky top-0 bg-kuati-petroleo text-kuati-blanco flex flex-col'>
+    <aside className='w-full h-full md:h-screen bg-kuati-petroleo text-kuati-blanco flex flex-col'>
       <div className='p-6 border-b border-white/20 shrink-0'><Logo variant='isotipo' theme='dark' showText={true} href='/dashboard' /></div>
       <nav className='flex-1 p-4 space-y-2 overflow-y-auto'>
         {menuItems.map((item) => {
