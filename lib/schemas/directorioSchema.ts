@@ -3,7 +3,7 @@ import { z } from "zod";
 export const buscarEstablecimientosSchema = z.object({
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
-  radio_km: z.number().min(0.5).max(100).default(10),
+  radio_km: z.number().min(0.5).max(10000).default(10),
   ciudad: z.string().optional(),
   servicio: z.string().optional(),
   texto: z.string().max(100).optional(),

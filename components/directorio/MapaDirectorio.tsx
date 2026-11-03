@@ -29,6 +29,13 @@ export default function MapaDirectorio({ establecimientos, centro }: Props) {
     import("leaflet").then((mod) => {
       L = mod.default ?? mod;
 
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: '/leaflet/marker-icon-2x.png',
+        iconUrl: '/leaflet/marker-icon.png',
+        shadowUrl: '/leaflet/marker-shadow.png',
+      });
+
       if (!document.getElementById("leaflet-css")) {
         const link = document.createElement("link");
         link.id = "leaflet-css";

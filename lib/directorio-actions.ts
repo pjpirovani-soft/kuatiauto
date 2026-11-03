@@ -2,9 +2,10 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { buscarEstablecimientosSchema, publicarEstablecimientoSchema } from "@/lib/schemas/directorioSchema";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 
 export async function buscarEstablecimientos(input: unknown) {
+  noStore();
   const parsed = buscarEstablecimientosSchema.safeParse(input);
   if (!parsed.success) {
     return { error: "Datos invalidos", details: parsed.error.flatten() };
