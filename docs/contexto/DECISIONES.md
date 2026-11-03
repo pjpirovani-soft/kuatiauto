@@ -337,3 +337,41 @@ Detectadas durante la lectura de docs para iniciar fase D:
 - **La consistencia entre registros** ayuda a la claridad. El usuario ve el mismo CTA en ambos, pero el texto contextual se adapta al rol.
 
 **Estado:** implementado y pusheado (commit `1154a53`). Pendiente verificación en prod y agregar subtítulo "Sin tarjeta de crédito" en un segundo commit.
+## ADR-013: Logout con server action (2026-11-03)
+
+**Contexto:** el logout del cliente (`supabase.auth.signOut()` + `router.push('/login')`) era interceptado por el middleware (`proxy.ts`), que por una carrera de milisegundos todavía leía una sesión vieja y redirigía al `/dashboard`. El usuario hacía click en "Cerrar Sesión" y volvía al dashboard.
+
+**Decisión:**
+
+| ID | Decisión | Estado |
+|---|---|---|
+| ADR-013 | El logout se hace en el servidor con una server action (`logoutAction` en `lib/auth-actions.ts`). | APROBADA |
+| D-LOGOUT-1 | `logoutAction` hace: `supabase.auth.signOut()` + `revalidatePath('/', 'layout')` + `redirect('/login')`. Todo en el servidor. | APROBADA |
+| D-LOGOUT-2 | Los 3 sidebars (`SidebarPropietario`, `SidebarConductor`, `SidebarAdmin`) llaman a `logoutAction()` en vez de hacer `signOut` + `router.push` en el cliente. | APROBADA |
+| D-LOGOUT-3 | Se elimina `createClient` y `useRouter` de los 3 sidebars (ya no son necesarios). | APROBADA |
+
+**Ventaja:** el `redirect('/login')` ocurre en el servidor, **antes** de que el middleware pueda interceptar. No hay carrera de milisegundos.
+
+**Alternativa descartada:** `router.refresh()` antes de `router.push('/login')` en el cliente. Funciona a veces, pero es un parche. La server action es más robusta.
+
+**Estado:** implementado y pusheado (commit `ed04e49`). Pendiente verificación en prod.
+
+## ADR-014: Layout de sidebars en 3 capas (2026-11-03)
+
+**Contexto:** el botón "Cerrar Sesión" no se veía en pantallas chicas. El `<aside>` tenía `h-screen sticky top-0`, pero el wrapper (`MobileSidebarWrapper`) era `md:static`. El `sticky` no funcionaba porque el padre no tenía altura definida. El sidebar crecía con el contenido y empujaba el botón fuera del viewport.
+
+**Decisión:**
+
+| ID | Decisión | Estado |
+|---|---|---|
+| ADR-014 | El layout de sidebars se implementa en 3 capas: wrapper, `<aside>`, `<main>`. | APROBADA |
+| D-LAYOUT-1 | **Wrapper** (`MobileSidebarWrapper`): `md:sticky md:top-0 md:h-screen md:shrink-0` + `overflow-y-auto md:overflow-visible`. En mobile tiene scroll interno (para llegar al botón de logout). En desktop es sticky con altura fija. | APROBADA |
+| D-LAYOUT-2 | **`<aside>`** (`SidebarPropietario`): `w-full h-full md:h-screen`. El wrapper maneja el sticky y la altura. El aside solo llena el wrapper. | APROBADA |
+| D-LAYOUT-3 | **Layout** (`app/(dashboard)/layout.tsx`): contenedor `h-screen overflow-hidden` + `<main> h-screen overflow-y-auto`. El main scrollea solo, el sidebar queda fijo. | APROBADA |
+
+**Regla:** el layout de sidebars en SaaS requiere las 3 piezas. Si falta una, se rompe:
+- **Sin wrapper sticky + h-screen:** el aside no puede sticker, crece con el contenido.
+- **Sin `<aside> h-full`:** el aside no llena el wrapper.
+- **Sin `<main> h-screen overflow-y-auto`:** el main crece con el contenido, empuja todo.
+
+**Estado:** implementado y pusheado (commit `09dc183`). Verificado en PC. Pendiente verificar en mobile (problema de red/firewall, no del layout).

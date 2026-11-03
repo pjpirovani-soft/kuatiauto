@@ -1219,3 +1219,64 @@ Se agregó una sección de contacto del fundador en el Centro de Ayuda y en las 
 - **Tests:** 279/279 Vitest, 11/11 Playwright.
 - **Vercel:** deployado con todos los cambios (pendiente verificación manual en prod).
 - **Pendiente próxima sesión:** verificar layout y CTA en prod (PC y mobile), debug del celular (localhost vs IP local).
+---
+
+## 2026-11-03 (tercera parte) — Logout con server action + fix de textos
+
+**Cierre de sesión con el fix del logout y correcciones finales de copy.**
+
+### Logout con server action (commit `ed04e49`)
+
+**Problema detectado:** al hacer click en "Cerrar Sesión", el usuario iba al `/dashboard` en vez de `/login`. Causa: el middleware (`proxy.ts`) interceptaba la redirección del cliente (`router.push('/login')`) y, por una carrera de milisegundos, todavía leía una sesión vieja y lo devolvía al dashboard.
+
+**Solución:** mover el logout al servidor con una server action.
+
+- **`lib/auth-actions.ts`**: agregada `logoutAction()` que hace `signOut` + `revalidatePath` + `redirect('/login')`.
+- **3 sidebars** (`SidebarPropietario`, `SidebarConductor`, `SidebarAdmin`): eliminado `createClient` y `useRouter`. `handleLogout` ahora solo llama a `logoutAction()`.
+- El `redirect('/login')` ocurre en el servidor, antes de que el middleware pueda interceptar.
+
+**Ventaja:** la redirección es del servidor, el middleware no tiene oportunidad de mandar al dashboard.
+### Fix de texto "Soy lubricentro" (commit `ed04e49`)
+
+**Problema:** en `/empezar`, la tarjeta izquierda decía "Soy lubricentro". Un lubricentro es un lugar, no una persona. Es incorrecto gramaticalmente.
+
+**Solución:** "Soy lubricentro" → "Tengo un lubricentro" en `app/empezar/page.tsx`.
+
+**Consistencia:** el link cruzado en `/register-conductor` ya decía "¿Tenés un lubricentro?" (commit `1154a53`). Ahora los 2 textos son coherentes.
+
+### Resumen de la sesión 2026-11-03 (14 commits)
+
+| Commit | Descripción |
+|---|---|
+| `ed04e49` | fix(auth): logout con server action + corregir texto Soy lubricentro |
+| `1154a53` | fix(registro): corregir texto y CTA a Empezar gratis |
+| `09dc183` | fix(layout): sidebar sticky en desktop y scroll en mobile |
+| `c0f25b3` | feat(registro): efecto pulse-slow en links cruzados |
+| `9bcbf3a` | chore(version): bump package.json a 0.4.3 |
+| `eaa95bf` | docs(cierre): contacto fundador + registro diferenciado + fix sidebars (ADR-011) |
+| `37e2cda` | fix(sidebars): sticky + h-screen + shrink-0 |
+| `4cb7d38` | feat(registro): separar registro de lubricentro y conductor + hub /empezar |
+| `937da16` | feat(ayuda): contacto del fundador en hub y 3 guias |
+| `e424166` | docs(cierre): Etapa III + Centro de Ayuda completo (ADR-010) |
+| `5ce1c37` | fix(e2e): ajustar selectores del smoke del Centro de Ayuda |
+| `529fe07` | test(e2e): smoke del Centro de Ayuda |
+| `33b66a8` | feat(ayuda): centro de ayuda completo con guias por rol |
+| `1662360` | feat(recepcion): wizard de recepcion rapida (Etapa III) |
+### Lecciones
+
+- **Logout en Next.js + Supabase:** si el middleware tiene lógica de redirección, el logout del cliente (`router.push`) puede ser interceptado. La solución es hacer el logout en el servidor con una server action (`signOut` + `revalidatePath` + `redirect`).
+- **Los textos deben ser naturales.** "Soy lubricentro" es incorrecto. "Tengo un lubricentro" es natural.
+- **El CTA debe comunicar acción + beneficio.** "Empezar gratis" > "Crear cuenta".
+- **El layout de sidebars requiere 3 piezas:** wrapper `sticky` + `<aside> h-full` + `<main> h-screen overflow-y-auto`.
+
+### Estado final
+
+- **Commit HEAD:** `ed04e49`.
+- **Versión:** `0.4.3`.
+- **Tests:** 279/279 Vitest, 11/11 Playwright.
+- **Vercel:** deployado con todos los cambios.
+- **Pendiente próxima sesión:**
+  - Implementar `/perfil` (nombre + cambio de contraseña + ver rol/empresa).
+  - Verificar en prod: logout, texto de `/empezar`, layout.
+  - Debug del celular (localhost vs IP local).
+  - Etapa IV (cierre de orden).
