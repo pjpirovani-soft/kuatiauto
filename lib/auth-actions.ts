@@ -117,3 +117,9 @@ export async function registerConductor(formData: FormData) {
   if (error) return { error: error.message };
   return { success: 'Revisa tu email para confirmar la cuenta.' };
 }
+export async function logoutAction() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  revalidatePath('/', 'layout');
+  redirect('/login');
+}

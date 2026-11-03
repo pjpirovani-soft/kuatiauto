@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
 import pkg from '@/package.json';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { IconCar, IconHistory, IconHelpCircle, IconLogout } from '@tabler/icons-react';
-import { createClient } from '@/lib/supabase/client';
+import { logoutAction } from '@/lib/auth-actions';
 
 const menuItems = [
   { name: 'Mis Vehículos', href: '/mi-garage/vehiculos', icon: IconCar },
@@ -15,12 +15,9 @@ const menuItems = [
 
 export default function SidebarConductor() {
   const pathname = usePathname();
-  const router = useRouter();
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/login');
+    await logoutAction();
   };
 
   return (

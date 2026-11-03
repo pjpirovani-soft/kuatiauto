@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
 import pkg from '@/package.json';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   IconLayoutDashboard,
   IconBuilding,
@@ -11,7 +11,7 @@ import {
   IconBox, IconChartBar, IconHelpCircle,
   IconLogout
 } from '@tabler/icons-react';
-import { createClient } from '@/lib/supabase/client';
+import { logoutAction } from '@/lib/auth-actions';
 
 const menuItems = [
   { name: 'Panel', href: '/admin', icon: IconLayoutDashboard, exact: true },
@@ -24,12 +24,9 @@ const menuItems = [
 
 export default function SidebarAdmin() {
   const pathname = usePathname();
-  const router = useRouter();
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/login');
+    await logoutAction();
   };
 
   return (

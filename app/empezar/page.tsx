@@ -59,7 +59,7 @@ export default async function EmpezarPage() {
               <IconBuildingStore size={32} className='text-kuati-lima' />
             </div>
 
-            <h2 className='text-2xl font-bold text-kuati-petroleo mb-2'>Soy lubricentro</h2>
+            <h2 className='text-2xl font-bold text-kuati-petroleo mb-2'>Tengo un lubricentro</h2>
             <p className='text-kuati-grafito/70 text-sm mb-5'>
               Gestiono un taller o lubricentro y necesito administrar clientes, vehículos y órdenes de trabajo.
             </p>

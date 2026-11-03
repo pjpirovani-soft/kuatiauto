@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
 import pkg from '@/package.json';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { IconLayoutDashboard, IconUsers, IconCar, IconClipboardList, IconBox, IconBuildingStore, IconBolt, IconHelpCircle, IconLogout } from '@tabler/icons-react';
-import { createClient } from '@/lib/supabase/client';
+import { logoutAction } from '@/lib/auth-actions';
 
 const menuItems = [
   { name: 'Dashboard', href: '/dashboard', icon: IconLayoutDashboard, exact: true },
@@ -20,12 +20,9 @@ const menuItems = [
 
 export default function SidebarPropietario() {
   const pathname = usePathname();
-  const router = useRouter();
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/login');
+    await logoutAction();
   };
 
   return (
