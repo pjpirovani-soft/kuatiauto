@@ -126,7 +126,7 @@ export async function listarOrdenes(input: unknown): Promise<Result<unknown[]>> 
   const supabase = await createClient();
   let query = supabase
     .from('orden_trabajo')
-    .select('id, vehiculo_id, fecha, km_servicio, observaciones, importe_total, proximo_mantenimiento_fecha, proximo_mantenimiento_km, estado, created_at')
+    .select('id, vehiculo_id, fecha, km_servicio, observaciones, importe_total, proximo_mantenimiento_fecha, proximo_mantenimiento_km, estado, created_at, numero_orden')
     .eq('empresa_id', ses.empresaId)
     .order('fecha', { ascending: false })
     .order('created_at', { ascending: false });

@@ -720,6 +720,7 @@ export type Database = {
           id: string
           importe_total: number | null
           km_servicio: number
+          numero_orden: number | null
           observaciones: string | null
           proximo_mantenimiento_fecha: string | null
           proximo_mantenimiento_km: number | null
@@ -735,6 +736,7 @@ export type Database = {
           id?: string
           importe_total?: number | null
           km_servicio: number
+          numero_orden?: number | null
           observaciones?: string | null
           proximo_mantenimiento_fecha?: string | null
           proximo_mantenimiento_km?: number | null
@@ -750,6 +752,7 @@ export type Database = {
           id?: string
           importe_total?: number | null
           km_servicio?: number
+          numero_orden?: number | null
           observaciones?: string | null
           proximo_mantenimiento_fecha?: string | null
           proximo_mantenimiento_km?: number | null
@@ -1338,6 +1341,10 @@ export type Database = {
       revocar_historial_compartido: {
         Args: { p_id: string }
         Returns: undefined
+      }
+      siguiente_numero_orden: {
+        Args: { p_empresa_id: string }
+        Returns: number
       }
     }
     Enums: {

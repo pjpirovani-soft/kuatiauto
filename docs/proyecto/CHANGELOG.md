@@ -1,4 +1,33 @@
 
+## [v0.6.0] - 2026-11-11 - Numeracion de ordenes + soft-delete + dashboard con alertas
+
+### Added
+- **Numeracion de ordenes:** Columna \
+umero_orden\ (secuencial por empresa), funcion RPC \siguiente_numero_orden()\, y UI con columna "N°" en lista y detalle.
+- **Soft-delete de catalogo:** Columna \ctivo\ en \servicio_empresa\ y \producto_empresa\, server actions \	oggleServicioEmpresa\ y \	oggleProductoEmpresa\, filtros en los selectores de ordenes, y botones "Desactivar/Reactivar" en el catalogo.
+- **Dashboard con alertas:** Funcion \obtenerVehiculosProximos()\ y seccion ambar en el dashboard con badges "Vencido" y "Proximo" (criterio "lo que ocurra primero": fecha o km).
+- **Actualizacion automatica del km_actual:** Al completar una orden, el \km_actual\ del vehiculo se actualiza si el km de la orden es mayor.
+
+### Changed
+- pp/(dashboard)/ordenes/page.tsx: Nueva columna "N°" en tabla y tarjetas.
+- pp/(dashboard)/ordenes/[id]/page.tsx: Titulo "Orden #0001" en lugar de "Orden".
+- pp/(dashboard)/catalogo/productos/page.tsx y servicios/page.tsx: Botones "Desactivar/Reactivar" en tablas y tarjetas.
+- pp/(dashboard)/dashboard/page.tsx: Seccion de alertas de mantenimiento.
+- lib/propietario-metricas-actions.ts: Nueva funcion \obtenerVehiculosProximos()\.
+- lib/ordenes-actions.ts: \completarOrden\ actualiza el \km_actual\ del vehiculo.
+- lib/productos-empresa-actions.ts y servicios-empresa-actions.ts: Nuevas server actions de toggle.
+- pp/(dashboard)/recepcion/page.tsx y components/recepcion/PasoOrden.tsx: Filtros de productos/servicios activos y seccion de "Proximo mantenimiento".
+
+### Fixed
+- Consultas a servicio_empresa y producto_empresa ahora solo traen items activos en los selectores de ordenes y recepcion.
+
+### Verified
+- 296/296 tests Vitest verdes.
+- \
+ext build\ compilo sin errores (31 rutas).
+- Migraciones 028 y 029 aplicadas en Supabase.
+
+
 ## [v0.5.0] - 2026-11-10 - Cierre de auditoría de seguridad y transacciones
 
 ### Added

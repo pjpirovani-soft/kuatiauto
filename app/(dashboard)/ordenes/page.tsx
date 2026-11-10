@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { listarOrdenesEmpresa } from "@/lib/ordenes-actions";
 import { listarVehiculosEmpresa } from "@/lib/vehiculos-actions";
 import { listarClientes } from "@/lib/clientes-actions";
@@ -13,6 +13,7 @@ type OrdenRow = {
   importe_total: number | null;
   estado: string;
   created_at: string;
+  numero_orden: number | null;
 };
 
 type VehiculoRow = {
@@ -86,6 +87,7 @@ export default async function OrdenesPage() {
             <table className='w-full text-sm text-left'>
               <thead className='bg-kuati-fondo text-kuati-grafito border-b border-kuati-borde'>
                 <tr>
+                  <th className='px-6 py-4 font-semibold'>Nº</th>
                   <th className='px-6 py-4 font-semibold'>Fecha</th>
                   <th className='px-6 py-4 font-semibold'>Vehículo</th>
                   <th className='px-6 py-4 font-semibold'>Km</th>
@@ -99,6 +101,7 @@ export default async function OrdenesPage() {
                   const vehEtiqueta = etiquetaPorVehiculo.get(o.vehiculo_id) ?? "(vehículo desconocido)";
                   return (
                     <tr key={o.id} className='hover:bg-kuati-fondo/50 transition-colors'>
+                      <td className='px-6 py-4 font-mono font-bold text-kuati-petroleo'>#{String(o.numero_orden ?? 0).padStart(4, '0')}</td>
                       <td className='px-6 py-4 font-mono text-kuati-grafito'>{o.fecha}</td>
                       <td className='px-6 py-4 text-kuati-grafito'>{vehEtiqueta}</td>
                       <td className='px-6 py-4 text-kuati-grafito'>{o.km_servicio.toLocaleString('es-PY')}</td>
@@ -128,6 +131,8 @@ export default async function OrdenesPage() {
                 <div key={o.id} className='bg-kuati-blanco rounded-xl border border-kuati-borde p-5 shadow-sm flex flex-col gap-3'>
                   <div className='flex items-center justify-between border-b border-kuati-borde pb-3'>
                     <div className='flex items-center gap-2 text-kuati-grafito font-mono font-semibold'>
+                      <span className='text-kuati-petroleo font-bold'>#{String(o.numero_orden ?? 0).padStart(4, '0')}</span>
+                      <span className='text-kuati-grafito/50'>·</span>
                       <IconCalendar size={16} className='text-kuati-grafito/50' />
                       {o.fecha}
                     </div>

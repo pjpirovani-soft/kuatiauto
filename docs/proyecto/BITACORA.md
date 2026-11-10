@@ -1410,3 +1410,36 @@ ext build compiló sin errores (31 rutas).
 - Push a main: commit 808da67.
 
 **Estado:** v0.5.0 estable y lista para el piloto.
+## 2026-11-11 — v0.6.0: Numeracion de ordenes + soft-delete de catalogo + dashboard con alertas
+
+**Contexto:** Sesion de mejoras de UX/UI y funcionalidad. Se implementaron 3 features grandes del backlog de la auditoria.
+
+**Cambios implementados:**
+
+- **Numeracion de ordenes (Migracion 029):**
+  - Columna 
+umero_orden en orden_trabajo, con indice unico por empresa.
+  - Funcion RPC siguiente_numero_orden() y actualizacion de crear_orden_transaccional para asignar el numero automaticamente.
+  - UI: columna "N°" en la lista, y titulo "Orden #0001" en el detalle.
+
+- **Soft-delete de catalogo local (Migracion 028):**
+  - Columna ctivo en servicio_empresa y producto_empresa, con indices.
+  - Server actions 	oggleServicioEmpresa y 	oggleProductoEmpresa.
+  - Filtros .eq('activo', true) en los <select> de ordenes y recepcion.
+  - UI: botones "Desactivar" (ambar) y "Reactivar" (verde) en las tablas y tarjetas del catalogo.
+
+- **Dashboard con alertas de mantenimiento:**
+  - Funcion obtenerVehiculosProximos() que combina la ultima orden completada con el km_actual del vehiculo.
+  - Criterio "lo que ocurra primero": si la fecha o el km superan el umbral, se marca como vencido.
+  - UI: seccion ambar con badges "Vencido" (rojo) y "Proximo" (amarillo).
+
+- **Actualizacion automatica del km_actual:**
+  - Al completar una orden, el km_actual del vehiculo se actualiza si el km de la orden es mayor.
+
+**Verificacion:**
+- 296/296 tests Vitest verdes.
+- \
+ext build\ compilo sin errores (31 rutas).
+- Migraciones 028 y 029 aplicadas en Supabase.
+
+**Estado:** v0.6.0 estable y lista para el piloto.

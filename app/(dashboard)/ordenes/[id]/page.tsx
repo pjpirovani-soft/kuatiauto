@@ -16,6 +16,7 @@ type OrdenRow = {
   importe_total: number | null;
   proximo_mantenimiento_fecha: string | null;
   proximo_mantenimiento_km: number | null;
+  numero_orden: number | null;
   orden_servicio: {
     id: string;
     servicio_global_id: string | null;
@@ -128,7 +129,7 @@ export default async function OrdenDetallePage({
     <div className="max-w-4xl mx-auto">
       <header className="mb-6">
         <Link href="/ordenes" className="text-sm text-gray-600 hover:text-black underline">← Volver a órdenes</Link>
-        <h1 className="text-3xl font-bold mt-2">Orden</h1>
+        <h1 className="text-3xl font-bold mt-2">Orden #{String(orden.numero_orden ?? 0).padStart(4, "0")}</h1>
         <p className="text-sm text-gray-600">
           Estado: <span className="font-mono">{orden.estado}</span>
           {orden.importe_total !== null && (
