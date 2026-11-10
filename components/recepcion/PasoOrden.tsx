@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   IconArrowLeft,
@@ -50,8 +50,36 @@ export default function PasoOrden({
   const router = useRouter();
   const [kmServicio, setKmServicio] = useState('');
   const [observaciones, setObservaciones] = useState('');
+  const [proximoFecha, setProximoFecha] = useState('');
+  const [proximoKm, setProximoKm] = useState('');
+  const [fechaTocada, setFechaTocada] = useState(false);
+  const [kmTocado, setKmTocado] = useState(false);
+
+
   const [lineasServicio, setLineasServicio] = useState<LineaServicio[]>([]);
   const [lineasProducto, setLineasProducto] = useState<LineaProducto[]>([]);
+
+  // Autocompletado (debe estar después de las declaraciones de lineasServicio y lineasProducto)
+  useEffect(() => {
+    if (lineasServicio.length === 0) return;
+    const ultimoServicio = lineasServicio[lineasServicio.length - 1];
+    if (ultimoServicio.servicio.origen !== 'global') return;
+
+    const intervaloKm = ultimoServicio.servicio.intervalo_km_sugerido;
+    const intervaloMeses = ultimoServicio.servicio.intervalo_meses_sugerido;
+
+    if (intervaloKm && !kmTocado) {
+      const nuevoKm = Number(kmServicio || 0) + Number(intervaloKm);
+      setProximoKm(String(nuevoKm));
+    }
+
+    if (intervaloMeses && !fechaTocada) {
+      const base = new Date(); // Usa fecha actual
+      base.setUTCMonth(base.getUTCMonth() + Number(intervaloMeses));
+      const nuevaFecha = base.toISOString().slice(0, 10);
+      setProximoFecha(nuevaFecha);
+    }
+  }, [lineasServicio, kmServicio, kmTocado, fechaTocada]);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [ordenCreada, setOrdenCreada] = useState<{ id: string } | null>(null);
@@ -127,6 +155,8 @@ export default function PasoOrden({
       servicios: serviciosPayload,
       productos: productosPayload,
       observaciones: observaciones || null,
+      proximo_mantenimiento_fecha: proximoFecha || null,
+      proximo_mantenimiento_km: proximoKm ? Number(proximoKm) : null,
     };
 
     const res = await crearOrden(payload);
@@ -211,6 +241,46 @@ export default function PasoOrden({
           placeholder='120000'
           className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
         />
+      </div>
+
+      {/* Sección Próximo Mantenimiento */}
+      <div className='bg-kuati-fondo rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm'>
+        <div className='flex items-center gap-2 mb-4'>
+          <h2 className='text-xl font-bold text-kuati-petroleo'>Próximo mantenimiento</h2>
+          <span className='text-xs font-semibold text-kuati-petroleo/60 bg-kuati-petroleo/10 px-2 py-1 rounded'>Sugerido</span>
+        </div>
+        <p className='text-sm text-kuati-grafito/60 mb-4'>Se completa automáticamente al agregar un servicio. Podés modificarlo si el cliente lo pide.</p>
+        
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+          <div>
+            <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Fecha</label>
+            <input
+              type='date'
+              className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+              value={proximoFecha}
+              onChange={(e) => {
+                setProximoFecha(e.target.value);
+                setFechaTocada(true);
+              }}
+            />
+          </div>
+          
+          <div>
+            <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Kilometraje</label>
+            <input
+              type='number'
+              min='0'
+              step='1'
+              className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+              value={proximoKm}
+              onChange={(e) => {
+                setProximoKm(e.target.value);
+                setKmTocado(true);
+              }}
+              placeholder='Ej. 15000'
+            />
+          </div>
+        </div>
       </div>
 
       <section>

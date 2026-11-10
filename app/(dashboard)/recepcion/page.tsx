@@ -26,6 +26,8 @@ export type ServicioRecepcion = {
   nombre: string;
   origen: 'global' | 'empresa';
   precio: number | null;
+  intervalo_km_sugerido?: number | null;
+  intervalo_meses_sugerido?: number | null;
 };
 
 export type ProductoRecepcion = {
@@ -42,7 +44,7 @@ export default async function RecepcionPage() {
     await Promise.all([
       listarClientes(),
       listarVehiculosEmpresa(),
-      supabase.from('servicio_global').select('id, nombre').order('nombre'),
+      supabase.from('servicio_global').select('id, nombre, intervalo_km_sugerido, intervalo_meses_sugerido').order('nombre'),
       supabase.from('servicio_empresa').select('id, nombre').order('nombre'),
       supabase.from('producto_global').select('id, nombre').order('nombre'),
       supabase.from('producto_empresa').select('id, nombre').order('nombre'),
@@ -56,11 +58,13 @@ export default async function RecepcionPage() {
     : [];
 
   const servicios: ServicioRecepcion[] = [
-    ...((servGlobalRes.data ?? []) as { id: string; nombre: string }[]).map((s) => ({
+    ...((servGlobalRes.data ?? []) as { id: string; nombre: string; intervalo_km_sugerido?: number | null; intervalo_meses_sugerido?: number | null }[]).map((s) => ({
       id: s.id,
       nombre: s.nombre,
       origen: 'global' as const,
       precio: null,
+      intervalo_km_sugerido: s.intervalo_km_sugerido,
+      intervalo_meses_sugerido: s.intervalo_meses_sugerido,
     })),
     ...((servEmpresaRes.data ?? []) as { id: string; nombre: string }[]).map((s) => ({
       id: s.id,
