@@ -20,10 +20,13 @@ type Props = {
 export default function EditarOrdenClient(props: Props) {
   const { id, estado, initialData, vehiculos, servicioOpciones, productoOpciones } = props;
   const router = useRouter();
+  
   const [anulando, setAnulando] = useState(false);
   const [motivo, setMotivo] = useState("");
   const [accionError, setAccionError] = useState<string | null>(null);
-  const [accionando, setAccionando] = useState(false);
+  const [accionando, setAccionando] = useState<string | null>(null); 
+
+  const [confirmarAccion, setConfirmarAccion] = useState<"completar" | "anular" | "eliminar" | null>(null);
 
   const editable = estado === "borrador" || estado === "en_curso";
 
@@ -36,43 +39,43 @@ export default function EditarOrdenClient(props: Props) {
     return { ok: false, error: res.error ?? "No se pudo guardar" };
   }
 
-  async function handleCompletar() {
-    if (!confirm("¿Marcar esta orden como completada? Se calculará el importe total y el próximo mantenimiento.")) return;
+  async function ejecutarCompletar() {
     setAccionError(null);
-    setAccionando(true);
+    setAccionando('completar');
     try {
       const res = await completarOrden({ id });
       if (!res.ok) setAccionError(res.error ?? "No se pudo completar");
       else router.refresh();
     } finally {
-      setAccionando(false);
+      setAccionando(null);
+      setConfirmarAccion(null);
     }
   }
 
-  async function handleAnular() {
-    if (!confirm("¿Anular esta orden? Esta acción no se puede deshacer.")) return;
+  async function ejecutarAnular() {
     setAccionError(null);
-    setAccionando(true);
+    setAccionando('anular');
     try {
       const motivoLimpio = motivo.trim() === "" ? null : motivo;
       const res = await anularOrden({ id, motivo: motivoLimpio });
       if (!res.ok) setAccionError(res.error ?? "No se pudo anular");
       else { setAnulando(false); setMotivo(""); router.refresh(); }
     } finally {
-      setAccionando(false);
+      setAccionando(null);
+      setConfirmarAccion(null);
     }
   }
 
-  async function handleEliminar() {
-    if (!confirm("¿Eliminar definitivamente este borrador? Esta acción no se puede deshacer.")) return;
+  async function ejecutarEliminar() {
     setAccionError(null);
-    setAccionando(true);
+    setAccionando('eliminar');
     try {
       const res = await eliminarOrdenBorrador({ id });
       if (!res.ok) setAccionError(res.error ?? "No se pudo eliminar");
       else router.push("/ordenes");
     } finally {
-      setAccionando(false);
+      setAccionando(null);
+      setConfirmarAccion(null);
     }
   }
 
@@ -93,16 +96,31 @@ export default function EditarOrdenClient(props: Props) {
         {accionError && <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded p-2">{accionError}</p>}
 
         {(estado === "borrador" || estado === "en_curso") && (
-          <div className="flex flex-wrap gap-2">
-            <button type="button" disabled={accionando || !editable} onClick={handleCompletar} className="px-3 py-1 rounded bg-green-600 text-white disabled:opacity-50">
-              Completar orden
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button 
+              type="button" 
+              disabled={!!accionando || !editable} 
+              onClick={() => setConfirmarAccion('completar')} 
+              className="px-4 py-3 min-h-[44px] rounded bg-green-600 text-white font-medium disabled:opacity-50 active:scale-95 transition-transform"
+            >
+              {accionando === 'completar' ? 'Completando...' : 'Completar orden'}
             </button>
-            <button type="button" disabled={accionando} onClick={() => setAnulando((v) => !v)} className="px-3 py-1 rounded bg-amber-600 text-white disabled:opacity-50">
+            <button 
+              type="button" 
+              disabled={!!accionando} 
+              onClick={() => setAnulando((v) => !v)} 
+              className="px-4 py-3 min-h-[44px] rounded bg-amber-600 text-white font-medium disabled:opacity-50 active:scale-95 transition-transform"
+            >
               Anular
             </button>
             {estado === "borrador" && (
-              <button type="button" disabled={accionando} onClick={handleEliminar} className="px-3 py-1 rounded bg-red-600 text-white disabled:opacity-50">
-                Eliminar borrador
+              <button 
+                type="button" 
+                disabled={!!accionando} 
+                onClick={() => setConfirmarAccion('eliminar')} 
+                className="px-4 py-3 min-h-[44px] rounded bg-red-600 text-white font-medium disabled:opacity-50 active:scale-95 transition-transform"
+              >
+                {accionando === 'eliminar' ? 'Eliminando...' : 'Eliminar borrador'}
               </button>
             )}
           </div>
@@ -111,7 +129,12 @@ export default function EditarOrdenClient(props: Props) {
         {estado === "completada" && (
           <div>
             <p className="text-sm text-gray-600 mb-2">La orden está completada. Si necesitás revertirla, anulala con motivo.</p>
-            <button type="button" disabled={accionando} onClick={() => setAnulando((v) => !v)} className="px-3 py-1 rounded bg-amber-600 text-white disabled:opacity-50">
+            <button 
+              type="button" 
+              disabled={!!accionando} 
+              onClick={() => setAnulando((v) => !v)} 
+              className="px-4 py-3 min-h-[44px] rounded bg-amber-600 text-white font-medium disabled:opacity-50"
+            >
               Anular
             </button>
           </div>
@@ -130,20 +153,63 @@ export default function EditarOrdenClient(props: Props) {
                 value={motivo}
                 onChange={(e) => setMotivo(e.target.value)}
                 maxLength={500}
-                disabled={accionando}
+                disabled={!!accionando}
               />
             </label>
             <div className="flex gap-2">
-              <button type="button" disabled={accionando} onClick={handleAnular} className="px-3 py-1 rounded bg-amber-700 text-white disabled:opacity-50">
-                Confirmar anulación
+              <button 
+                type="button" 
+                disabled={!!accionando} 
+                onClick={() => setConfirmarAccion('anular')} 
+                className="px-4 py-3 min-h-[44px] rounded bg-amber-700 text-white font-medium disabled:opacity-50"
+              >
+                {accionando === 'anular' ? 'Anulando...' : 'Confirmar anulación'}
               </button>
-              <button type="button" disabled={accionando} onClick={() => { setAnulando(false); setMotivo(""); }} className="px-3 py-1 rounded border">
+              <button 
+                type="button" 
+                disabled={!!accionando} 
+                onClick={() => { setAnulando(false); setMotivo(""); }} 
+                className="px-4 py-3 min-h-[44px] rounded border font-medium"
+              >
                 Cancelar
               </button>
             </div>
           </div>
         )}
       </section>
+
+      {confirmarAccion && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+            <h3 className="text-lg font-bold mb-2">Confirmar acción</h3>
+            <p className="text-sm text-gray-600 mb-6">
+              {confirmarAccion === 'completar' && "¿Marcar esta orden como completada? Se calculará el importe total y el próximo mantenimiento."}
+              {confirmarAccion === 'anular' && "¿Anular esta orden? Esta acción no se puede deshacer."}
+              {confirmarAccion === 'eliminar' && "¿Eliminar definitivamente este borrador? Esta acción no se puede deshacer."}
+            </p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setConfirmarAccion(null)} 
+                disabled={!!accionando}
+                className="flex-1 px-4 py-2 rounded border font-medium hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={confirmarAccion === 'completar' ? ejecutarCompletar : confirmarAccion === 'anular' ? ejecutarAnular : ejecutarEliminar} 
+                disabled={!!accionando}
+                className={`flex-1 px-4 py-2 rounded text-white font-medium ${
+                  confirmarAccion === 'completar' ? 'bg-green-600 hover:bg-green-700' : 
+                  confirmarAccion === 'anular' ? 'bg-amber-600 hover:bg-amber-700' : 
+                  'bg-red-600 hover:bg-red-700'
+                }`}
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
