@@ -331,7 +331,7 @@ export async function completarOrden(input: unknown): Promise<Result<{ id: strin
 
   const { data: actual } = await supabase
     .from('orden_trabajo')
-    .select('id, estado, fecha, km_servicio, vehiculo_id')
+    .select('id, estado, fecha, km_servicio, vehiculo_id, proximo_mantenimiento_fecha, proximo_mantenimiento_km')
     .eq('id', parsed.data.id)
     .eq('empresa_id', ses.empresaId)
     .maybeSingle();

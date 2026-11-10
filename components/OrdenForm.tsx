@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import OrdenLineas, { type ServicioLineaUI, type ProductoLineaUI } from "./OrdenLineas";
 import { IconLoader2 } from "@tabler/icons-react";
 
@@ -16,6 +16,8 @@ export type OrdenFormData = {
   estado: string;
   servicios: ServicioLineaUI[];
   productos: ProductoLineaUI[];
+  proximo_mantenimiento_fecha?: string | null;
+  proximo_mantenimiento_km?: string | null;
 };
 
 type Props = {
@@ -47,6 +49,40 @@ export default function OrdenForm(props: Props) {
   const [observaciones, setObservaciones] = useState(initialData?.observaciones ?? "");
   const [servicios, setServicios] = useState<ServicioLineaUI[]>(initialData?.servicios ?? []);
   const [productos, setProductos] = useState<ProductoLineaUI[]>(initialData?.productos ?? []);
+  const [proximoFecha, setProximoFecha] = useState(initialData?.proximo_mantenimiento_fecha ?? "");
+  const [proximoKm, setProximoKm] = useState(initialData?.proximo_mantenimiento_km?.toString() ?? "");
+  
+  // Banderas para saber si el usuario tocó los campos a mano
+  const [fechaTocada, setFechaTocada] = useState(false);
+  const [kmTocado, setKmTocado] = useState(false);
+
+  // Autocompletado de mantenimiento basado en el último servicio agregado
+  useEffect(() => {
+    if (initialData?.proximo_mantenimiento_fecha || initialData?.proximo_mantenimiento_km) return;
+    if (servicios.length === 0) return;
+
+    const ultimoServicio = servicios[servicios.length - 1];
+    if (!ultimoServicio.servicio_global_id) return;
+
+    const opcion = servicioOpciones.find((s) => s.id === ultimoServicio.servicio_global_id) as any;
+    if (!opcion) return;
+
+    const intervaloKm = opcion.intervalo_km_sugerido;
+    const intervaloMeses = opcion.intervalo_meses_sugerido;
+
+    // Solo autocompletar si el usuario NO tocó el campo manualmente
+    if (intervaloKm && !kmTocado) {
+      const nuevoKm = Number(kmServicio) + Number(intervaloKm);
+      setProximoKm(String(nuevoKm));
+    }
+
+    if (intervaloMeses && !fechaTocada) {
+      const base = new Date(fecha + 'T00:00:00Z');
+      base.setUTCMonth(base.getUTCMonth() + Number(intervaloMeses));
+      const nuevaFecha = base.toISOString().slice(0, 10);
+      setProximoFecha(nuevaFecha);
+    }
+  }, [servicios, servicioOpciones, kmServicio, fecha, initialData, kmTocado, fechaTocada]);
   const [error, setError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
 
@@ -80,6 +116,8 @@ export default function OrdenForm(props: Props) {
         observaciones: observaciones.trim() === "" ? null : observaciones,
         servicios: serviciosLimpios,
         productos: productosLimpios,
+        proximo_mantenimiento_fecha: proximoFecha || null,
+        proximo_mantenimiento_km: proximoKm ? Number(proximoKm) : null,
       };
       const res = await onSubmit(payload);
       if (!res.ok) setError(res.error ?? "Error desconocido");

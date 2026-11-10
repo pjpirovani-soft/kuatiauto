@@ -33,6 +33,8 @@ export const crearOrdenSchema = z.object({
     .optional(),
   km_servicio: z.coerce.number().int().min(0, 'Los km no pueden ser negativos').max(10000000, 'Km fuera de rango'),
   observaciones: z.string().max(1000, 'Las observaciones no pueden superar 1000 caracteres').optional().nullable(),
+  proximo_mantenimiento_fecha: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Fecha invalida (formato YYYY-MM-DD)').optional().nullable(),
+  proximo_mantenimiento_km: z.coerce.number().int().min(0).max(10000000, 'Km fuera de rango').optional().nullable(),
   servicios: z.array(servicioLineaSchema).max(50, 'Maximo 50 servicios por orden').optional(),
   productos: z.array(productoLineaSchema).max(100, 'Maximo 100 productos por orden').optional(),
 });

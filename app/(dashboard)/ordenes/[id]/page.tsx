@@ -40,7 +40,7 @@ type VehiculoRow = {
 };
 
 type ClienteRow = { id: string; nombre: string | null };
-type CatalogoRow = { id: string; nombre: string | null };
+type CatalogoRow = { id: string; nombre: string | null; intervalo_km_sugerido?: number | null; intervalo_meses_sugerido?: number | null };
 
 function precioStr(n: number | null): string {
   return n === null || n === undefined ? "" : String(n);
@@ -68,7 +68,7 @@ export default async function OrdenDetallePage({
   const [vehRes, cliRes, servGlobalRes, servEmpresaRes, prodGlobalRes, prodEmpresaRes] = await Promise.all([
     listarVehiculosEmpresa(),
     listarClientes(),
-    servGlobalIds.length > 0 ? supabase.from("servicio_global").select("id, nombre").in("id", servGlobalIds) : Promise.resolve({ data: [] as CatalogoRow[] }),
+    servGlobalIds.length > 0 ? supabase.from("servicio_global").select("id, nombre, intervalo_km_sugerido, intervalo_meses_sugerido").in("id", servGlobalIds) : Promise.resolve({ data: [] as CatalogoRow[] }),
     servEmpresaIds.length > 0 ? supabase.from("servicio_empresa").select("id, nombre").in("id", servEmpresaIds) : Promise.resolve({ data: [] as CatalogoRow[] }),
     prodGlobalIds.length > 0 ? supabase.from("producto_global").select("id, nombre").in("id", prodGlobalIds) : Promise.resolve({ data: [] as CatalogoRow[] }),
     prodEmpresaIds.length > 0 ? supabase.from("producto_empresa").select("id, nombre").in("id", prodEmpresaIds) : Promise.resolve({ data: [] as CatalogoRow[] }),

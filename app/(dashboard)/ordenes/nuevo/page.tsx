@@ -13,7 +13,7 @@ type VehiculoRow = {
 };
 
 type ClienteRow = { id: string; nombre: string | null };
-type ServicioRow = { id: string; nombre: string | null };
+type ServicioRow = { id: string; nombre: string | null; intervalo_km_sugerido?: number | null; intervalo_meses_sugerido?: number | null };
 
 export default async function NuevaOrdenPage({
   searchParams,
@@ -27,7 +27,7 @@ export default async function NuevaOrdenPage({
   const [vehRes, cliRes, servGlobalRes, servEmpresaRes, prodGlobalRes, prodEmpresaRes] = await Promise.all([
     listarVehiculosEmpresa(),
     listarClientes(),
-    supabase.from("servicio_global").select("id, nombre").order("nombre"),
+    supabase.from("servicio_global").select("id, nombre, intervalo_km_sugerido, intervalo_meses_sugerido").order("nombre"),
     supabase.from("servicio_empresa").select("id, nombre").order("nombre"),
     supabase.from("producto_global").select("id, nombre").order("nombre"),
     supabase.from("producto_empresa").select("id, nombre").order("nombre"),
