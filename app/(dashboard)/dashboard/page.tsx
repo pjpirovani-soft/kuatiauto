@@ -8,8 +8,9 @@ import {
   IconClipboardList,
   IconCalendarStats,
   IconClockHour4,
+  IconAlertTriangle,
 } from '@tabler/icons-react';
-import { obtenerMetricasPropietario } from '@/lib/propietario-metricas-actions';
+import { obtenerMetricasPropietario, obtenerVehiculosProximos } from '@/lib/propietario-metricas-actions';
 
 const ESTADO_LABEL: Record<string, { label: string; clase: string }> = {
   borrador: { label: 'Pendiente', clase: 'bg-amber-100 text-amber-800' },
@@ -64,7 +65,10 @@ export default async function DashboardPage() {
     );
   }
 
-  const metricas = await obtenerMetricasPropietario();
+  const [metricas, proximos] = await Promise.all([
+    obtenerMetricasPropietario(),
+    obtenerVehiculosProximos(),
+  ]);
 
   const cards = [
     { label: 'Clientes', valor: metricas.ok ? metricas.data.clientes : 0, Icon: IconUsers },
@@ -104,6 +108,45 @@ export default async function DashboardPage() {
           </div>
         ))}
       </section>
+
+      {proximos.ok && proximos.data.length > 0 && (
+        <section className='bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 shadow-sm'>
+          <div className='flex items-center gap-2 mb-3'>
+            <IconAlertTriangle size={20} className='text-amber-600' />
+            <h2 className='font-bold text-amber-900'>Vehiculos que requieren atencion</h2>
+          </div>
+          <div className='divide-y divide-amber-200'>
+            {proximos.data.map((v) => (
+              <Link
+                key={v.id}
+                href={'/vehiculos/' + v.id}
+                className='flex items-center justify-between py-2 hover:bg-amber-100 transition-colors rounded px-2'
+              >
+                <div>
+                  <p className='text-sm font-semibold text-amber-900'>
+                    {v.marca} {v.modelo} {v.patente ? '(' + v.patente + ')' : ''}
+                  </p>
+                  <p className='text-xs text-amber-700'>
+                    {v.cliente_nombre ?? 'Cliente sin nombre'}
+                  </p>
+                </div>
+                <div className='flex items-center gap-2'>
+                  {v.estado_alerta === 'vencido' && (
+                    <span className='text-xs font-semibold px-2 py-1 rounded-full bg-red-100 text-red-700'>
+                      Vencido
+                    </span>
+                  )}
+                  {v.estado_alerta === 'proximo' && (
+                    <span className='text-xs font-semibold px-2 py-1 rounded-full bg-yellow-100 text-yellow-800'>
+                      Proximo
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className='flex flex-col sm:flex-row gap-3 mb-8'>
         <Link
