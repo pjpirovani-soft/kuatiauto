@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -782,6 +782,7 @@ export type Database = {
       }
       producto_empresa: {
         Row: {
+          activo: boolean
           created_at: string
           empresa_id: string
           id: string
@@ -795,6 +796,7 @@ export type Database = {
           viscosidad: string | null
         }
         Insert: {
+          activo?: boolean
           created_at?: string
           empresa_id: string
           id?: string
@@ -808,6 +810,7 @@ export type Database = {
           viscosidad?: string | null
         }
         Update: {
+          activo?: boolean
           created_at?: string
           empresa_id?: string
           id?: string
@@ -886,6 +889,7 @@ export type Database = {
       }
       servicio_empresa: {
         Row: {
+          activo: boolean
           created_at: string
           descripcion: string | null
           empresa_id: string
@@ -894,6 +898,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          activo?: boolean
           created_at?: string
           descripcion?: string | null
           empresa_id: string
@@ -902,6 +907,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          activo?: boolean
           created_at?: string
           descripcion?: string | null
           empresa_id?: string
@@ -1274,8 +1280,37 @@ export type Database = {
         }
         Returns: string
       }
+      crear_orden_transaccional: {
+        Args: {
+          p_empresa_id: string
+          p_fecha: string
+          p_km_servicio: number
+          p_observaciones: string
+          p_productos: Json
+          p_proximo_fecha: string
+          p_proximo_km: number
+          p_servicios: Json
+          p_usuario_id: string
+          p_vehiculo_id: string
+        }
+        Returns: string
+      }
       current_empresa_id: { Args: never; Returns: string }
       earth: { Args: never; Returns: number }
+      editar_orden_transaccional: {
+        Args: {
+          p_fecha: string
+          p_km_servicio: number
+          p_observaciones: string
+          p_orden_id: string
+          p_productos: Json
+          p_proximo_fecha: string
+          p_proximo_km: number
+          p_servicios: Json
+          p_vehiculo_id: string
+        }
+        Returns: undefined
+      }
       is_admin_general: { Args: never; Returns: boolean }
       listar_historial_compartido: {
         Args: never

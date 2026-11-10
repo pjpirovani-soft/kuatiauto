@@ -1,5 +1,5 @@
-﻿import Link from 'next/link';
-import { listarProductosEmpresa } from '@/lib/productos-empresa-actions';
+import Link from 'next/link';
+import { listarProductosEmpresa, toggleProductoEmpresa } from '@/lib/productos-empresa-actions';
 import { IconPlus, IconArrowLeft, IconBox, IconAlertTriangle } from '@tabler/icons-react';
 
 type ProductoRow = {
@@ -11,6 +11,7 @@ type ProductoRow = {
   unidad: string;
   stock_actual: number;
   stock_minimo: number;
+  activo: boolean;
 };
 
 export default async function ProductosPage() {
@@ -54,7 +55,7 @@ export default async function ProductosPage() {
                   <th className='px-6 py-4 font-semibold'>Visc.</th>
                   <th className='px-6 py-4 font-semibold'>Unidad</th>
                   <th className='px-6 py-4 font-semibold'>Stock</th>
-                  <th className='px-6 py-4 font-semibold text-right'>Acción</th>
+                  <th className='px-6 py-4 font-semibold text-right'>Acciones</th>
                 </tr>
               </thead>
               <tbody className='divide-y divide-kuati-borde'>
@@ -75,9 +76,16 @@ export default async function ProductosPage() {
                         </span>
                       </td>
                       <td className='px-6 py-4 text-right'>
-                        <Link href={`/catalogo/productos/${p.id}`} className='text-kuati-petroleo font-semibold hover:text-kuati-lima transition-colors text-sm'>
-                          Editar
-                        </Link>
+                        <div className='flex items-center justify-end gap-3'>
+                          <Link href={`/catalogo/productos/${p.id}`} className='text-kuati-petroleo font-semibold hover:text-kuati-lima transition-colors text-sm'>
+                            Editar
+                          </Link>
+                          <form action={async () => { 'use server'; await toggleProductoEmpresa({ id: p.id, activo: !p.activo }); }}>
+                            <button type='submit' className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${p.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                              {p.activo ? 'Desactivar' : 'Reactivar'}
+                            </button>
+                          </form>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -113,12 +121,17 @@ export default async function ProductosPage() {
                     Stock: {p.stock_actual} (Mínimo: {p.stock_minimo})
                   </div>
 
-                  <div className='pt-2 flex justify-end'>
+                  <div className='pt-2 flex justify-end gap-2'>
+                    <form action={async () => { 'use server'; await toggleProductoEmpresa({ id: p.id, activo: !p.activo }); }}>
+                      <button type='submit' className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${p.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                        {p.activo ? 'Desactivar' : 'Reactivar'}
+                      </button>
+                    </form>
                     <Link 
                       href={`/catalogo/productos/${p.id}`} 
                       className='text-kuati-petroleo font-bold text-sm bg-kuati-fondo px-4 py-2 rounded-lg hover:bg-kuati-borde transition-colors'
                     >
-                      Editar producto
+                      Editar
                     </Link>
                   </div>
                 </div>

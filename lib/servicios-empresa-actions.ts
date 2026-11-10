@@ -135,3 +135,32 @@ export async function editarServicioEmpresa(input: unknown): Promise<Result<{ id
   revalidatePath("/catalogo/servicios");
   return { ok: true, data: { id: parsed.data.id } };
 }
+export async function toggleServicioEmpresa(input: { id: string; activo: boolean }): Promise<Result<{ id: string }>> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "No autenticado" };
+  const empresaId = await getEmpresaId();
+  if (!empresaId) return { ok: false, error: "Sin empresa asociada" };
+
+  const { error } = await supabase
+    .from('servicio_empresa')
+    .update({ activo: input.activo })
+    .eq('id', input.id)
+    .eq('empresa_id', empresaId);
+
+  if (error) return { ok: false, error: error.message };
+
+  await auditLog({
+    usuarioId: user.id,
+    empresaId: empresaId,
+    accion: 'editar',
+    entidad: 'servicio_empresa',
+    entidadId: input.id,
+    datosNuevos: { campo: 'activo', valor: input.activo },
+  });
+
+  revalidatePath('/catalogo/servicios');
+  revalidatePath('/ordenes');
+  revalidatePath('/recepcion');
+  return { ok: true, data: { id: input.id } };
+}

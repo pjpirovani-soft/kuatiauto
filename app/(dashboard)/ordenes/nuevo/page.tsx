@@ -28,9 +28,9 @@ export default async function NuevaOrdenPage({
     listarVehiculosEmpresa(),
     listarClientes(),
     supabase.from("servicio_global").select("id, nombre, intervalo_km_sugerido, intervalo_meses_sugerido").order("nombre"),
-    supabase.from("servicio_empresa").select("id, nombre").order("nombre"),
+    supabase.from("servicio_empresa").select("id, nombre").eq("activo", true).order("nombre"),
     supabase.from("producto_global").select("id, nombre").order("nombre"),
-    supabase.from("producto_empresa").select("id, nombre").order("nombre"),
+    supabase.from("producto_empresa").select("id, nombre").eq("activo", true).order("nombre"),
   ]);
 
   const vehiculosRaw: VehiculoRow[] = vehRes.ok ? (vehRes.data as VehiculoRow[]) : [];

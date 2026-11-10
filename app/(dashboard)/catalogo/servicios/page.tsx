@@ -1,5 +1,5 @@
-﻿import Link from 'next/link';
-import { listarServiciosEmpresa } from '@/lib/servicios-empresa-actions';
+import Link from 'next/link';
+import { listarServiciosEmpresa, toggleServicioEmpresa } from '@/lib/servicios-empresa-actions';
 import { IconPlus, IconArrowLeft, IconTool } from '@tabler/icons-react';
 
 type ServicioRow = {
@@ -7,6 +7,7 @@ type ServicioRow = {
   nombre: string;
   descripcion: string | null;
   created_at: string;
+  activo: boolean;
 };
 
 export default async function ServiciosPage() {
@@ -47,7 +48,7 @@ export default async function ServiciosPage() {
                 <tr>
                   <th className='px-6 py-4 font-semibold'>Nombre</th>
                   <th className='px-6 py-4 font-semibold'>Descripción</th>
-                  <th className='px-6 py-4 font-semibold text-right'>Acción</th>
+                  <th className='px-6 py-4 font-semibold text-right'>Acciones</th>
                 </tr>
               </thead>
               <tbody className='divide-y divide-kuati-borde'>
@@ -56,9 +57,16 @@ export default async function ServiciosPage() {
                     <td className='px-6 py-4 font-medium text-kuati-petroleo'>{s.nombre}</td>
                     <td className='px-6 py-4 text-kuati-grafito/80'>{s.descripcion ?? '—'}</td>
                     <td className='px-6 py-4 text-right'>
-                      <Link href={`/catalogo/servicios/${s.id}`} className='text-kuati-petroleo font-semibold hover:text-kuati-lima transition-colors text-sm'>
-                        Editar
-                      </Link>
+                      <div className='flex items-center justify-end gap-3'>
+                        <Link href={`/catalogo/servicios/${s.id}`} className='text-kuati-petroleo font-semibold hover:text-kuati-lima transition-colors text-sm'>
+                          Editar
+                        </Link>
+                        <form action={async () => { 'use server'; await toggleServicioEmpresa({ id: s.id, activo: !s.activo }); }}>
+                          <button type='submit' className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${s.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                            {s.activo ? 'Desactivar' : 'Reactivar'}
+                          </button>
+                        </form>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -79,12 +87,17 @@ export default async function ServiciosPage() {
                 <p className='text-sm text-kuati-grafito/80'>
                   {s.descripcion ?? 'Sin descripción'}
                 </p>
-                <div className='pt-2 flex justify-end'>
+                <div className='pt-2 flex justify-end gap-2'>
+                  <form action={async () => { 'use server'; await toggleServicioEmpresa({ id: s.id, activo: !s.activo }); }}>
+                    <button type='submit' className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${s.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                      {s.activo ? 'Desactivar' : 'Reactivar'}
+                    </button>
+                  </form>
                   <Link 
                     href={`/catalogo/servicios/${s.id}`} 
                     className='text-kuati-petroleo font-bold text-sm bg-kuati-fondo px-4 py-2 rounded-lg hover:bg-kuati-borde transition-colors'
                   >
-                    Editar servicio
+                    Editar
                   </Link>
                 </div>
               </div>
