@@ -1353,3 +1353,22 @@ Antes de escribir una sola línea de código, se verificaron los hechos con `sup
   - Debug del celular (localhost vs IP local).
   - Etapa IV (cierre de orden con catálogo integrado).
   - Actualizar Supabase CLI v2.122 → v3.0.0.
+## 2026-11-10 — Cierre de auditoría P0/P1/P2 (Seguridad)
+
+**Contexto:** Se ejecutó una auditoría externa con IA (Claude) que arrojó 3 hallazgos críticos de seguridad que no estaban contemplados en el gate de seguridad original.
+
+**Cambios implementados:**
+- **P0 (KU-DB-02):** Se creó la migración  24_fix_user_privileges.sql con un trigger BEFORE UPDATE en la tabla usuario. Ahora es imposible que un usuario se cambie el ol o el empresa_id a sí mismo vía PostgREST.
+- **P1 (KU-SEC-01):** Se reescribió proxy.ts agregando todas las rutas privadas (/clientes, /vehiculos, /perfil, etc.). Además, ahora consulta el campo ctivo para bloquear cuentas desactivadas y usa maybeSingle() para evitar fallos abiertos (fail-open).
+- **P2 (KU-SEC-03):** Se modificó lib/auth-actions.ts para incluir la IP (x-forwarded-for) en la clave del rate limit. Se configuró RATE_LIMIT_FAIL_MODE=closed en .env.local y Vercel.
+
+**Verificación:**
+- 296/296 tests Vitest verdes.
+- 
+ext build compiló sin errores (31 rutas).
+- git push a main (commit a518fc).
+- Migración  24 sincronizada con el historial de Supabase (migration repair).
+
+**Deudas pendientes de auditoría:**
+- **KU-FUNC-01:** Guardado de órdenes no atómico (falta RPC transaccional).
+- **KU-SEC-02:** RPC crear_empresa_con_establecimiento no valida si el usuario ya tiene empresa.

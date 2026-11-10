@@ -414,3 +414,16 @@ Detectadas durante la lectura de docs para iniciar fase D:
 - **Seguir el precedente de `/ayuda`:** páginas compartidas por roles van en la raíz, sin layout propio, con header autogestionado.
 
 **Estado:** implementado y deployado. 17 tests Vitest nuevos (`lib/perfil-actions.test.ts`), 2 smokes Playwright nuevos (`e2e/smoke/perfil.spec.ts`). Commit `26bd897`.
+## ADR-016: Endurecimiento de seguridad (Fix auditoría P0/P1/P2)
+
+**Contexto:** Una auditoría externa detectó que la política RLS de usuario permitía modificar el rol propio vía API directa, el proxy.ts no cubría todas las rutas de negocio, y el rate limit fallaba en abierto por defecto y sin IP.
+
+**Decisión:**
+- **Trigger de privilegios:** Se agrega una capa de defensa en profundidad a nivel de base de datos (migración 024) para proteger columnas sensibles (ol, empresa_id), independientemente de lo que haga la UI o RLS.
+- **Proxy blindado:** El middleware se convierte en la primera línea de defensa real (fail-closed). Si no puede leer el rol o el estado ctivo, deniega el acceso en lugar de permitirlo.
+- **Rate Limit estricto:** Se adopta la postura de "seguridad por defecto" (RATE_LIMIT_FAIL_MODE=closed) en producción y se añade la IP a las claves de autenticación para mitigar fuerza bruta distribuida.
+
+**Consecuencias:**
+- Mayor robustez frente a ataques directos a la API de Supabase.
+- Pequeño costo de performance en el middleware al consultar el campo ctivo en cada request a rutas privadas.
+- Se cierra la brecha entre la documentación de seguridad y la implementación real.
