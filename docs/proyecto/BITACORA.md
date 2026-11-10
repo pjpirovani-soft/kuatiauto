@@ -1372,3 +1372,25 @@ ext build compiló sin errores (31 rutas).
 **Deudas pendientes de auditoría:**
 - **KU-FUNC-01:** Guardado de órdenes no atómico (falta RPC transaccional).
 - **KU-SEC-02:** RPC crear_empresa_con_establecimiento no valida si el usuario ya tiene empresa.
+## 2026-11-10 — Cierre KU-SEC-02 y KU-FUNC-01 (Transacciones y Onboarding)
+
+**Contexto:** Se completaron los dos hallazgos restantes de la auditoría de seguridad/funcional.
+
+**Cambios implementados:**
+- **KU-SEC-02 (Migración 025):** Se reforzó la función RPC crear_empresa_con_establecimiento. Ahora verifica que usuario.empresa_id sea NULL antes de permitir la creación. Si el usuario ya tiene empresa, lanza una excepción. Esto impide el "salto" de tenant.
+- **KU-FUNC-01 (Migración 026):** Se movió la lógica de crear/editar órdenes a dos RPCs transaccionales (crear_orden_transaccional y editar_orden_transaccional). Ahora la cabecera, los servicios y los productos se guardan en un solo BEGIN...COMMIT. Si algo falla, PostgreSQL hace rollback automático.
+- **Backend (lib/ordenes-actions.ts):** crearOrden y editarOrden ahora llaman a las RPCs transaccionales en lugar de hacer inserts/updates manuales.
+
+**Verificación:**
+- 296/296 tests Vitest verdes.
+- 
+ext build compiló sin errores (31 rutas).
+- Migraciones 025 y 026 aplicadas exitosamente en Supabase (db push).
+
+**Estado de la auditoría:**
+- ✅ P0 (KU-DB-02): Cerrado.
+- ✅ P1 (KU-SEC-01): Cerrado.
+- ✅ P2 (KU-SEC-03): Cerrado.
+- ✅ KU-SEC-02: Cerrado.
+- ✅ KU-FUNC-01: Cerrado.
+- ⏳ Pendiente (baja prioridad): KU-SEC-04 (pruebas RLS cross-tenant), KU-FUNC-02 (validar FKs cross-tenant), KU-PERF-01 (paginación admin).
