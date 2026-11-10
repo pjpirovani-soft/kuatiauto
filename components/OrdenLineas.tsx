@@ -127,7 +127,7 @@ export default function OrdenLineas(props: Props) {
                     updateServicio(i, { servicio_global_id: globalId, servicio_empresa_id: empresaId });
                   }}
                 >
-                  <option value=''>— Seleccionar servicio —</option>
+                  <option value='' disabled hidden>— Seleccionar servicio —</option>
                   {servicioOpciones.map((o) => {
                     const valor = valorActual(o.origen === "global" ? o.id : null, o.origen === "empresa" ? o.id : null);
                     return (
@@ -194,7 +194,7 @@ export default function OrdenLineas(props: Props) {
                     updateProducto(i, { producto_global_id: globalId, producto_empresa_id: empresaId });
                   }}
                 >
-                  <option value=''>— Seleccionar producto —</option>
+                  <option value='' disabled hidden>— Seleccionar producto —</option>
                   {productoOpciones.map((o) => {
                     const valor = valorActual(o.origen === "global" ? o.id : null, o.origen === "empresa" ? o.id : null);
                     return (
