@@ -138,7 +138,8 @@ export const GUIA_ADMIN: AyudaGuiaData = {
           ],
         },
         { tipo: 'advertencia', texto: 'Eliminar un servicio o producto global es irreversible. Si un lubricentro lo está usando en una orden, esa orden queda con una referencia rota. Mejor despublicar (soft delete) que eliminar.' },
-        { tipo: 'tip', texto: 'Cargá los intervalos de km/meses en los servicios globales. Son los que permiten calcular el próximo mantenimiento automáticamente cuando se completa una orden.' },
+        { tipo: 'parrafo', texto: 'Los intervalos de km/meses que cargues en los servicios globales tienen 2 usos: (1) autocompletan el formulario de la orden cuando el mecánico elige el servicio, y (2) se usan para calcular el próximo mantenimiento al completar la orden.' },
+        { tipo: 'tip', texto: 'Cargá los intervalos de km/meses con cuidado. Si cargás un intervalo equivocado, el sistema va a sugerir un próximo mantenimiento incorrecto. Verificá siempre con el manual del fabricante antes de guardar.' },
       ],
     },
     {

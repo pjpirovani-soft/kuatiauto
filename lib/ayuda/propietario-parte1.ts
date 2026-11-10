@@ -98,7 +98,7 @@ export const PROPIETARIO_SECCIONES_1: AyudaSeccionData[] = [
     id: 'ordenes',
     titulo: '6. Órdenes de trabajo',
     bloques: [
-      { tipo: 'parrafo', texto: 'Una orden de trabajo es el registro de un servicio realizado a un vehículo. Contiene: cliente, vehículo, servicios, productos, importe, kilometraje y observaciones.' },
+      { tipo: 'parrafo', texto: 'Una orden de trabajo es el registro de un servicio realizado a un vehículo. Contiene: cliente, vehículo, servicios, productos, importe, kilometraje, observaciones y el próximo mantenimiento.' },
       { tipo: 'parrafo', texto: 'Las órdenes tienen 3 estados:' },
       {
         tipo: 'lista',
@@ -113,10 +113,11 @@ export const PROPIETARIO_SECCIONES_1: AyudaSeccionData[] = [
         items: [
           { titulo: 'Crear orden', descripcion: 'Podés crearla desde "Órdenes → Nueva orden" o desde "Recepción rápida".' },
           { titulo: 'Editar (solo en borrador)', descripcion: 'Click en la orden → modificá lo que necesites → "Guardar cambios".' },
-          { titulo: 'Completar', descripcion: 'Click en "Completar orden". Se calcula el próximo mantenimiento y se envía notificación.' },
+          { titulo: 'Completar', descripcion: 'Click en "Completar orden". Se abre un aviso de confirmación, se calcula el próximo mantenimiento y se envía notificación.' },
           { titulo: 'Anular', descripcion: 'Click en "Anular orden", ingresá un motivo. La orden queda registrada pero no se puede editar.' },
         ],
       },
+      { tipo: 'parrafo', texto: 'Novedad: cuando agregás un servicio en el formulario de la orden, los campos de "Próximo mantenimiento (fecha)" y "Próximo mantenimiento (km)" se completan automáticamente según el manual del fabricante. Si el cliente pide un intervalo distinto (ej. 15.000 km en lugar de 10.000), podés editarlos antes de guardar.' },
       { tipo: 'tip', texto: 'Completá la orden solo cuando el trabajo esté realmente terminado. Si la cerrás antes, el próximo mantenimiento se calcula mal.' },
       { tipo: 'advertencia', texto: 'Las órdenes completadas no se pueden editar (por integridad de datos). Si te equivocaste, anulá la orden y creá una nueva.' },
     ],
@@ -169,7 +170,7 @@ export const PROPIETARIO_SECCIONES_1: AyudaSeccionData[] = [
         { titulo: 'Crear nuevo', descripcion: 'Click en "Nuevo producto". Completá nombre, marca, tipo, viscosidad, stock actual, stock mínimo y unidad.' },
         { titulo: 'Guardar', descripcion: 'Click en "Crear producto".' },
       ] },
-      { tipo: 'advertencia', texto: 'El stock no se actualiza automáticamente cuando usás un producto en una orden. Es solo informativo por ahora (la actualización automática está en desarrollo).' },
+      { tipo: 'advertencia', texto: 'El stock no se actualiza automáticamente cuando usás un producto en una orden. Es solo informativo por ahora. La actualización automática está planificada para una versión futura.' },
       { tipo: 'tip', texto: 'Cargá el stock mínimo. Cuando el stock actual baje de ese número, vas a saber que tenés que reponer.' },
     ],
   },
