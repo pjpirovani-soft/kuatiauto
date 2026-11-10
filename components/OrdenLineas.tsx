@@ -1,4 +1,4 @@
-﻿// Líneas de servicio y producto de una orden.
+// Líneas de servicio y producto de una orden.
 
 type ServicioOpcion = { id: string; nombre: string; origen: "global" | "empresa" };
 type ProductoOpcion = { id: string; nombre: string; origen: "global" | "empresa" };
@@ -127,11 +127,11 @@ export default function OrdenLineas(props: Props) {
                     updateServicio(i, { servicio_global_id: globalId, servicio_empresa_id: empresaId });
                   }}
                 >
-                  <option value=''>— Servicio (UUID o catálogo) —</option>
+                  <option value=''>— Seleccionar servicio —</option>
                   {servicioOpciones.map((o) => {
-                    const { valor, seleccionado } = opcionesParaServicio(o, s.servicio_global_id, s.servicio_empresa_id);
+                    const valor = valorActual(o.origen === "global" ? o.id : null, o.origen === "empresa" ? o.id : null);
                     return (
-                      <option key={valor} value={valor} selected={seleccionado}>
+                      <option key={valor} value={valor}>
                         {o.origen === "global" ? "[G] " : "[E] "}{o.nombre}
                       </option>
                     );
@@ -194,11 +194,11 @@ export default function OrdenLineas(props: Props) {
                     updateProducto(i, { producto_global_id: globalId, producto_empresa_id: empresaId });
                   }}
                 >
-                  <option value=''>— Producto (UUID o catálogo) —</option>
+                  <option value=''>— Seleccionar producto —</option>
                   {productoOpciones.map((o) => {
-                    const { valor, seleccionado } = opcionesParaProducto(o, p.producto_global_id, p.producto_empresa_id);
+                    const valor = valorActual(o.origen === "global" ? o.id : null, o.origen === "empresa" ? o.id : null);
                     return (
-                      <option key={valor} value={valor} selected={seleccionado}>
+                      <option key={valor} value={valor}>
                         {o.origen === "global" ? "[G] " : "[E] "}{o.nombre}
                       </option>
                     );
