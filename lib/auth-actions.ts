@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 import { checkRateLimit, buildClave } from '@/lib/rate-limit';
@@ -22,7 +23,16 @@ export async function login(formData: FormData) {
     return { error: parsed.error.issues[0].message };
   }
 
-  const rl = await checkRateLimit({ clave: buildClave(['login', parsed.data.email]), max: 5, ventanaSegundos: 60 });
+    // Obtener la IP para evitar fuerza bruta distribuida (P2)
+  const headersList = await headers();
+  const ip = headersList.get('x-forwarded-for') || 'unknown_ip';
+
+  // Agregamos la IP a la clave del rate limit
+  const rl = await checkRateLimit({ 
+    clave: buildClave(['login', parsed.data.email, ip]), 
+    max: 5, 
+    ventanaSegundos: 60 
+  });
   if (!rl.ok) return { error: 'Demasiados intentos. Intentá de nuevo en ' + rl.retryAfterSeconds + 's.' };
 
   const { error } = await supabase.auth.signInWithPassword({

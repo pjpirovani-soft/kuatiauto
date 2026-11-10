@@ -8,9 +8,15 @@ type CookieToSet = {
   options?: CookieOptions;
 };
 
-async function getUserRole(supabase: ReturnType<typeof createServerClient>, userId: string) {
-  const { data } = await supabase.from('usuario').select('rol').eq('id', userId).single();
-  return data?.rol as string | undefined;
+async function getUserData(supabase: ReturnType<typeof createServerClient>, userId: string) {
+  const { data, error } = await supabase
+    .from('usuario')
+    .select('rol, activo')
+    .eq('id', userId)
+    .maybeSingle();
+    
+  if (error || !data) return { rol: undefined, activo: false };
+  return { rol: data.rol as string, activo: data.activo as boolean };
 }
 
 export async function proxy(request: NextRequest) {
@@ -35,33 +41,38 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
 
-  // KU-SEC-01: rutas privadas requieren sesión.
-  if (!user && (path.startsWith('/dashboard') || path.startsWith('/admin') || path.startsWith('/mi-garage'))) {
+  const privateRoutes = [
+    '/dashboard', '/admin', '/mi-garage', '/clientes', '/vehiculos', 
+    '/ordenes', '/catalogo', '/establecimientos', '/recepcion', '/perfil'
+  ];
+  
+  const isPrivateRoute = privateRoutes.some(route => path.startsWith(route));
+
+  if (!user && isPrivateRoute) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
-  // KU-SEC-01: rutas admin requieren rol admin_general.
-  if (user && path.startsWith('/admin')) {
-    const rol = await getUserRole(supabase, user.id);
-    if (rol !== 'admin_general') {
+  if (user && (path.startsWith('/admin') || path.startsWith('/mi-garage') || isPrivateRoute)) {
+    const { rol, activo } = await getUserData(supabase, user.id);
+
+    if (activo === false) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+
+    if (path.startsWith('/admin') && rol !== 'admin_general') {
       const url = request.nextUrl.clone();
       url.pathname = rol === 'conductor' ? '/mi-garage' : '/clientes';
       return NextResponse.redirect(url);
     }
-  }
 
-  // KU-SEC-01: rutas del portal requieren rol conductor.
-  if (user && path.startsWith('/mi-garage')) {
-    const rol = await getUserRole(supabase, user.id);
-    if (rol !== 'conductor') {
+    if (path.startsWith('/mi-garage') && rol !== 'conductor') {
       const url = request.nextUrl.clone();
       url.pathname = rol === 'admin_general' ? '/admin' : '/clientes';
       return NextResponse.redirect(url);
