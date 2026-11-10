@@ -188,6 +188,48 @@ export default function OrdenForm(props: Props) {
         </div>
       </div>
 
+      {/* Sección Próximo Mantenimiento */}
+      <div className='bg-kuati-fondo rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm'>
+        <div className='flex items-center gap-2 mb-4'>
+          <h2 className='text-xl font-bold text-kuati-petroleo'>Próximo mantenimiento</h2>
+          <span className='text-xs font-semibold text-kuati-petroleo/60 bg-kuati-petroleo/10 px-2 py-1 rounded'>Sugerido</span>
+        </div>
+        <p className='text-sm text-kuati-grafito/60 mb-4'>Se completa automáticamente al agregar un servicio. Podés modificarlo si el cliente lo pide.</p>
+        
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+          <div>
+            <label className={labelClass}>Fecha</label>
+            <input
+              type='date'
+              className={inputClass}
+              value={proximoFecha}
+              onChange={(e) => {
+                setProximoFecha(e.target.value);
+                setFechaTocada(true);
+              }}
+              disabled={!editable}
+            />
+          </div>
+          
+          <div>
+            <label className={labelClass}>Kilometraje</label>
+            <input
+              type='number'
+              min='0'
+              step='1'
+              className={inputClass}
+              value={proximoKm}
+              onChange={(e) => {
+                setProximoKm(e.target.value);
+                setKmTocado(true);
+              }}
+              disabled={!editable}
+              placeholder='Ej. 15000'
+            />
+          </div>
+        </div>
+      </div>
+
       <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm'>
         <h2 className='text-xl font-bold text-kuati-petroleo mb-4'>Servicios y productos</h2>
         <OrdenLineas
