@@ -1,3 +1,34 @@
+
+## [v0.5.0] - 2026-11-10 - Cierre de auditoría de seguridad y transacciones
+
+### Added
+- Migración 025: Función RPC crear_empresa_con_establecimiento reforzada con invariante de empresa única.
+- Migración 026: RPCs crear_orden_transaccional y editar_orden_transaccional para guardado atómico.
+- Migración 024: Trigger enforce_user_privileges para proteger columnas ol y empresa_id.
+- Modal de confirmación custom en EditarOrdenClient (reemplaza window.confirm para móvil).
+- Autocompletado de "Próximo mantenimiento" en OrdenForm basado en servicio_global.
+
+### Changed
+- proxy.ts: Ahora protege todas las rutas privadas y valida el estado ctivo del usuario (fail-closed).
+- lib/auth-actions.ts: Rate limit ahora incluye la IP (x-forwarded-for) y usa RATE_LIMIT_FAIL_MODE=closed.
+- lib/ordenes-actions.ts: crearOrden y editarOrden ahora llaman a RPCs transaccionales.
+- pp/(dashboard)/ordenes/[id]/page.tsx y 
+uevo/page.tsx: Ahora traen los intervalos de mantenimiento desde servicio_global.
+
+### Fixed
+- P0 (KU-DB-02): Escalada de privilegios vía UPDATE en usuario.
+- P1 (KU-SEC-01): Rutas privadas sin protección y fail-open en rol.
+- P2 (KU-SEC-03): Rate limit evadible por IP y fail-open por defecto.
+- KU-SEC-02: Onboarding sin invariante de empresa.
+- KU-FUNC-01: Guardado de órdenes no atómico.
+- Bug UX: Botones "Completar", "Anular" y "Eliminar" no funcionaban en móvil.
+
+### Verified
+- 296/296 tests Vitest verdes.
+- 
+ext build compilado sin errores (31 rutas).
+- Migraciones 024, 025 y 026 aplicadas en Supabase.
+
 ## [v0.4.4] - 2026-11-03 - Página /perfil con cambio de nombre y contraseña
 
 ### Added
