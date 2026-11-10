@@ -1394,3 +1394,19 @@ ext build compiló sin errores (31 rutas).
 - ✅ KU-SEC-02: Cerrado.
 - ✅ KU-FUNC-01: Cerrado.
 - ⏳ Pendiente (baja prioridad): KU-SEC-04 (pruebas RLS cross-tenant), KU-FUNC-02 (validar FKs cross-tenant), KU-PERF-01 (paginación admin).
+## 2026-11-10 (segunda parte) — Unificación de Recepción Rápida y Órdenes
+
+**Contexto:** Se unificó la lógica de "Próximo mantenimiento" en ambas pantallas, y se agregó la actualización automática del km_actual del vehículo.
+
+**Cambios implementados:**
+- **Recepción Rápida:** Ahora trae los intervalos de servicio_global desde page.tsx y los usa para el autocompletado en PasoOrden.tsx.
+- **Backend (lib/ordenes-actions.ts):** completarOrden actualiza el km_actual del vehículo si el km de la orden es mayor.
+- **UI:** Sección destacada de "Próximo mantenimiento" en la recepción rápida.
+
+**Verificación:**
+- 296/296 tests Vitest verdes.
+- 
+ext build compiló sin errores (31 rutas).
+- Push a main: commit 808da67.
+
+**Estado:** v0.5.0 estable y lista para el piloto.
