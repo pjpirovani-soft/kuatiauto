@@ -1443,3 +1443,29 @@ ext build\ compilo sin errores (31 rutas).
 - Migraciones 028 y 029 aplicadas en Supabase.
 
 **Estado:** v0.6.0 estable y lista para el piloto.
+## 2026-11-11 — v0.7.0: Asignacion de mecanico, metodo de pago y tests RLS cross-tenant
+
+**Contexto:** Cierre del backlog de la auditoria. Se implementaron 2 features y se completo el hallazgo KU-SEC-04 con tests automatizados.
+
+**Cambios implementados:**
+
+- **Asignacion de mecanico y metodo de pago (Migracion 030):**
+  - Columna empleado_id (FK a usuario) y metodo_pago (con CHECK de valores permitidos) en orden_trabajo.
+  - Funcion RPC crear_orden_transaccional actualizada para recibir y guardar ambos campos.
+  - Server actions crearOrden y editarOrden actualizadas.
+  - Nueva funcion listarEmpleadosEmpresa() en lib/empleados-actions.ts.
+  - UI: 2 selects nuevos en OrdenForm.tsx (Mecanico asignado y Metodo de pago).
+
+- **Tests RLS cross-tenant (KU-SEC-04):**
+  - Archivo lib/rls-cross-tenant.test.ts con 4 tests.
+  - Simula 2 empresas (A y B) con usuarios distintos.
+  - Verifica que A NO puede leer, editar ni crear datos de B.
+  - Configuracion de dotenv en itest.setup.ts para cargar .env.local.
+
+**Verificacion:**
+- 296/296 tests Vitest verdes + 4 tests RLS nuevos.
+- 
+ext build compilo sin errores (31 rutas).
+- Migracion 030 aplicada en Supabase.
+
+**Estado:** v0.7.0 estable, con auditoria de seguridad cerrada al 100%.

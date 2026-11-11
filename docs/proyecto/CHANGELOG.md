@@ -1,4 +1,28 @@
 
+## [v0.7.0] - 2026-11-11 - Mecanico, metodo de pago y tests RLS
+
+### Added
+- **Asignacion de mecanico:** Columna empleado_id en orden_trabajo, RPC actualizada, funcion listarEmpleadosEmpresa() y select en el formulario.
+- **Metodo de pago:** Columna metodo_pago con CHECK, RPC actualizada y select en el formulario.
+- **Tests RLS cross-tenant (KU-SEC-04):** 4 tests en lib/rls-cross-tenant.test.ts que verifican el aislamiento entre empresas.
+- **dotenv** en itest.setup.ts para cargar .env.local en los tests.
+
+### Changed
+- lib/schemas/ordenSchema.ts: Nuevos campos empleado_id y metodo_pago.
+- lib/ordenes-actions.ts: crearOrden usa la RPC con los nuevos parametros.
+- components/OrdenForm.tsx: 2 selects nuevos (Mecanico y Metodo de pago).
+- pp/(dashboard)/ordenes/page.tsx y [id]/page.tsx: Pasan la lista de empleados al formulario.
+
+### Fixed
+- Los tests de RLS confirman que el aislamiento multi-tenant funciona correctamente.
+
+### Verified
+- 296/296 tests Vitest verdes + 4 tests RLS nuevos.
+- 
+ext build compilo sin errores (31 rutas).
+- Migracion 030 aplicada en Supabase.
+
+
 ## [v0.6.0] - 2026-11-11 - Numeracion de ordenes + soft-delete + dashboard con alertas
 
 ### Added
