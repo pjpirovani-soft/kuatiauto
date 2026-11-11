@@ -44,13 +44,13 @@ export default async function DashboardPage() {
       <div className='max-w-4xl mx-auto'>
         <header className='mb-8'>
           <h1 className='text-3xl font-bold text-kuati-petroleo'>Panel Principal</h1>
-          <p className='text-kuati-grafito/80 text-sm'>Sesion iniciada como {user.email}</p>
+          <p className='text-kuati-grafito/80 text-sm'>Sesión iniciada como {user.email}</p>
         </header>
         <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 text-center shadow-sm space-y-6'>
           <div className='max-w-md mx-auto'>
             <h2 className='text-xl font-bold text-kuati-petroleo mb-2'>Empecemos</h2>
             <p className='text-kuati-grafito/80'>
-              Todavia no tenes una empresa creada. Creala para empezar a gestionar tu lubricentro.
+              Todavía no tenes una empresa creada. Creala para empezar a gestionar tu lubricentro.
             </p>
           </div>
           <Link
@@ -65,44 +65,46 @@ export default async function DashboardPage() {
     );
   }
 
-  const [metricas, proximos] = await Promise.all([
+  const [métricas, proximos] = await Promise.all([
     obtenerMetricasPropietario(),
     obtenerVehiculosProximos(),
   ]);
 
   const cards = [
-    { label: 'Clientes', valor: metricas.ok ? metricas.data.clientes : 0, Icon: IconUsers },
-    { label: 'Vehiculos', valor: metricas.ok ? metricas.data.vehiculos : 0, Icon: IconCar },
+    { label: 'Clientes', valor: métricas.ok ? métricas.data.clientes : 0, Icon: IconUsers, href: '/clientes' },
+    { label: 'Vehículos', valor: métricas.ok ? métricas.data.vehiculos : 0, Icon: IconCar, href: '/vehiculos' },
     {
       label: 'Completadas (mes)',
-      valor: metricas.ok ? metricas.data.ordenesCompletadasMes : 0,
+      valor: métricas.ok ? métricas.data.ordenesCompletadasMes : 0,
       Icon: IconCalendarStats,
+      href: '/ordenes',
     },
     {
       label: 'Pendientes',
-      valor: metricas.ok ? metricas.data.ordenesPendientes : 0,
+      valor: métricas.ok ? métricas.data.ordenesPendientes : 0,
       Icon: IconClockHour4,
+      href: '/ordenes',
     },
   ];
 
-  const ultimas = metricas.ok ? metricas.ultimasOrdenes : [];
+  const ultimas = métricas.ok ? métricas.ultimasOrdenes : [];
 
   return (
     <div className='max-w-5xl mx-auto'>
       <header className='mb-8'>
         <h1 className='text-3xl font-bold text-kuati-petroleo'>Panel Principal</h1>
-        <p className='text-kuati-grafito/80 text-sm'>Sesion iniciada como {user.email}</p>
+        <p className='text-kuati-grafito/80 text-sm'>Sesión iniciada como {user.email}</p>
       </header>
 
-      {!metricas.ok && (
+      {!métricas.ok && (
         <div className='bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3'>
           <span className='text-2xl'>⚠️</span>
           <div className='flex-1'>
-            <p className='font-semibold text-red-800'>No se pudieron cargar las metricas</p>
+            <p className='font-semibold text-red-800'>No se pudieron cargar las métricas</p>
             <p className='text-sm text-red-700 mt-1'>
               Hubo un problema al consultar los datos. Los numeros que ves abajo pueden estar desactualizados.
             </p>
-            <p className='text-xs text-red-600 mt-2'>Error: {metricas.error}</p>
+            <p className='text-xs text-red-600 mt-2'>Error: {métricas.error}</p>
           </div>
           <a
             href='/dashboard'
@@ -124,17 +126,18 @@ export default async function DashboardPage() {
       )}
 
       <section className='grid grid-cols-2 md:grid-cols-4 gap-4 mb-8'>
-        {cards.map(({ label, valor, Icon }) => (
-          <div
+        {cards.map(({ label, valor, Icon, href }) => (
+          <Link
             key={label}
-            className='bg-kuati-blanco rounded-xl border border-kuati-borde p-4 shadow-sm'
+            href={href}
+            className='bg-kuati-blanco rounded-xl border border-kuati-borde p-4 shadow-sm hover:border-kuati-petroleo/30 hover:shadow-md transition-all'
           >
             <div className='flex items-center gap-2 text-kuati-grafito/80 text-xs font-medium uppercase mb-2'>
               <Icon size={16} aria-hidden='true' />
               <span>{label}</span>
             </div>
             <p className='text-3xl font-bold text-kuati-petroleo'>{valor}</p>
-          </div>
+          </Link>
         ))}
       </section>
 
@@ -142,7 +145,7 @@ export default async function DashboardPage() {
         <section className='bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 shadow-sm'>
           <div className='flex items-center gap-2 mb-3'>
             <IconAlertTriangle size={20} aria-hidden='true' className='text-amber-600' />
-            <h2 className='font-bold text-amber-900'>Vehiculos que requieren atencion</h2>
+            <h2 className='font-bold text-amber-900'>Vehículos que requieren atención</h2>
           </div>
           <div className='divide-y divide-amber-200'>
             {proximos.data.map((v) => (
@@ -167,7 +170,7 @@ export default async function DashboardPage() {
                   )}
                   {v.estado_alerta === 'proximo' && (
                     <span className='text-xs font-semibold px-2 py-1 rounded-full bg-yellow-100 text-yellow-800'>
-                      Proximo
+                      Próximo
                     </span>
                   )}
                 </div>
@@ -199,7 +202,7 @@ export default async function DashboardPage() {
           <div className='px-4 py-3 border-b border-kuati-borde flex items-center justify-between'>
             <h2 className='font-semibold text-kuati-petroleo flex items-center gap-2'>
               <IconClipboardList size={18} aria-hidden='true' />
-              Ultimas ordenes
+              Últimas órdenes
             </h2>
             <Link href='/ordenes' className='text-sm text-kuati-petroleo hover:underline'>
               Ver todas
@@ -238,16 +241,16 @@ export default async function DashboardPage() {
         </section>
       )}
 
-      {ultimas.length === 0 && metricas.ok && (
+      {ultimas.length === 0 && métricas.ok && (
         <section className='bg-kuati-blanco rounded-xl border border-kuati-borde p-8 text-center shadow-sm'>
           <IconClipboardList size={40} aria-hidden='true' className='mx-auto text-kuati-grafito/30 mb-3' />
           <p className='text-kuati-grafito/80 text-sm'>
-            Todavia no hay ordenes registradas. Crea la primera con el boton de arriba.
+            Todavía no hay ordenes registradas. Crea la primera con el boton de arriba.
           </p>
         </section>
       )}
 
-      {ultimas.length === 0 && !metricas.ok && (
+      {ultimas.length === 0 && !métricas.ok && (
         <section className='bg-kuati-blanco rounded-xl border border-kuati-borde p-8 text-center shadow-sm'>
           <IconClipboardList size={40} aria-hidden='true' className='mx-auto text-kuati-grafito/30 mb-3' />
           <p className='text-kuati-grafito/80 text-sm'>

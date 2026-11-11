@@ -62,7 +62,7 @@ export default async function ServiciosPage() {
                           Editar
                         </Link>
                         <form action={async () => { 'use server'; await toggleServicioEmpresa({ id: s.id, activo: !s.activo }); }}>
-                          <button type='submit' className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${s.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                          <button type='submit' className={`text-xs font-semibold px-4 py-2.5 min-h-[44px] rounded-md transition-colors flex items-center justify-center ${s.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
                             {s.activo ? 'Desactivar' : 'Reactivar'}
                           </button>
                         </form>
@@ -89,7 +89,7 @@ export default async function ServiciosPage() {
                 </p>
                 <div className='pt-2 flex justify-end gap-2'>
                   <form action={async () => { 'use server'; await toggleServicioEmpresa({ id: s.id, activo: !s.activo }); }}>
-                    <button type='submit' className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${s.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                    <button type='submit' className={`text-xs font-semibold px-4 py-2.5 min-h-[44px] rounded-md transition-colors flex items-center justify-center ${s.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
                       {s.activo ? 'Desactivar' : 'Reactivar'}
                     </button>
                   </form>

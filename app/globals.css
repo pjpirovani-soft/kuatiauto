@@ -31,14 +31,10 @@ body {
   50% { opacity: 0.7; }
 }
 
-/* Scroll horizontal para tablas en celular */
-@media (max-width: 768px) {
-  .overflow-hidden {
-    overflow-x: auto;
-  }
-  table {
-    min-width: 600px; /* Fuerza un ancho mínimo para que no se achiquen las columnas */
-  }
+/* Scroll horizontal para tablas: usar contenedor explícito .table-scroll donde haga falta */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 /* ==========================================================================
    ESTILOS DE IMPRESIÓN (window.print / PDF)

@@ -81,7 +81,7 @@ export default async function ProductosPage() {
                             Editar
                           </Link>
                           <form action={async () => { 'use server'; await toggleProductoEmpresa({ id: p.id, activo: !p.activo }); }}>
-                            <button type='submit' className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${p.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                            <button type='submit' className={`text-xs font-semibold px-4 py-2.5 min-h-[44px] rounded-md transition-colors flex items-center justify-center ${p.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
                               {p.activo ? 'Desactivar' : 'Reactivar'}
                             </button>
                           </form>
@@ -123,7 +123,7 @@ export default async function ProductosPage() {
 
                   <div className='pt-2 flex justify-end gap-2'>
                     <form action={async () => { 'use server'; await toggleProductoEmpresa({ id: p.id, activo: !p.activo }); }}>
-                      <button type='submit' className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${p.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                      <button type='submit' className={`text-xs font-semibold px-4 py-2.5 min-h-[44px] rounded-md transition-colors flex items-center justify-center ${p.activo ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
                         {p.activo ? 'Desactivar' : 'Reactivar'}
                       </button>
                     </form>
