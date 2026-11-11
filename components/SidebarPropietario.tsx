@@ -79,8 +79,8 @@ export default function SidebarPropietario() {
                 if (isActive && !esDestacado) {
                   varianteClasses = 'bg-kuati-lima text-kuati-petroleo font-semibold';
                 } else if (esDestacado) {
-                  // Fondo transparente, texto con gradiente dorado + glow
-                  varianteClasses = 'bg-transparent font-bold hover:bg-kuati-petroleo/80';
+                  // Botón normal con fondo transparente, texto e ícono dorados brillantes
+                  varianteClasses = 'bg-transparent font-bold text-yellow-300 hover:bg-kuati-petroleo/80 hover:text-yellow-200 drop-shadow-[0_0_6px_rgba(255,215,0,0.6)]';
                 } else {
                   varianteClasses = 'hover:bg-kuati-petroleo/80 text-kuati-blanco/80 hover:text-kuati-blanco';
                 }
@@ -104,15 +104,7 @@ export default function SidebarPropietario() {
                       }
                       aria-hidden='true'
                     />
-                    <span
-                      className={
-                        esDestacado
-                          ? 'text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-400 drop-shadow-[0_0_6px_rgba(255,215,0,0.6)]'
-                          : ''
-                      }
-                    >
-                      {item.name}
-                    </span>
+                    <span>{item.name}</span>
                   </Link>
                 );
               })}
