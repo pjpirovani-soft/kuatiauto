@@ -18,20 +18,20 @@ export default async function EditarClientePage({ params }: { params: Promise<{ 
 
   if (error || !cliente) {
     return (
-      <main className="min-h-screen bg-gray-50 p-8">
+      <main className="min-h-screen bg-kuati-fondo p-8">
         <div className="max-w-2xl mx-auto">
-          <p className="text-red-600">Cliente no encontrado.</p>
-          <Link href="/clientes" className="text-blue-600 hover:underline text-sm">Volver</Link>
+          <p className="text-red-700">Cliente no encontrado.</p>
+          <Link href="/clientes" className="text-kuati-petroleo hover:underline text-sm">Volver</Link>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
+    <main className="min-h-screen bg-kuati-fondo p-8">
       <div className="max-w-2xl mx-auto">
         <div className="mb-6">
-          <Link href="/clientes" className="text-gray-500 hover:text-black text-sm">
+          <Link href="/clientes" className="text-kuati-grafito/80 hover:text-kuati-petroleo text-sm">
             Volver a clientes
           </Link>
         </div>

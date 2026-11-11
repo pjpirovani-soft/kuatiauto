@@ -131,9 +131,9 @@ export default async function OrdenDetallePage({
   return (
     <div className="max-w-4xl mx-auto">
       <header className="mb-6">
-        <Link href="/ordenes" className="text-sm text-gray-600 hover:text-black underline">← Volver a órdenes</Link>
+        <Link href="/ordenes" className="text-sm text-kuati-grafito/80 hover:text-kuati-petroleo underline">← Volver a órdenes</Link>
         <h1 className="text-3xl font-bold mt-2">Orden #{String(orden.numero_orden ?? 0).padStart(4, "0")}</h1>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-kuati-grafito/80">
           Estado: <span className="font-mono">{orden.estado}</span>
           {orden.importe_total !== null && (
             <> · Importe total: ${orden.importe_total.toFixed(2)}</>
@@ -147,7 +147,7 @@ export default async function OrdenDetallePage({
         </p>
       </header>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-kuati-blanco rounded-xl border border-kuati-borde p-6">
         <EditarOrdenClient
           id={orden.id}
           estado={orden.estado}

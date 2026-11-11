@@ -30,24 +30,24 @@ export default async function VehiculoDetallePage({
   return (
     <div className="max-w-4xl mx-auto">
       <header className="mb-6">
-        <Link href="/vehiculos" className="text-sm text-gray-600 hover:text-black underline">
+        <Link href="/vehiculos" className="text-sm text-kuati-grafito/80 hover:text-kuati-petroleo underline">
           Volver a vehículos
         </Link>
         <h1 className="text-3xl font-bold mt-2">
           {vehiculo.marca} {vehiculo.modelo}
         </h1>
         <div className="mt-3">
-          <Link href={"/ordenes/nuevo?vehiculo_id=" + vehiculo.id} className="text-sm bg-black text-white px-4 py-2 rounded hover:bg-gray-800 inline-block">
+          <Link href={"/ordenes/nuevo?vehiculo_id=" + vehiculo.id} className="text-sm bg-kuati-petroleo text-kuati-blanco px-4 py-2 rounded hover:bg-kuati-petroleo/90 inline-block">
             Nueva orden para este vehículo
           </Link>
         </div>
       </header>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-kuati-blanco rounded-xl border border-kuati-borde p-6">
         <VehiculoForm modo="editar" clientes={clientes} initialData={vehiculo} />
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mt-6">
+      <div className="bg-kuati-blanco rounded-xl border border-kuati-borde p-6 mt-6">
         <ProponerHistorialForm vehiculoId={vehiculo.id} />
       </div>
     </div>
