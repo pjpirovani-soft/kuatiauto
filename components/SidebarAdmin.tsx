@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useTransition } from 'react';
 import Link from 'next/link';
 import Logo from '@/components/brand/Logo';
 import pkg from '@/package.json';
@@ -24,15 +25,18 @@ const menuItems = [
 
 export default function SidebarAdmin() {
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
 
-  const handleLogout = async () => {
-    await logoutAction();
+  const handleLogout = () => {
+    startTransition(async () => {
+      await logoutAction();
+    });
   };
 
   return (
     <aside className='w-64 h-screen sticky top-0 bg-kuati-petroleo text-kuati-blanco flex flex-col'>
       <div className='p-6 border-b border-white/20 flex items-center gap-3 shrink-0'><Logo variant='isotipo' theme='dark' showText={false} href='/admin' /><span className='text-xs uppercase tracking-widest text-kuati-blanco/60 font-semibold'>Admin</span></div>
-      <nav className='flex-1 p-4 space-y-2 overflow-y-auto'>
+      <nav aria-label='Navegacion de administrador' className='flex-1 p-4 space-y-2 overflow-y-auto'>
         {menuItems.map((item) => {
           const isActive = item.exact
             ? pathname === item.href
@@ -43,6 +47,7 @@ export default function SidebarAdmin() {
             <Link
               key={item.name}
               href={item.href}
+              aria-current={isActive ? 'page' : undefined}
               className={
                 'flex items-center gap-3 px-4 py-3 rounded-lg transition-all ' +
                 (isActive
@@ -72,11 +77,13 @@ export default function SidebarAdmin() {
           <span>Mi perfil</span>
         </Link>
         <button
+          type='button'
           onClick={handleLogout}
-          className='w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/20 text-red-300 hover:text-red-100 transition-colors'
+          disabled={isPending}
+          className='w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/20 text-red-300 hover:text-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
         >
           <IconLogout size={20} stroke={1.5} />
-          <span>Cerrar Sesión</span>
+          <span>{isPending ? 'Cerrando...' : 'Cerrar Sesión'}</span>
         </button>
       </div>
     </aside>

@@ -30,7 +30,7 @@ export default async function AdminUsuariosPage({
     return (
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Usuarios</h1>
-        <p className="text-red-600">Error: {res.error}</p>
+        <p className="text-red-700">Error: {res.error}</p>
       </div>
     );
   }
@@ -42,7 +42,7 @@ export default async function AdminUsuariosPage({
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold">Usuarios</h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-kuati-grafito/80 mt-1">
             {usuarios.length} {usuarios.length === 1 ? "usuario" : "usuarios"}
             {filtroRol ? ` (${filtroRol})` : ""}
           </p>
@@ -58,8 +58,8 @@ export default async function AdminUsuariosPage({
                 className={
                   "px-3 py-1.5 text-sm rounded border " +
                   (active
-                    ? "bg-gray-900 text-white border-gray-900"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50")
+                    ? "bg-kuati-petroleo text-white border-kuati-petroleo"
+                    : "bg-kuati-blanco text-kuati-grafito/80 border-kuati-borde hover:bg-kuati-fondo")
                 }
               >
                 {f.label}
@@ -70,13 +70,13 @@ export default async function AdminUsuariosPage({
       </div>
 
       {usuarios.length === 0 ? (
-        <div className="bg-white p-8 rounded-xl border border-gray-200 text-center text-gray-500">
+        <div className="bg-kuati-blanco p-8 rounded-xl border border-kuati-borde text-center text-kuati-grafito/80">
           No hay usuarios{filtroRol ? ` con rol ${filtroRol}` : ""}.
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="bg-kuati-blanco rounded-xl border border-kuati-borde overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-gray-600">
+            <thead className="bg-kuati-fondo text-kuati-grafito/80">
               <tr>
                 <th className="text-left px-4 py-3 font-medium">Nombre</th>
                 <th className="text-left px-4 py-3 font-medium">Email</th>
@@ -91,11 +91,11 @@ export default async function AdminUsuariosPage({
                 const esPropio = u.id === currentUserId;
                 const esAdminGeneral = u.rol === "admin_general";
                 return (
-                  <tr key={u.id} className="border-t border-gray-100">
+                  <tr key={u.id} className="border-t border-kuati-borde/50">
                     <td className="px-4 py-3">{u.nombre ?? "—"}</td>
-                    <td className="px-4 py-3 text-gray-600">{u.email}</td>
+                    <td className="px-4 py-3 text-kuati-grafito/80">{u.email}</td>
                     <td className="px-4 py-3">
-                      <span className="inline-block px-2 py-0.5 text-xs rounded bg-gray-100 text-gray-700">
+                      <span className="inline-block px-2 py-0.5 text-xs rounded bg-kuati-fondo text-kuati-grafito/80">
                         {u.rol}
                       </span>
                     </td>
@@ -103,12 +103,12 @@ export default async function AdminUsuariosPage({
                       {u.empresa_id && u.empresa_nombre ? (
                         <Link
                           href={`/admin/empresas/${u.empresa_id}`}
-                          className="text-blue-700 hover:underline"
+                          className="text-kuati-petroleo hover:underline"
                         >
                           {u.empresa_nombre}
                         </Link>
                       ) : (
-                        <span className="text-gray-400">—</span>
+                        <span className="text-kuati-grafito/60">—</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
@@ -117,7 +117,7 @@ export default async function AdminUsuariosPage({
                           Activo
                         </span>
                       ) : (
-                        <span className="inline-block px-2 py-0.5 text-xs rounded bg-gray-200 text-gray-700">
+                        <span className="inline-block px-2 py-0.5 text-xs rounded bg-kuati-borde text-kuati-grafito/80">
                           Inactivo
                         </span>
                       )}
