@@ -40,3 +40,95 @@ body {
     min-width: 600px; /* Fuerza un ancho mínimo para que no se achiquen las columnas */
   }
 }
+/* ==========================================================================
+   ESTILOS DE IMPRESIÓN (window.print / PDF)
+   ========================================================================== */
+
+@media print {
+  /* Ocultar navegación, sidebars, botones de acción y elementos no imprimibles */
+  aside,
+  nav,
+  header,
+  footer,
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+
+  /* El body ocupa toda la página */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+  }
+
+  /* Contenedores principales sin sombras ni bordes */
+  main,
+  .print-container,
+  .print-container * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+
+  /* Ajustar el ancho del contenido de la orden */
+  .print-container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Ajustar inputs para que se vean como texto plano */
+  input,
+  select,
+  textarea {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    font-size: 12pt !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+  }
+
+  /* Ocultar flechas de los selects */
+  select::-ms-expand {
+    display: none;
+  }
+
+  /* Encabezado de la orden */
+  .print-header {
+    border-bottom: 2px solid black !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Tablas limpias */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  th,
+  td {
+    border: 1px solid #ccc !important;
+    padding: 8px !important;
+  }
+
+  /* Saltos de página para tablas largas */
+  tr {
+    page-break-inside: avoid;
+  }
+
+  /* Ocultar el botón de imprimir cuando se imprime */
+  .print-button {
+    display: none !important;
+  }
+}
+
+/* Pantalla: botón de imprimir */
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}

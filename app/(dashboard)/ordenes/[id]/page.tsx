@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import EditarOrdenClient from "@/components/EditarOrdenClient";
+import BotonImprimir from "@/components/BotonImprimir";
 import { obtenerOrden } from "@/lib/ordenes-actions";
 import { listarVehiculosEmpresa } from "@/lib/vehiculos-actions";
 import { listarClientes } from "@/lib/clientes-actions";
