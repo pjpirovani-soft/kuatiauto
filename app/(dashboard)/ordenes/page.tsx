@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listarOrdenesEmpresa } from "@/lib/ordenes-actions";
+import TarjetaOrdenSwipeable from "@/components/TarjetaOrdenSwipeable";
 import { listarVehiculosEmpresa } from "@/lib/vehiculos-actions";
 import { listarClientes } from "@/lib/clientes-actions";
 import { IconPlus, IconCar, IconCalendar, IconCash, IconRoad } from '@tabler/icons-react';
