@@ -32,7 +32,7 @@ export async function listarVehiculos(input: unknown): Promise<Result<unknown[]>
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('vehiculo')
-    .select('id, cliente_id, marca, modelo, anio, patente, km_actual, notas, activo, created_at')
+    .select('id, cliente_id, marca, modelo, anio, patente, km_actual, notas, activo, created_at, cliente:cliente_id(nombre)')
     .eq('activo', true)
     .eq('cliente_id', parsed.data.cliente_id)
     .order('created_at', { ascending: false });
@@ -50,7 +50,7 @@ export async function listarVehiculosEmpresa(): Promise<Result<unknown[]>> {
 
   const { data, error } = await supabase
     .from('vehiculo')
-    .select('id, cliente_id, marca, modelo, anio, patente, km_actual, notas, activo, created_at')
+    .select('id, cliente_id, marca, modelo, anio, patente, km_actual, notas, activo, created_at, cliente:cliente_id(nombre)')
     .eq('activo', true)
     .eq('empresa_id', empresaId)
     .order('created_at', { ascending: false });

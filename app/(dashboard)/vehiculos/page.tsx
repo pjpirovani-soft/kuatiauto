@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { listarVehiculosEmpresa } from '@/lib/vehiculos-actions';
 import { IconPlus, IconCar, IconCalendar, IconId, IconRoad } from '@tabler/icons-react';
 
@@ -9,6 +9,7 @@ type Vehiculo = {
   anio: number | null;
   patente: string | null;
   km_actual: number | null;
+  cliente: { nombre: string | null } | null;
 };
 
 export default async function VehiculosPage() {
@@ -46,6 +47,7 @@ export default async function VehiculosPage() {
               <thead className='bg-kuati-fondo text-kuati-grafito border-b border-kuati-borde'>
                 <tr>
                   <th className='px-6 py-4 font-semibold'>Vehículo</th>
+                  <th className='px-6 py-4 font-semibold'>Dueño</th>
                   <th className='px-6 py-4 font-semibold'>Año</th>
                   <th className='px-6 py-4 font-semibold'>Patente</th>
                   <th className='px-6 py-4 font-semibold'>Km</th>
@@ -56,6 +58,7 @@ export default async function VehiculosPage() {
                 {vehiculos.map((v) => (
                   <tr key={v.id} className='hover:bg-kuati-fondo/50 transition-colors'>
                     <td className='px-6 py-4 font-medium text-kuati-petroleo'>{v.marca} {v.modelo}</td>
+                    <td className='px-6 py-4 text-kuati-grafito/80'>{v.cliente?.nombre ?? '—'}</td>
                     <td className='px-6 py-4 text-kuati-grafito/80'>{v.anio ?? '—'}</td>
                     <td className='px-6 py-4 text-kuati-grafito/80'>{v.patente ?? '—'}</td>
                     <td className='px-6 py-4 text-kuati-grafito/80'>{v.km_actual != null ? v.km_actual.toLocaleString('es-PY') : '—'}</td>
@@ -78,7 +81,10 @@ export default async function VehiculosPage() {
                   <div className='w-10 h-10 bg-kuati-petroleo/5 rounded-full flex items-center justify-center text-kuati-petroleo'>
                     <IconCar size={20} />
                   </div>
-                  <h3 className='font-bold text-kuati-petroleo text-lg'>{v.marca} {v.modelo}</h3>
+                  <div>
+                    <h3 className='font-bold text-kuati-petroleo text-lg'>{v.marca} {v.modelo}</h3>
+                    <p className='text-xs text-kuati-grafito/70 mt-0.5'>{v.cliente?.nombre ?? 'Sin dueño'}</p>
+                  </div>
                 </div>
                 <div className='grid grid-cols-2 gap-3 text-sm text-kuati-grafito/80'>
                   <p className='flex items-center gap-2'>
