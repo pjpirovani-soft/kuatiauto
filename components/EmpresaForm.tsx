@@ -39,38 +39,49 @@ export function EmpresaForm({ action }: EmpresaFormProps) {
     }
   }
 
+  const inputClass = 'w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito bg-kuati-blanco focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all';
+  const labelClass = 'block text-sm font-semibold text-kuati-grafito mb-1.5';
+
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
-      <h2 className="text-2xl font-bold mb-2">Crear empresa</h2>
-      <p className="text-gray-600 text-sm mb-6">
+    <div className='max-w-2xl mx-auto bg-kuati-blanco rounded-xl border border-kuati-borde p-8 shadow-sm'>
+      <h2 className='text-2xl font-bold text-kuati-petroleo mb-2'>Crear empresa</h2>
+      <p className='text-kuati-grafito/80 text-sm mb-6'>
         Cargá los datos de tu lubricentro o taller. Después vas a poder gestionar clientes y vehículos.
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className='space-y-4'>
         <div>
-          <label htmlFor="nombre" className="block text-sm font-medium mb-1">Nombre de la empresa *</label>
-          <input id="nombre" name="nombre" type="text" required minLength={2} className="w-full border rounded px-3 py-2" />
+          <label htmlFor='nombre' className={labelClass}>Nombre de la empresa *</label>
+          <input id='nombre' name='nombre' type='text' required minLength={2} className={inputClass} />
         </div>
 
         <div>
-          <label htmlFor="telefono" className="block text-sm font-medium mb-1">Teléfono</label>
-          <input id="telefono" name="telefono" type="text" className="w-full border rounded px-3 py-2" />
+          <label htmlFor='telefono' className={labelClass}>Teléfono</label>
+          <input id='telefono' name='telefono' type='text' className={inputClass} />
         </div>
 
         <div>
-          <label htmlFor="ruc" className="block text-sm font-medium mb-1">RUC</label>
-          <input id="ruc" name="ruc" type="text" className="w-full border rounded px-3 py-2" />
+          <label htmlFor='ruc' className={labelClass}>RUC</label>
+          <input id='ruc' name='ruc' type='text' className={inputClass} />
         </div>
 
         <div>
-          <label htmlFor="direccion" className="block text-sm font-medium mb-1">Dirección</label>
-          <input id="direccion" name="direccion" type="text" className="w-full border rounded px-3 py-2" />
+          <label htmlFor='direccion' className={labelClass}>Dirección</label>
+          <input id='direccion' name='direccion' type='text' className={inputClass} />
         </div>
 
-        {error && <p className="text-red-600 text-sm">{error}</p>}
+        {error && (
+          <p role='alert' className='text-red-700 bg-red-50 border border-red-200 rounded-lg p-3 text-sm'>
+            {error}
+          </p>
+        )}
 
-        <div className="flex items-center gap-3 pt-4">
-          <button type="submit" disabled={loading} className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 disabled:opacity-50">
+        <div className='flex items-center gap-3 pt-4'>
+          <button
+            type='submit'
+            disabled={loading}
+            className='bg-kuati-petroleo text-kuati-blanco px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-petroleo/90 disabled:opacity-50 transition-colors'
+          >
             {loading ? 'Creando...' : 'Crear empresa'}
           </button>
         </div>

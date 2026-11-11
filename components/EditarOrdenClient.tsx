@@ -92,7 +92,7 @@ export default function EditarOrdenClient(props: Props) {
         onSubmit={onSubmit}
       />
 
-      <section className="border rounded-xl bg-white p-6 space-y-3">
+      <section className="border border-kuati-borde rounded-xl bg-kuati-blanco p-6 space-y-3">
         <h2 className="text-lg font-semibold">Acciones</h2>
 
         {accionError && <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded p-2">{accionError}</p>}
@@ -103,7 +103,7 @@ export default function EditarOrdenClient(props: Props) {
               type="button" 
               disabled={!!accionando || !editable} 
               onClick={() => setConfirmarAccion('completar')} 
-              className="px-4 py-3 min-h-[44px] rounded bg-green-600 text-white font-medium disabled:opacity-50 active:scale-95 transition-transform"
+              className="px-4 py-3 min-h-[44px] rounded bg-kuati-petroleo text-kuati-blanco font-medium disabled:opacity-50 active:scale-95 transition-transform"
             >
               {accionando === 'completar' ? 'Completando...' : 'Completar orden'}
             </button>
@@ -130,7 +130,7 @@ export default function EditarOrdenClient(props: Props) {
 
         {estado === "completada" && (
           <div>
-            <p className="text-sm text-gray-600 mb-2">La orden está completada. Si necesitás revertirla, anulala con motivo.</p>
+            <p className="text-sm text-kuati-grafito/80 mb-2">La orden está completada. Si necesitás revertirla, anulala con motivo.</p>
             <button 
               type="button" 
               disabled={!!accionando} 
@@ -143,7 +143,7 @@ export default function EditarOrdenClient(props: Props) {
         )}
 
         {estado === "anulada" && (
-          <p className="text-sm text-gray-600">Esta orden está anulada y no admite más acciones.</p>
+          <p className="text-sm text-kuati-grafito/80">Esta orden está anulada y no admite más acciones.</p>
         )}
 
         {anulando && (
@@ -151,7 +151,7 @@ export default function EditarOrdenClient(props: Props) {
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium">Motivo de anulación (opcional, máx. 500)</span>
               <textarea
-                className="border rounded px-2 py-1 min-h-[60px]"
+                className="border border-kuati-borde rounded-lg px-3 py-2 min-h-[60px]"
                 value={motivo}
                 onChange={(e) => setMotivo(e.target.value)}
                 maxLength={500}
@@ -182,9 +182,9 @@ export default function EditarOrdenClient(props: Props) {
 
       {confirmarAccion && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+          <div className="bg-kuati-blanco rounded-xl p-6 w-full max-w-sm shadow-xl border border-kuati-borde">
             <h3 className="text-lg font-bold mb-2">Confirmar acción</h3>
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-kuati-grafito/80 mb-6">
               {confirmarAccion === 'completar' && "¿Marcar esta orden como completada? Se calculará el importe total y el próximo mantenimiento."}
               {confirmarAccion === 'anular' && "¿Anular esta orden? Esta acción no se puede deshacer."}
               {confirmarAccion === 'eliminar' && "¿Eliminar definitivamente este borrador? Esta acción no se puede deshacer."}
@@ -193,7 +193,7 @@ export default function EditarOrdenClient(props: Props) {
               <button 
                 onClick={() => setConfirmarAccion(null)} 
                 disabled={!!accionando}
-                className="flex-1 px-4 py-2 rounded border font-medium hover:bg-gray-50"
+                className="flex-1 px-4 py-2 rounded border border-kuati-borde font-medium hover:bg-kuati-fondo"
               >
                 Cancelar
               </button>
@@ -201,7 +201,7 @@ export default function EditarOrdenClient(props: Props) {
                 onClick={confirmarAccion === 'completar' ? ejecutarCompletar : confirmarAccion === 'anular' ? ejecutarAnular : ejecutarEliminar} 
                 disabled={!!accionando}
                 className={`flex-1 px-4 py-2 rounded text-white font-medium ${
-                  confirmarAccion === 'completar' ? 'bg-green-600 hover:bg-green-700' : 
+                  confirmarAccion === 'completar' ? 'bg-kuati-petroleo hover:bg-kuati-petroleo/90' : 
                   confirmarAccion === 'anular' ? 'bg-amber-600 hover:bg-amber-700' : 
                   'bg-red-600 hover:bg-red-700'
                 }`}
