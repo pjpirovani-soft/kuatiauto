@@ -1,4 +1,21 @@
 
+## [v0.9.1] - 2026-11-11 - Velocidad, spinners y feedback táctil
+
+### Added
+- **Loading skeletons:** en clientes, vehículos, órdenes, catálogo y recepción.
+- **Spinners:** en formularios y botones de acción (Cliente, Establecimiento, Usuario, Eliminar, Publicar).
+- **Feedback táctil:** clase .btn-press en globals.css que hunde el botón al presionar.
+- **role="alert":** en feedbacks de error de ClienteForm y EstablecimientoForm.
+
+### Changed
+- **establecimientos/page.tsx:** reescrito con tokens kuati-* (fondo, bordes, badges, botón).
+
+### Verified
+- 300/300 tests Vitest verdes.
+- 
+ext build compiló sin errores (34 rutas).
+
+
 ## [v0.9.0] - 2026-11-11 - PWA con banner de nueva version
 
 ### Added
