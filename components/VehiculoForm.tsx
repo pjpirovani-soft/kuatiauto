@@ -133,6 +133,7 @@ export default function VehiculoForm({ modo, clientes, initialData, onSuccess }:
             name='patente'
             maxLength={20}
             defaultValue={initialData?.patente ?? ''}
+            onChange={(e) => { e.target.value = e.target.value.toUpperCase(); }}
             className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all uppercase'
             placeholder='ABC123'
           />
