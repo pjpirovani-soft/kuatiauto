@@ -121,7 +121,7 @@ export function ClienteForm({
         </div>
 
         {error && (
-          <div className='text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3'>{error}</div>
+          <div role='alert' className='text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3'>{error}</div>
         )}
 
         <div className='flex flex-col sm:flex-row items-center gap-3 pt-4'>

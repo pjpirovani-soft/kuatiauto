@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from "react";
+import { IconLoader2 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { publicarMiEstablecimiento } from "@/lib/establecimiento-actions";
 
@@ -41,7 +42,7 @@ export default function PublicarButton({ establecimientoPublicoId, publicado }: 
             : "bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
         }
       >
-        {pending ? "..." : publicado ? "Despublicar" : "Publicar en directorio"}
+        {pending && <IconLoader2 size={14} className="animate-spin" />}{pending ? "Procesando..." : publicado ? "Despublicar" : "Publicar en directorio"}
       </button>
       <span className="text-sm text-gray-600">
         {publicado ? "Publicado en el directorio" : "No publicado"}

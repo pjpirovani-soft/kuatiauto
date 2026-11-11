@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { IconLoader2 } from "@tabler/icons-react";
 import { cambiarRolUsuario, desactivarUsuario } from "@/lib/admin-actions";
 
 const ROLES = ["propietario", "empleado", "conductor"] as const;
@@ -81,9 +82,9 @@ export function UsuarioAccionesClient({
           type="button"
           onClick={onToggleActivo}
           disabled={pending}
-          className="text-xs px-2 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
+          className="text-xs px-2 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 inline-flex items-center gap-1"
         >
-          {activo ? "Desactivar" : "Reactivar"}
+          {pending && <IconLoader2 size={12} className="animate-spin" />}{activo ? "Desactivar" : "Reactivar"}
         </button>
       </div>
       {error && <span className="text-xs text-red-600">{error}</span>}

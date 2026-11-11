@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { IconLoader2 } from "@tabler/icons-react";
 import { eliminarServicioGlobal } from "@/lib/admin-actions";
 
 export function EliminarServicioGlobalButton({
@@ -31,9 +32,9 @@ export function EliminarServicioGlobalButton({
       type="button"
       onClick={onClick}
       disabled={pending}
-      className="text-xs px-2 py-1 rounded border border-red-300 text-red-700 bg-white hover:bg-red-50 disabled:opacity-50"
+      className="text-xs px-2 py-1 rounded border border-red-300 text-red-700 bg-white hover:bg-red-50 disabled:opacity-50 inline-flex items-center gap-1"
     >
-      {pending ? "..." : "Eliminar"}
+      {pending && <IconLoader2 size={12} className="animate-spin" />}{pending ? "Eliminando..." : "Eliminar"}
     </button>
   );
 }
