@@ -41,7 +41,7 @@ type Props = {
   }) => Promise<{ ok: boolean; error?: string; id?: string }>;
 };
 
-const inputClass = "w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito bg-kuati-blanco focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all";
+const inputClass = "w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito bg-kuati-blanco focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all";
 const labelClass = "block text-sm font-semibold text-kuati-grafito mb-1.5";
 
 export default function OrdenForm(props: Props) {

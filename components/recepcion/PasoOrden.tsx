@@ -239,7 +239,7 @@ export default function PasoOrden({
           value={kmServicio}
           onChange={(e) => setKmServicio(e.target.value)}
           placeholder='120000'
-          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
         />
       </div>
 
@@ -256,7 +256,7 @@ export default function PasoOrden({
             <label className='block text-sm font-semibold text-kuati-grafito mb-1.5'>Fecha</label>
             <input
               type='date'
-              className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+              className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
               value={proximoFecha}
               onChange={(e) => {
                 setProximoFecha(e.target.value);
@@ -271,7 +271,7 @@ export default function PasoOrden({
               type='number'
               min='0'
               step='1'
-              className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+              className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
               value={proximoKm}
               onChange={(e) => {
                 setProximoKm(e.target.value);
@@ -419,7 +419,7 @@ export default function PasoOrden({
           onChange={(e) => setObservaciones(e.target.value)}
           maxLength={1000}
           placeholder='Detalles del trabajo...'
-          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all min-h-[100px] resize-y'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all min-h-[100px] resize-y'
         />
       </div>
 

@@ -77,7 +77,7 @@ export function ClienteForm({
             type='text'
             required
             defaultValue={initialData?.nombre ?? ''}
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
           />
         </div>
 
@@ -90,7 +90,7 @@ export function ClienteForm({
             name='email'
             type='email'
             defaultValue={initialData?.email ?? ''}
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
           />
         </div>
 
@@ -103,7 +103,7 @@ export function ClienteForm({
             name='telefono'
             type='text'
             defaultValue={initialData?.telefono ?? ''}
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
           />
         </div>
 
@@ -116,7 +116,7 @@ export function ClienteForm({
             name='notas'
             rows={3}
             defaultValue={initialData?.notas ?? ''}
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all min-h-[100px] resize-y'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all min-h-[100px] resize-y'
           />
         </div>
 

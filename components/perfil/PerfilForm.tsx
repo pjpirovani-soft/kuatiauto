@@ -45,7 +45,7 @@ export default function PerfilForm({ nombreInicial }: { nombreInicial: string })
         action={nombreFormAction}
         className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm space-y-4'
       >
-        <h2 className='text-sm font-semibold uppercase tracking-wide text-kuati-grafito/50'>
+        <h2 className='text-sm font-semibold uppercase tracking-wide text-kuati-grafito/80'>
           Nombre
         </h2>
         <div>
@@ -80,7 +80,7 @@ export default function PerfilForm({ nombreInicial }: { nombreInicial: string })
         action={passFormAction}
         className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm space-y-4'
       >
-        <h2 className='text-sm font-semibold uppercase tracking-wide text-kuati-grafito/50'>
+        <h2 className='text-sm font-semibold uppercase tracking-wide text-kuati-grafito/80'>
           Contraseña
         </h2>
         <div>

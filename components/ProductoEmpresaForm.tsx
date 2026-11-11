@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -70,7 +70,7 @@ export default function ProductoEmpresaForm(props: Props) {
         <input
           id='nombre'
           type='text'
-          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           maxLength={120}
@@ -86,7 +86,7 @@ export default function ProductoEmpresaForm(props: Props) {
           <input
             id='marca'
             type='text'
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             value={marca}
             onChange={(e) => setMarca(e.target.value)}
             maxLength={80}
@@ -99,7 +99,7 @@ export default function ProductoEmpresaForm(props: Props) {
           <input
             id='tipo'
             type='text'
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             value={tipo}
             onChange={(e) => setTipo(e.target.value)}
             maxLength={40}
@@ -112,7 +112,7 @@ export default function ProductoEmpresaForm(props: Props) {
           <input
             id='viscosidad'
             type='text'
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             value={viscosidad}
             onChange={(e) => setViscosidad(e.target.value)}
             maxLength={20}
@@ -125,7 +125,7 @@ export default function ProductoEmpresaForm(props: Props) {
           <input
             id='unidad'
             type='text'
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             value={unidad}
             onChange={(e) => setUnidad(e.target.value)}
             maxLength={20}
@@ -140,7 +140,7 @@ export default function ProductoEmpresaForm(props: Props) {
             type='number'
             min='0'
             step='1'
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             value={stockActual}
             onChange={(e) => setStockActual(e.target.value)}
             disabled={enviando}
@@ -153,7 +153,7 @@ export default function ProductoEmpresaForm(props: Props) {
             type='number'
             min='0'
             step='1'
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             value={stockMinimo}
             onChange={(e) => setStockMinimo(e.target.value)}
             disabled={enviando}

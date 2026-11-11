@@ -62,7 +62,7 @@ export default function SidebarPropietario() {
           );
         })}
       </nav>
-      <div className='px-4 pb-2 text-center text-xs text-kuati-blanco/40 font-mono shrink-0'>
+      <div className='px-4 pb-2 text-center text-xs text-kuati-blanco/70 font-mono shrink-0'>
         v{pkg.version}
       </div>
       <div className='p-4 border-t border-white/20 shrink-0'>

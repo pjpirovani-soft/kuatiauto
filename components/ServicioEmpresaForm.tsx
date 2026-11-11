@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -52,7 +52,7 @@ export default function ServicioEmpresaForm(props: Props) {
         <input
           id='nombre'
           type='text'
-          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           maxLength={120}
@@ -68,7 +68,7 @@ export default function ServicioEmpresaForm(props: Props) {
         </label>
         <textarea
           id='descripcion'
-          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all min-h-[100px] resize-y'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all min-h-[100px] resize-y'
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           maxLength={500}

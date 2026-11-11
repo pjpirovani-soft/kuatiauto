@@ -76,7 +76,7 @@ export default function VehiculoForm({ modo, clientes, initialData, onSuccess }:
           name='cliente_id'
           required
           defaultValue={initialData?.cliente_id ?? ''}
-          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito bg-kuati-blanco focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito bg-kuati-blanco focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
         >
           <option value='' disabled>
             Elegí un cliente
@@ -97,7 +97,7 @@ export default function VehiculoForm({ modo, clientes, initialData, onSuccess }:
             required
             maxLength={60}
             defaultValue={initialData?.marca ?? ''}
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             placeholder='Ej. Toyota'
           />
         </div>
@@ -108,7 +108,7 @@ export default function VehiculoForm({ modo, clientes, initialData, onSuccess }:
             required
             maxLength={60}
             defaultValue={initialData?.modelo ?? ''}
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             placeholder='Ej. Corolla'
           />
         </div>
@@ -123,7 +123,7 @@ export default function VehiculoForm({ modo, clientes, initialData, onSuccess }:
             min={1900}
             max={2100}
             defaultValue={initialData?.anio ?? ''}
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             placeholder='2020'
           />
         </div>
@@ -134,7 +134,7 @@ export default function VehiculoForm({ modo, clientes, initialData, onSuccess }:
             maxLength={20}
             defaultValue={initialData?.patente ?? ''}
             onChange={(e) => { e.target.value = e.target.value.toUpperCase(); }}
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all uppercase'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all uppercase'
             placeholder='ABC123'
           />
         </div>
@@ -145,7 +145,7 @@ export default function VehiculoForm({ modo, clientes, initialData, onSuccess }:
             type='number'
             min={0}
             defaultValue={initialData?.km_actual ?? ''}
-            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+            className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
             placeholder='120000'
           />
         </div>
@@ -158,7 +158,7 @@ export default function VehiculoForm({ modo, clientes, initialData, onSuccess }:
           maxLength={500}
           rows={3}
           defaultValue={initialData?.notas ?? ''}
-          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all min-h-[100px] resize-y'
+          className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all min-h-[100px] resize-y'
           placeholder='Detalles adicionales del vehículo...'
         />
       </div>

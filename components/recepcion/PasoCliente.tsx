@@ -70,7 +70,7 @@ export default function PasoCliente({ clientes, onSeleccionar }: Props) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder='Buscar por nombre o teléfono...'
           autoFocus
-          className='w-full border border-kuati-borde rounded-lg pl-10 pr-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all'
+          className='w-full border border-kuati-borde rounded-lg pl-10 pr-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
         />
       </div>
 

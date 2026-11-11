@@ -28,36 +28,36 @@ export default async function PerfilPage() {
         <div className='flex items-center justify-between mb-6'>
           <Link
             href='/'
-            className='inline-flex items-center gap-2 text-kuati-grafito/60 hover:text-kuati-petroleo text-sm transition-colors'
+            className='inline-flex items-center gap-2 text-kuati-grafito/80 hover:text-kuati-petroleo text-sm transition-colors'
           >
             <IconArrowLeft size={16} /> Volver al inicio
           </Link>
           <Link
             href={AYUDA_HREF[perfil.rol]}
-            className='inline-flex items-center gap-2 text-kuati-grafito/60 hover:text-kuati-petroleo text-sm transition-colors'
+            className='inline-flex items-center gap-2 text-kuati-grafito/80 hover:text-kuati-petroleo text-sm transition-colors'
           >
             <IconHelpCircle size={16} /> Ayuda
           </Link>
         </div>
 
         <h1 className='text-3xl font-bold text-kuati-petroleo mb-2'>Mi perfil</h1>
-        <p className='text-kuati-grafito/70 mb-8'>
+        <p className='text-kuati-grafito/80 mb-8'>
           Gestioná tu información personal y tu contraseña.
         </p>
 
         <section className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 shadow-sm mb-6'>
-          <h2 className='text-sm font-semibold uppercase tracking-wide text-kuati-grafito/50 mb-4'>
+          <h2 className='text-sm font-semibold uppercase tracking-wide text-kuati-grafito/80 mb-4'>
             Cuenta
           </h2>
           <dl className='space-y-3 text-sm'>
             <div className='flex justify-between gap-4'>
-              <dt className='text-kuati-grafito/60'>Email</dt>
+              <dt className='text-kuati-grafito/80'>Email</dt>
               <dd className='font-medium text-kuati-petroleo break-all text-right'>
                 {perfil.email}
               </dd>
             </div>
             <div className='flex justify-between gap-4'>
-              <dt className='text-kuati-grafito/60'>Rol</dt>
+              <dt className='text-kuati-grafito/80'>Rol</dt>
               <dd className='font-medium text-kuati-petroleo text-right'>
                 {ROL_LABEL[perfil.rol]}
               </dd>

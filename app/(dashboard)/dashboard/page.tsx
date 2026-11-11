@@ -44,12 +44,12 @@ export default async function DashboardPage() {
       <div className='max-w-4xl mx-auto'>
         <header className='mb-8'>
           <h1 className='text-3xl font-bold text-kuati-petroleo'>Panel Principal</h1>
-          <p className='text-kuati-grafito/70 text-sm'>Sesion iniciada como {user.email}</p>
+          <p className='text-kuati-grafito/80 text-sm'>Sesion iniciada como {user.email}</p>
         </header>
         <div className='bg-kuati-blanco rounded-xl border border-kuati-borde p-6 md:p-8 text-center shadow-sm space-y-6'>
           <div className='max-w-md mx-auto'>
             <h2 className='text-xl font-bold text-kuati-petroleo mb-2'>Empecemos</h2>
-            <p className='text-kuati-grafito/70'>
+            <p className='text-kuati-grafito/80'>
               Todavia no tenes una empresa creada. Creala para empezar a gestionar tu lubricentro.
             </p>
           </div>
@@ -57,7 +57,7 @@ export default async function DashboardPage() {
             href='/crear-empresa'
             className='inline-flex items-center gap-2 bg-kuati-petroleo text-kuati-blanco px-8 py-3 rounded-lg font-semibold hover:bg-kuati-petroleo/90 transition-colors shadow-md'
           >
-            <IconPlus size={20} />
+            <IconPlus size={20} aria-hidden='true' />
             Crear empresa
           </Link>
         </div>
@@ -91,7 +91,7 @@ export default async function DashboardPage() {
     <div className='max-w-5xl mx-auto'>
       <header className='mb-8'>
         <h1 className='text-3xl font-bold text-kuati-petroleo'>Panel Principal</h1>
-        <p className='text-kuati-grafito/70 text-sm'>Sesion iniciada como {user.email}</p>
+        <p className='text-kuati-grafito/80 text-sm'>Sesion iniciada como {user.email}</p>
       </header>
 
       {!metricas.ok && (
@@ -129,8 +129,8 @@ export default async function DashboardPage() {
             key={label}
             className='bg-kuati-blanco rounded-xl border border-kuati-borde p-4 shadow-sm'
           >
-            <div className='flex items-center gap-2 text-kuati-grafito/60 text-xs font-medium uppercase mb-2'>
-              <Icon size={16} />
+            <div className='flex items-center gap-2 text-kuati-grafito/80 text-xs font-medium uppercase mb-2'>
+              <Icon size={16} aria-hidden='true' />
               <span>{label}</span>
             </div>
             <p className='text-3xl font-bold text-kuati-petroleo'>{valor}</p>
@@ -141,7 +141,7 @@ export default async function DashboardPage() {
       {proximos.ok && proximos.data.length > 0 && (
         <section className='bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 shadow-sm'>
           <div className='flex items-center gap-2 mb-3'>
-            <IconAlertTriangle size={20} className='text-amber-600' />
+            <IconAlertTriangle size={20} aria-hidden='true' className='text-amber-600' />
             <h2 className='font-bold text-amber-900'>Vehiculos que requieren atencion</h2>
           </div>
           <div className='divide-y divide-amber-200'>
@@ -182,14 +182,14 @@ export default async function DashboardPage() {
           href='/ordenes/nuevo'
           className='flex-1 flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-3 rounded-lg font-semibold hover:bg-kuati-petroleo/90 transition-colors shadow-md'
         >
-          <IconPlus size={20} />
+          <IconPlus size={20} aria-hidden='true' />
           Nueva orden
         </Link>
         <Link
           href='/clientes/nuevo'
           className='flex-1 flex items-center justify-center gap-2 bg-kuati-lima text-kuati-petroleo px-6 py-3 rounded-lg font-bold hover:bg-kuati-lima/90 transition-colors shadow-[0_0_15px_rgba(163,217,0,0.3)]'
         >
-          <IconPlus size={20} />
+          <IconPlus size={20} aria-hidden='true' />
           Nuevo cliente
         </Link>
       </section>
@@ -198,7 +198,7 @@ export default async function DashboardPage() {
         <section className='bg-kuati-blanco rounded-xl border border-kuati-borde shadow-sm overflow-hidden'>
           <div className='px-4 py-3 border-b border-kuati-borde flex items-center justify-between'>
             <h2 className='font-semibold text-kuati-petroleo flex items-center gap-2'>
-              <IconClipboardList size={18} />
+              <IconClipboardList size={18} aria-hidden='true' />
               Ultimas ordenes
             </h2>
             <Link href='/ordenes' className='text-sm text-kuati-petroleo hover:underline'>
@@ -222,7 +222,7 @@ export default async function DashboardPage() {
                       {est.label}
                     </span>
                   </div>
-                  <div className='flex items-center justify-between text-xs text-kuati-grafito/70 gap-2'>
+                  <div className='flex items-center justify-between text-xs text-kuati-grafito/80 gap-2'>
                     <span>
                       {o.fecha} · {o.vehiculo_marca ?? ''} {o.vehiculo_modelo ?? ''}{' '}
                       {o.vehiculo_patente ? '(' + o.vehiculo_patente + ')' : ''}
@@ -240,8 +240,8 @@ export default async function DashboardPage() {
 
       {ultimas.length === 0 && metricas.ok && (
         <section className='bg-kuati-blanco rounded-xl border border-kuati-borde p-8 text-center shadow-sm'>
-          <IconClipboardList size={40} className='mx-auto text-kuati-grafito/30 mb-3' />
-          <p className='text-kuati-grafito/70 text-sm'>
+          <IconClipboardList size={40} aria-hidden='true' className='mx-auto text-kuati-grafito/30 mb-3' />
+          <p className='text-kuati-grafito/80 text-sm'>
             Todavia no hay ordenes registradas. Crea la primera con el boton de arriba.
           </p>
         </section>
@@ -249,8 +249,8 @@ export default async function DashboardPage() {
 
       {ultimas.length === 0 && !metricas.ok && (
         <section className='bg-kuati-blanco rounded-xl border border-kuati-borde p-8 text-center shadow-sm'>
-          <IconClipboardList size={40} className='mx-auto text-kuati-grafito/30 mb-3' />
-          <p className='text-kuati-grafito/70 text-sm'>
+          <IconClipboardList size={40} aria-hidden='true' className='mx-auto text-kuati-grafito/30 mb-3' />
+          <p className='text-kuati-grafito/80 text-sm'>
             No se pudieron cargar las ultimas ordenes. Reintenta recargando la pagina.
           </p>
         </section>

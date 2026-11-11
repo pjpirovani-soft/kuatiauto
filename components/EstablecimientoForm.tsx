@@ -38,7 +38,7 @@ function normalizarPublico(p: EstablecimientoData["establecimiento_publico"]): P
   return p;
 }
 
-const inputClass = "w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-lima focus:border-transparent transition-all";
+const inputClass = "w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all";
 const labelClass = "block text-sm font-semibold text-kuati-grafito mb-1.5";
 
 export default function EstablecimientoForm({ modo, initialData }: Props) {
