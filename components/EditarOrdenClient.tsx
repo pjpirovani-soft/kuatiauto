@@ -111,7 +111,7 @@ export default function EditarOrdenClient(props: Props) {
               type="button" 
               disabled={!!accionando} 
               onClick={() => setAnulando((v) => !v)} 
-              className="px-4 py-3 min-h-[44px] rounded bg-amber-600 text-white font-medium disabled:opacity-50 active:scale-95 transition-transform"
+              className="btn-press px-4 py-3 min-h-[44px] rounded bg-amber-600 text-white font-medium disabled:opacity-50 active:scale-95 transition-transform"
             >
               Anular
             </button>
@@ -120,7 +120,7 @@ export default function EditarOrdenClient(props: Props) {
                 type="button" 
                 disabled={!!accionando} 
                 onClick={() => setConfirmarAccion('eliminar')} 
-                className="px-4 py-3 min-h-[44px] rounded bg-red-600 text-white font-medium disabled:opacity-50 active:scale-95 transition-transform"
+                className="btn-press px-4 py-3 min-h-[44px] rounded bg-red-600 text-white font-medium disabled:opacity-50 active:scale-95 transition-transform"
               >
                 {accionando === 'eliminar' ? 'Eliminando...' : 'Eliminar borrador'}
               </button>
@@ -135,7 +135,7 @@ export default function EditarOrdenClient(props: Props) {
               type="button" 
               disabled={!!accionando} 
               onClick={() => setAnulando((v) => !v)} 
-              className="px-4 py-3 min-h-[44px] rounded bg-amber-600 text-white font-medium disabled:opacity-50"
+              className="btn-press px-4 py-3 min-h-[44px] rounded bg-amber-600 text-white font-medium disabled:opacity-50"
             >
               Anular
             </button>

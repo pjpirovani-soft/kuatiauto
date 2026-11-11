@@ -128,3 +128,11 @@ body {
     display: none !important;
   }
 }
+/* Feedback táctil: el botón se "hunde" al presionar */
+.btn-press {
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.btn-press:active {
+  transform: scale(0.96);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}

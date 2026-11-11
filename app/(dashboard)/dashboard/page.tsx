@@ -183,14 +183,14 @@ export default async function DashboardPage() {
       <section className='flex flex-col sm:flex-row gap-3 mb-8'>
         <Link
           href='/ordenes/nuevo'
-          className='flex-1 flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-3 rounded-lg font-semibold hover:bg-kuati-petroleo/90 transition-colors shadow-md'
+          className='btn-press flex-1 flex items-center justify-center gap-2 bg-kuati-petroleo text-kuati-blanco px-6 py-3 rounded-lg font-semibold hover:bg-kuati-petroleo/90 transition-colors shadow-md'
         >
           <IconPlus size={20} aria-hidden='true' />
           Nueva orden
         </Link>
         <Link
           href='/clientes/nuevo'
-          className='flex-1 flex items-center justify-center gap-2 bg-kuati-lima text-kuati-petroleo px-6 py-3 rounded-lg font-bold hover:bg-kuati-lima/90 transition-colors shadow-[0_0_15px_rgba(163,217,0,0.3)]'
+          className='btn-press flex-1 flex items-center justify-center gap-2 bg-kuati-lima text-kuati-petroleo px-6 py-3 rounded-lg font-bold hover:bg-kuati-lima/90 transition-colors shadow-[0_0_15px_rgba(163,217,0,0.3)]'
         >
           <IconPlus size={20} aria-hidden='true' />
           Nuevo cliente

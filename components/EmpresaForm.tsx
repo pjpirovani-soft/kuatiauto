@@ -80,7 +80,7 @@ export function EmpresaForm({ action }: EmpresaFormProps) {
           <button
             type='submit'
             disabled={loading}
-            className='bg-kuati-petroleo text-kuati-blanco px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-petroleo/90 disabled:opacity-50 transition-colors'
+            className='btn-press bg-kuati-petroleo text-kuati-blanco px-6 py-2.5 rounded-lg font-semibold hover:bg-kuati-petroleo/90 disabled:opacity-50 transition-colors'
           >
             {loading ? 'Creando...' : 'Crear empresa'}
           </button>
