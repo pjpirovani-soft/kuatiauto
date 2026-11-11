@@ -118,8 +118,45 @@ export const PROPIETARIO_SECCIONES_1: AyudaSeccionData[] = [
         ],
       },
       { tipo: 'parrafo', texto: 'Novedad: cuando agregás un servicio en el formulario de la orden, los campos de "Próximo mantenimiento (fecha)" y "Próximo mantenimiento (km)" se completan automáticamente según el manual del fabricante. Si el cliente pide un intervalo distinto (ej. 15.000 km en lugar de 10.000), podés editarlos antes de guardar.' },
+      { tipo: 'parrafo', texto: 'También podés asignar un mecánico y un método de pago a la orden. Ambos son opcionales, pero te permiten llevar un control de quién hizo cada trabajo y cómo te pagó el cliente.' },
+      { tipo: 'tip', texto: 'El número de orden (#0001, #0002...) es secuencial por empresa. Sirve para identificar la orden cuando el cliente te consulta.' },
       { tipo: 'tip', texto: 'Completá la orden solo cuando el trabajo esté realmente terminado. Si la cerrás antes, el próximo mantenimiento se calcula mal.' },
       { tipo: 'advertencia', texto: 'Las órdenes completadas no se pueden editar (por integridad de datos). Si te equivocaste, anulá la orden y creá una nueva.' },
+    ],
+  },
+  {
+    id: 'reportes',
+    titulo: '6.1. Reportes',
+    bloques: [
+      { tipo: 'parrafo', texto: 'La sección de Reportes te da una vista macro de tu negocio. Podés ver las ventas mensuales, la productividad de cada mecánico, y los productos/servicios más usados.' },
+      { tipo: 'parrafo', texto: 'Los reportes se actualizan automáticamente a medida que completás órdenes. Si no ves datos, es porque todavía no completaste ninguna orden.' },
+      {
+        tipo: 'tabla',
+        headers: ['Reporte', 'Qué muestra'],
+        rows: [
+          ['Ventas mensuales', 'Total facturado y cantidad de órdenes por mes.'],
+          ['Productividad por mecánico', 'Órdenes completadas y total facturado por cada empleado.'],
+          ['Top 5 productos', 'Los productos más usados en las órdenes.'],
+          ['Top 5 servicios', 'Los servicios más realizados.'],
+        ],
+      },
+      { tipo: 'tip', texto: 'Usá los reportes para tomar decisiones: si un mecánico no tiene órdenes, hablá con él. Si un producto no se vende, quizás no lo necesitás en stock.' },
+    ],
+  },
+  {
+    id: 'impresion',
+    titulo: '6.2. Impresión y PDF',
+    bloques: [
+      { tipo: 'parrafo', texto: 'Desde el detalle de cualquier orden podés generar un PDF o imprimir el detalle para dárselo al cliente.' },
+      {
+        tipo: 'pasos',
+        items: [
+          { titulo: 'Abrir la orden', descripcion: 'Click en cualquier orden desde el listado.' },
+          { titulo: 'Imprimir o guardar como PDF', descripcion: 'Click en el botón "Imprimir / PDF" arriba a la derecha.' },
+          { titulo: 'Elegir destino', descripcion: 'En el diálogo del navegador, elegí "Guardar como PDF" o seleccioná la impresora.' },
+        ],
+      },
+      { tipo: 'advertencia', texto: 'En la impresión no aparecen los botones ni el menú lateral. Solo se imprime el detalle de la orden.' },
     ],
   },
   {

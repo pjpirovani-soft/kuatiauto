@@ -1,4 +1,29 @@
 
+## [v0.8.0] - 2026-11-11 - Reportes, impresion/PDF, mecanico y metodo de pago
+
+### Added
+- **Reportes:** Pagina /reportes con ventas mensuales, productividad por mecanico, top 5 productos y top 5 servicios.
+- **Impresion/PDF:** Boton "Imprimir / PDF" en el detalle de la orden, con estilos @media print.
+- **Mecanico asignado:** Select en el formulario de ordenes.
+- **Metodo de pago:** Select en el formulario de ordenes.
+
+### Changed
+- lib/schemas/vehiculoSchema.ts: La patente se normaliza a mayusculas automaticamente.
+- components/VehiculoForm.tsx: La patente se convierte a mayusculas al escribir.
+- components/SidebarPropietario.tsx: Link "Reportes" agregado.
+- lib/ayuda/propietario-parte1.ts: Secciones de Reportes e Impresion agregadas.
+
+### Fixed
+- Numeracion de ordenes existentes (backfill con migracion 031).
+- Patentes existentes normalizadas a mayusculas (migracion 032).
+
+### Verified
+- 300/300 tests Vitest verdes.
+- 
+ext build compilo sin errores (32 rutas).
+- Migraciones 030, 031 y 032 aplicadas en Supabase.
+
+
 ## [v0.7.0] - 2026-11-11 - Mecanico, metodo de pago y tests RLS
 
 ### Added

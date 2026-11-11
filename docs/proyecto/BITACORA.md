@@ -1469,3 +1469,43 @@ ext build compilo sin errores (31 rutas).
 - Migracion 030 aplicada en Supabase.
 
 **Estado:** v0.7.0 estable, con auditoria de seguridad cerrada al 100%.
+## 2026-11-11 — v0.8.0: Reportes, impresion/PDF, mecanico y metodo de pago
+
+**Contexto:** Cierre de las funcionalidades de UX/UI y reportes. Se completo el backlog de mejoras de negocio.
+
+**Cambios implementados:**
+
+- **Impresion/PDF:**
+  - Estilos @media print en pp/globals.css que ocultan sidebar, botones y navegacion.
+  - Componente BotonImprimir.tsx que ejecuta window.print().
+  - Boton "Imprimir / PDF" en el detalle de la orden.
+
+- **Numeracion de ordenes (Migracion 031):**
+  - Backfill de 
+umero_orden para ordenes existentes.
+
+- **Patentes en mayusculas (Migracion 032):**
+  - Normalizacion en ehiculoSchema.ts y VehiculoForm.tsx.
+  - Migracion que convierte patentes existentes a mayusculas.
+
+- **Mecanico y metodo de pago (Migracion 030):**
+  - Columnas empleado_id y metodo_pago en orden_trabajo.
+  - Funcion listarEmpleadosEmpresa() en lib/empleados-actions.ts.
+  - 2 selects nuevos en OrdenForm.tsx.
+
+- **Reportes:**
+  - lib/reportes-actions.ts con 4 funciones: ventas mensuales, productividad por mecanico, top productos y top servicios.
+  - Pagina /reportes en pp/(dashboard)/reportes/page.tsx.
+  - Link "Reportes" en el sidebar.
+
+- **Ayuda:**
+  - Secciones nuevas de Reportes e Impresion en la guia del propietario.
+  - Mencion de mecanico y metodo de pago en la seccion de ordenes.
+
+**Verificacion:**
+- 300/300 tests Vitest verdes (296 + 4 RLS).
+- \
+ext build\ compilo sin errores (32 rutas).
+- Migraciones 030, 031 y 032 aplicadas en Supabase.
+
+**Estado:** v0.8.0 estable, con auditoria cerrada y backlog de UX/UI completo.
