@@ -73,20 +73,16 @@ export default function SidebarPropietario() {
                 const Icon = item.icon;
                 const esDestacado = item.destacado === true;
 
-                // Clases base comunes
-                const baseClasses = 'btn-press flex items-center gap-3 px-4 py-3 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-kuati-petroleo';
+                const baseClasses = 'btn-press flex items-center gap-3 px-4 py-3 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kuati-lima focus-visible:ring-offset-2 focus-visible:ring-offset-kuati-petroleo';
 
-                // Clases condicionales según el tipo de botón
                 let varianteClasses = '';
-                if (esDestacado) {
-                  // Botón destacado (dorado): siempre dorado, se aclara al hover
-                  varianteClasses = 'bg-kuati-dorado text-kuati-petroleo font-bold hover:bg-kuati-dorado-hover focus-visible:ring-kuati-dorado shadow-[0_0_15px_rgba(212,175,55,0.3)]';
-                } else if (isActive) {
-                  // Botón activo normal (lima)
-                  varianteClasses = 'bg-kuati-lima text-kuati-petroleo font-semibold focus-visible:ring-kuati-lima';
+                if (isActive && !esDestacado) {
+                  varianteClasses = 'bg-kuati-lima text-kuati-petroleo font-semibold';
+                } else if (esDestacado) {
+                  // Fondo transparente, texto con gradiente dorado + glow
+                  varianteClasses = 'bg-transparent font-bold hover:bg-kuati-petroleo/80';
                 } else {
-                  // Botón normal
-                  varianteClasses = 'hover:bg-kuati-petroleo/80 text-kuati-blanco/80 hover:text-kuati-blanco focus-visible:ring-kuati-lima';
+                  varianteClasses = 'hover:bg-kuati-petroleo/80 text-kuati-blanco/80 hover:text-kuati-blanco';
                 }
 
                 return (
@@ -101,14 +97,22 @@ export default function SidebarPropietario() {
                       stroke={esDestacado || isActive ? 2.5 : 1.5}
                       className={
                         esDestacado
-                          ? 'drop-shadow-[0_0_6px_rgba(212,175,55,0.8)]'
+                          ? 'text-yellow-300 drop-shadow-[0_0_6px_rgba(255,215,0,0.8)]'
                           : isActive
                           ? 'drop-shadow-[0_0_8px_rgba(163,217,0,0.6)]'
                           : ''
                       }
                       aria-hidden='true'
                     />
-                    <span>{item.name}</span>
+                    <span
+                      className={
+                        esDestacado
+                          ? 'text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-400 drop-shadow-[0_0_6px_rgba(255,215,0,0.6)]'
+                          : ''
+                      }
+                    >
+                      {item.name}
+                    </span>
                   </Link>
                 );
               })}
