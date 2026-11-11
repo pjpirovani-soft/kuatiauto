@@ -2,6 +2,7 @@ import Link from "next/link";
 import NuevaOrdenClient from "@/components/NuevaOrdenClient";
 import { listarVehiculosEmpresa } from "@/lib/vehiculos-actions";
 import { listarClientes } from "@/lib/clientes-actions";
+import { listarEmpleadosEmpresa } from "@/lib/empleados-actions";
 import { createClient } from "@/lib/supabase/server";
 
 type VehiculoRow = {
@@ -24,9 +25,10 @@ export default async function NuevaOrdenPage({
   const vehiculoIdInicial = typeof sp.vehiculo_id === "string" ? sp.vehiculo_id : undefined;
   const supabase = await createClient();
 
-  const [vehRes, cliRes, servGlobalRes, servEmpresaRes, prodGlobalRes, prodEmpresaRes] = await Promise.all([
+  const [vehRes, cliRes, empRes, servGlobalRes, servEmpresaRes, prodGlobalRes, prodEmpresaRes] = await Promise.all([
     listarVehiculosEmpresa(),
     listarClientes(),
+    listarEmpleadosEmpresa(),
     supabase.from("servicio_global").select("id, nombre, intervalo_km_sugerido, intervalo_meses_sugerido").order("nombre"),
     supabase.from("servicio_empresa").select("id, nombre").eq("activo", true).order("nombre"),
     supabase.from("producto_global").select("id, nombre").order("nombre"),

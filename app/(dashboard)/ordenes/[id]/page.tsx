@@ -4,6 +4,7 @@ import EditarOrdenClient from "@/components/EditarOrdenClient";
 import { obtenerOrden } from "@/lib/ordenes-actions";
 import { listarVehiculosEmpresa } from "@/lib/vehiculos-actions";
 import { listarClientes } from "@/lib/clientes-actions";
+import { listarEmpleadosEmpresa } from "@/lib/empleados-actions";
 import { createClient } from "@/lib/supabase/server";
 
 type OrdenRow = {
@@ -66,9 +67,10 @@ export default async function OrdenDetallePage({
   const prodGlobalIds = Array.from(new Set(orden.orden_producto.map((p) => p.producto_global_id).filter(Boolean) as string[]));
   const prodEmpresaIds = Array.from(new Set(orden.orden_producto.map((p) => p.producto_empresa_id).filter(Boolean) as string[]));
 
-  const [vehRes, cliRes, servGlobalRes, servEmpresaRes, prodGlobalRes, prodEmpresaRes] = await Promise.all([
+  const [vehRes, cliRes, empRes, servGlobalRes, servEmpresaRes, prodGlobalRes, prodEmpresaRes] = await Promise.all([
     listarVehiculosEmpresa(),
     listarClientes(),
+    listarEmpleadosEmpresa(),
     supabase.from("servicio_global").select("id, nombre, intervalo_km_sugerido, intervalo_meses_sugerido"),
     supabase.from("servicio_empresa").select("id, nombre"),
     supabase.from("producto_global").select("id, nombre"),

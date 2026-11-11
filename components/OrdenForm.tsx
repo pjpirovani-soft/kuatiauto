@@ -6,6 +6,7 @@ import { IconLoader2 } from "@tabler/icons-react";
 
 type ServicioOpcion = { id: string; nombre: string; origen: "global" | "empresa" };
 type ProductoOpcion = { id: string; nombre: string; origen: "global" | "empresa" };
+type EmpleadoOpcion = { id: string; nombre: string | null; email: string };
 
 export type OrdenFormData = {
   id?: string;
@@ -18,6 +19,8 @@ export type OrdenFormData = {
   productos: ProductoLineaUI[];
   proximo_mantenimiento_fecha?: string | null;
   proximo_mantenimiento_km?: string | null;
+  empleado_id?: string | null;
+  metodo_pago?: string | null;
 };
 
 type Props = {
@@ -26,6 +29,7 @@ type Props = {
   vehiculos: { id: string; etiqueta: string }[];
   servicioOpciones: ServicioOpcion[];
   productoOpciones: ProductoOpcion[];
+  empleados?: EmpleadoOpcion[];
   onSubmit: (payload: {
     id?: string;
     vehiculo_id: string;
@@ -55,6 +59,8 @@ export default function OrdenForm(props: Props) {
   // Banderas para saber si el usuario tocó los campos a mano
   const [fechaTocada, setFechaTocada] = useState(false);
   const [kmTocado, setKmTocado] = useState(false);
+  const [empleadoId, setEmpleadoId] = useState(initialData?.empleado_id ?? '');
+  const [metodoPago, setMetodoPago] = useState(initialData?.metodo_pago ?? '');
 
   // Autocompletado de mantenimiento basado en el último servicio agregado
   useEffect(() => {
@@ -118,6 +124,8 @@ export default function OrdenForm(props: Props) {
         productos: productosLimpios,
         proximo_mantenimiento_fecha: proximoFecha || null,
         proximo_mantenimiento_km: proximoKm ? Number(proximoKm) : null,
+        empleado_id: empleadoId || null,
+        metodo_pago: metodoPago || null,
       };
       const res = await onSubmit(payload);
       if (!res.ok) setError(res.error ?? "Error desconocido");
@@ -172,6 +180,40 @@ export default function OrdenForm(props: Props) {
               disabled={!editable}
               required
             />
+          </div>
+          
+          <div>
+            <label className={labelClass}>Mecánico asignado</label>
+            <select
+              className={inputClass}
+              value={empleadoId}
+              onChange={(e) => setEmpleadoId(e.target.value)}
+              disabled={!editable}
+            >
+              <option value=''>— Sin asignar —</option>
+              {(props.empleados ?? []).map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.nombre ?? emp.email}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label className={labelClass}>Método de pago</label>
+            <select
+              className={inputClass}
+              value={metodoPago}
+              onChange={(e) => setMetodoPago(e.target.value)}
+              disabled={!editable}
+            >
+              <option value=''>— Sin especificar —</option>
+              <option value='efectivo'>Efectivo</option>
+              <option value='tarjeta'>Tarjeta</option>
+              <option value='transferencia'>Transferencia</option>
+              <option value='cuenta_corriente'>Cuenta corriente</option>
+              <option value='otro'>Otro</option>
+            </select>
           </div>
           
           <div className='sm:col-span-2'>

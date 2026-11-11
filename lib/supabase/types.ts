@@ -714,12 +714,14 @@ export type Database = {
         Row: {
           creado_por: string | null
           created_at: string
+          empleado_id: string | null
           empresa_id: string
           estado: string
           fecha: string
           id: string
           importe_total: number | null
           km_servicio: number
+          metodo_pago: string | null
           numero_orden: number | null
           observaciones: string | null
           proximo_mantenimiento_fecha: string | null
@@ -730,12 +732,14 @@ export type Database = {
         Insert: {
           creado_por?: string | null
           created_at?: string
+          empleado_id?: string | null
           empresa_id: string
           estado?: string
           fecha?: string
           id?: string
           importe_total?: number | null
           km_servicio: number
+          metodo_pago?: string | null
           numero_orden?: number | null
           observaciones?: string | null
           proximo_mantenimiento_fecha?: string | null
@@ -746,12 +750,14 @@ export type Database = {
         Update: {
           creado_por?: string | null
           created_at?: string
+          empleado_id?: string | null
           empresa_id?: string
           estado?: string
           fecha?: string
           id?: string
           importe_total?: number | null
           km_servicio?: number
+          metodo_pago?: string | null
           numero_orden?: number | null
           observaciones?: string | null
           proximo_mantenimiento_fecha?: string | null
@@ -763,6 +769,13 @@ export type Database = {
           {
             foreignKeyName: "orden_trabajo_creado_por_fkey"
             columns: ["creado_por"]
+            isOneToOne: false
+            referencedRelation: "usuario"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orden_trabajo_empleado_id_fkey"
+            columns: ["empleado_id"]
             isOneToOne: false
             referencedRelation: "usuario"
             referencedColumns: ["id"]
@@ -1283,21 +1296,39 @@ export type Database = {
         }
         Returns: string
       }
-      crear_orden_transaccional: {
-        Args: {
-          p_empresa_id: string
-          p_fecha: string
-          p_km_servicio: number
-          p_observaciones: string
-          p_productos: Json
-          p_proximo_fecha: string
-          p_proximo_km: number
-          p_servicios: Json
-          p_usuario_id: string
-          p_vehiculo_id: string
-        }
-        Returns: string
-      }
+      crear_orden_transaccional:
+        | {
+            Args: {
+              p_empresa_id: string
+              p_fecha: string
+              p_km_servicio: number
+              p_observaciones: string
+              p_productos: Json
+              p_proximo_fecha: string
+              p_proximo_km: number
+              p_servicios: Json
+              p_usuario_id: string
+              p_vehiculo_id: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_empleado_id?: string
+              p_empresa_id: string
+              p_fecha: string
+              p_km_servicio: number
+              p_metodo_pago?: string
+              p_observaciones: string
+              p_productos: Json
+              p_proximo_fecha: string
+              p_proximo_km: number
+              p_servicios: Json
+              p_usuario_id: string
+              p_vehiculo_id: string
+            }
+            Returns: string
+          }
       current_empresa_id: { Args: never; Returns: string }
       earth: { Args: never; Returns: number }
       editar_orden_transaccional: {

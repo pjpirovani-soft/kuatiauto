@@ -15,6 +15,7 @@ type Props = {
   vehiculos: { id: string; etiqueta: string }[];
   servicioOpciones: ServicioOpcion[];
   productoOpciones: ProductoOpcion[];
+  empleados?: { id: string; nombre: string | null; email: string }[];
 };
 
 export default function EditarOrdenClient(props: Props) {
@@ -87,6 +88,7 @@ export default function EditarOrdenClient(props: Props) {
         vehiculos={vehiculos}
         servicioOpciones={servicioOpciones}
         productoOpciones={productoOpciones}
+        empleados={props.empleados}
         onSubmit={onSubmit}
       />
 
