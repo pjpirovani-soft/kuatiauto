@@ -25,6 +25,7 @@ type MenuItem = {
   href: string;
   icon: any;
   exact?: boolean;
+  destacado?: boolean;
 };
 
 const GROUPS: MenuItem[][] = [
@@ -36,7 +37,7 @@ const GROUPS: MenuItem[][] = [
     { name: 'Catálogo', href: '/catalogo', icon: IconBox, exact: true },
   ],
   [
-    { name: 'Recepción rápida', href: '/recepcion', icon: IconBolt },
+    { name: 'Recepción rápida', href: '/recepcion', icon: IconBolt, destacado: true },
     { name: 'Reportes', href: '/reportes', icon: IconChartBar },
   ],
   [
@@ -70,22 +71,41 @@ export default function SidebarPropietario() {
                   : pathname === item.href || pathname.startsWith(item.href + '/');
 
                 const Icon = item.icon;
+                const esDestacado = item.destacado === true;
+
+                // Clases base comunes
+                const baseClasses = 'btn-press flex items-center gap-3 px-4 py-3 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-kuati-petroleo';
+
+                // Clases condicionales según el tipo de botón
+                let varianteClasses = '';
+                if (esDestacado) {
+                  // Botón destacado (dorado): siempre dorado, se aclara al hover
+                  varianteClasses = 'bg-kuati-dorado text-kuati-petroleo font-bold hover:bg-kuati-dorado-hover focus-visible:ring-kuati-dorado shadow-[0_0_15px_rgba(212,175,55,0.3)]';
+                } else if (isActive) {
+                  // Botón activo normal (lima)
+                  varianteClasses = 'bg-kuati-lima text-kuati-petroleo font-semibold focus-visible:ring-kuati-lima';
+                } else {
+                  // Botón normal
+                  varianteClasses = 'hover:bg-kuati-petroleo/80 text-kuati-blanco/80 hover:text-kuati-blanco focus-visible:ring-kuati-lima';
+                }
+
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
                     aria-current={isActive ? 'page' : undefined}
-                    className={
-                      'btn-press flex items-center gap-3 px-4 py-3 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kuati-lima focus-visible:ring-offset-2 focus-visible:ring-offset-kuati-petroleo ' +
-                      (isActive
-                        ? 'bg-kuati-lima text-kuati-petroleo font-semibold'
-                        : 'hover:bg-kuati-petroleo/80 text-kuati-blanco/80 hover:text-kuati-blanco')
-                    }
+                    className={baseClasses + ' ' + varianteClasses}
                   >
                     <Icon
                       size={20}
-                      stroke={isActive ? 2.5 : 1.5}
-                      className={isActive ? 'drop-shadow-[0_0_8px_rgba(163,217,0,0.6)]' : ''}
+                      stroke={esDestacado || isActive ? 2.5 : 1.5}
+                      className={
+                        esDestacado
+                          ? 'drop-shadow-[0_0_6px_rgba(212,175,55,0.8)]'
+                          : isActive
+                          ? 'drop-shadow-[0_0_8px_rgba(163,217,0,0.6)]'
+                          : ''
+                      }
                       aria-hidden='true'
                     />
                     <span>{item.name}</span>

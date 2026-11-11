@@ -19,6 +19,10 @@
 
   /* Animaciones custom */
   --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
+
+  /* Dorado premium (exclusivo para acciones destacadas) */
+  --color-kuati-dorado: #D4AF37;
+  --color-kuati-dorado-hover: #B8962E;
 }
 
 body {
