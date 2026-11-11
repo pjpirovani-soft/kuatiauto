@@ -1,4 +1,20 @@
 
+## [v0.10.0] - 2026-11-11 - Swipe gestures en tarjetas de órdenes
+
+### Added
+- **Swipe gestures:** Componente SwipeableCard.tsx con @use-gesture/react + @react-spring/web.
+- **TarjetaOrdenSwipeable:** Envuelve la tarjeta de orden en móvil. Deslizar derecha = Completar, izquierda = Anular.
+- **Dependencias:** @use-gesture/react y @react-spring/web.
+
+### Changed
+- **ordenes/page.tsx:** Las tarjetas de móvil ahora usan TarjetaOrdenSwipeable. La tabla de escritorio no se modifica.
+
+### Verified
+- 300/300 tests Vitest verdes.
+- 
+ext build compiló sin errores (34 rutas).
+
+
 ## [v0.9.1] - 2026-11-11 - Velocidad, spinners y feedback táctil
 
 ### Added

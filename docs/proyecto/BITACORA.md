@@ -1535,3 +1535,28 @@ ext build\ compilo sin errores (32 rutas).
 ext build\ compilo sin errores (32 rutas).
 
 **Estado:** v0.9.0 estable, con PWA activa. Multi-empresa queda documentado como pendiente.
+## 2026-11-11 — v0.10.0: Swipe gestures en tarjetas de órdenes
+
+**Contexto:** Se implementó el efecto swipe (deslizar) en las tarjetas de órdenes de la vista móvil, usando @use-gesture/react + @react-spring/web. Es una mejora de UX que respeta las buenas prácticas de diseño (el swipe complementa, no reemplaza, los botones tradicionales).
+
+**Cambios implementados:**
+
+- **Dependencias nuevas:** @use-gesture/react + @react-spring/web.
+- **Componente SwipeableCard.tsx:** Envuelve cualquier tarjeta y permite deslizarla horizontalmente. Al soltar, si supera el umbral de 100px o la velocidad es alta, ejecuta la acción. Si no, vuelve al centro con animación.
+- **Componente TarjetaOrdenSwipeable.tsx:** Envuelve la tarjeta de orden con SwipeableCard. Deslizar a la derecha activa "Completar" (verde), a la izquierda activa "Anular" (ámbar).
+- **ordenes/page.tsx:** Reemplaza las tarjetas de la vista móvil por TarjetaOrdenSwipeable. La tabla de escritorio no se toca.
+
+**Buenas prácticas aplicadas:**
+- El swipe complementa, no reemplaza, los botones (que siguen existiendo para accesibilidad y escritorio).
+- xis: 'x' evita conflictos con el scroll vertical.
+- 	ouchAction: 'pan-y' le dice al navegador que solo maneje el scroll vertical.
+- ilterTaps: true evita que un tap rápido se confunda con un drag.
+- ubberband: true da resistencia al arrastrar más allá del límite.
+- Las acciones son reversibles (Completar/Anular se pueden deshacer).
+
+**Verificación:**
+- 300/300 tests Vitest verdes.
+- 
+ext build compiló sin errores (34 rutas).
+
+**Estado:** v0.10.0 estable, con swipe gestures en órdenes.
