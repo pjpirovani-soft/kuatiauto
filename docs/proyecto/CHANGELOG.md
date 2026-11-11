@@ -1,4 +1,23 @@
 
+## [v0.9.0] - 2026-11-11 - PWA con banner de nueva version
+
+### Added
+- **PWA:** Service Worker v3 con estrategia de "Nueva version disponible". Banner flotante que avisa al usuario cuando hay una actualizacion y le permite recargar.
+- **Componente RegistroSW:** Registra el SW en el cliente y maneja el ciclo de vida.
+
+### Changed
+- public/sw.js: Reescrito. NO hace skipWaiting() en install (espera confirmacion del cliente).
+- pp/layout.tsx: Agregado el componente RegistroSW.
+
+### Pending (v1.0.0)
+- **Multi-empresa:** Tabla usuario_empresa (N:M), refactor de RLS y cambios en server actions. Requiere sesion dedicada con backup y staging.
+
+### Verified
+- 300/300 tests Vitest verdes.
+- 
+ext build compilo sin errores (32 rutas).
+
+
 ## [v0.8.0] - 2026-11-11 - Reportes, impresion/PDF, mecanico y metodo de pago
 
 ### Added

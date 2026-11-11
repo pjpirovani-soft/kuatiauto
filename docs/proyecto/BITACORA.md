@@ -1509,3 +1509,29 @@ ext build\ compilo sin errores (32 rutas).
 - Migraciones 030, 031 y 032 aplicadas en Supabase.
 
 **Estado:** v0.8.0 estable, con auditoria cerrada y backlog de UX/UI completo.
+## 2026-11-11 — v0.9.0: PWA con banner de nueva version + multi-empresa como pendiente
+
+**Contexto:** Se reactivo el Service Worker con la estrategia correcta de "Nueva version disponible". Se decidio diferir Multi-empresa a una proxima sesion.
+
+**Cambios implementados:**
+
+- **PWA (Service Worker v3):**
+  - public/sw.js reescrito: NO hace skipWaiting() en el install, espera confirmacion del cliente.
+  - components/RegistroSW.tsx: registra el SW y muestra un banner cuando hay una nueva version disponible.
+  - El banner tiene un boton "Actualizar" que envia SKIP_WAITING al SW y recarga la pagina.
+  - pp/layout.tsx: agregado el componente RegistroSW.
+
+**Pendiente para la proxima sesion (v1.0.0):**
+
+- **Multi-empresa:** Requiere una migracion grande con tabla usuario_empresa (N:M), refactor de RLS y cambios en todas las server actions. Por su complejidad y riesgo, se difiere a una sesion dedicada con:
+  - Backup reciente de la DB.
+  - Tiempo sin interrupciones (2-4 horas).
+  - Staging separado de produccion.
+  - Tests exhaustivos de aislamiento.
+
+**Verificacion:**
+- 300/300 tests Vitest verdes.
+- \
+ext build\ compilo sin errores (32 rutas).
+
+**Estado:** v0.9.0 estable, con PWA activa. Multi-empresa queda documentado como pendiente.
