@@ -73,16 +73,28 @@ export default function SidebarPropietario() {
                 const Icon = item.icon;
                 const esDestacado = item.destacado === true;
 
+                // Clases base para todos los botones
                 const baseClasses = 'btn-press flex items-center gap-3 px-4 py-3 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kuati-lima focus-visible:ring-offset-2 focus-visible:ring-offset-kuati-petroleo';
 
                 let varianteClasses = '';
-                if (isActive && !esDestacado) {
+                let iconClasses = '';
+                let textClasses = '';
+
+                if (isActive) {
+                  // Si está seleccionado, se comporta EXACTAMENTE igual que cualquier otro botón seleccionado
                   varianteClasses = 'bg-kuati-lima text-kuati-petroleo font-semibold';
+                  iconClasses = 'drop-shadow-[0_0_8px_rgba(163,217,0,0.6)]';
+                  textClasses = '';
                 } else if (esDestacado) {
-                  // Mismo fondo que los demás (transparente con hover), texto e ícono dorados
-                  varianteClasses = 'bg-transparent font-bold text-yellow-300 hover:bg-kuati-petroleo/80 hover:text-yellow-200';
+                  // Si NO está seleccionado y es destacado: fondo normal, pero texto/ícono dorados
+                  varianteClasses = 'hover:bg-kuati-petroleo/80 text-yellow-300 hover:text-yellow-200';
+                  iconClasses = 'text-yellow-300 drop-shadow-[0_0_6px_rgba(255,215,0,0.8)]';
+                  textClasses = 'drop-shadow-[0_0_4px_rgba(255,215,0,0.5)]';
                 } else {
+                  // Botón normal no seleccionado
                   varianteClasses = 'hover:bg-kuati-petroleo/80 text-kuati-blanco/80 hover:text-kuati-blanco';
+                  iconClasses = '';
+                  textClasses = '';
                 }
 
                 return (
@@ -94,19 +106,11 @@ export default function SidebarPropietario() {
                   >
                     <Icon
                       size={20}
-                      stroke={esDestacado || isActive ? 2.5 : 1.5}
-                      className={
-                        esDestacado
-                          ? 'text-yellow-300 drop-shadow-[0_0_6px_rgba(255,215,0,0.8)]'
-                          : isActive
-                          ? 'drop-shadow-[0_0_8px_rgba(163,217,0,0.6)]'
-                          : ''
-                      }
+                      stroke={isActive || esDestacado ? 2.5 : 1.5}
+                      className={iconClasses}
                       aria-hidden='true'
                     />
-                    <span className={esDestacado ? 'drop-shadow-[0_0_4px_rgba(255,215,0,0.5)]' : ''}>
-                      {item.name}
-                    </span>
+                    <span className={textClasses}>{item.name}</span>
                   </Link>
                 );
               })}
