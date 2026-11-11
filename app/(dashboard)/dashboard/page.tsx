@@ -94,6 +94,35 @@ export default async function DashboardPage() {
         <p className='text-kuati-grafito/70 text-sm'>Sesion iniciada como {user.email}</p>
       </header>
 
+      {!metricas.ok && (
+        <div className='bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3'>
+          <span className='text-2xl'>⚠️</span>
+          <div className='flex-1'>
+            <p className='font-semibold text-red-800'>No se pudieron cargar las metricas</p>
+            <p className='text-sm text-red-700 mt-1'>
+              Hubo un problema al consultar los datos. Los numeros que ves abajo pueden estar desactualizados.
+            </p>
+            <p className='text-xs text-red-600 mt-2'>Error: {metricas.error}</p>
+          </div>
+          <a
+            href='/dashboard'
+            className='text-sm font-semibold text-red-700 hover:text-red-900 underline whitespace-nowrap'
+          >
+            Reintentar
+          </a>
+        </div>
+      )}
+
+      {!proximos.ok && (
+        <div className='bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3'>
+          <span className='text-2xl'>⚠️</span>
+          <div className='flex-1'>
+            <p className='font-semibold text-amber-800'>No se pudieron cargar las alertas de mantenimiento</p>
+            <p className='text-sm text-amber-700 mt-1'>Hubo un problema al consultar los vehiculos proximos.</p>
+          </div>
+        </div>
+      )}
+
       <section className='grid grid-cols-2 md:grid-cols-4 gap-4 mb-8'>
         {cards.map(({ label, valor, Icon }) => (
           <div
@@ -209,11 +238,20 @@ export default async function DashboardPage() {
         </section>
       )}
 
-      {ultimas.length === 0 && (
+      {ultimas.length === 0 && metricas.ok && (
         <section className='bg-kuati-blanco rounded-xl border border-kuati-borde p-8 text-center shadow-sm'>
           <IconClipboardList size={40} className='mx-auto text-kuati-grafito/30 mb-3' />
           <p className='text-kuati-grafito/70 text-sm'>
             Todavia no hay ordenes registradas. Crea la primera con el boton de arriba.
+          </p>
+        </section>
+      )}
+
+      {ultimas.length === 0 && !metricas.ok && (
+        <section className='bg-kuati-blanco rounded-xl border border-kuati-borde p-8 text-center shadow-sm'>
+          <IconClipboardList size={40} className='mx-auto text-kuati-grafito/30 mb-3' />
+          <p className='text-kuati-grafito/70 text-sm'>
+            No se pudieron cargar las ultimas ordenes. Reintenta recargando la pagina.
           </p>
         </section>
       )}

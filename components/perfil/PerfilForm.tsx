@@ -23,13 +23,13 @@ function Feedback({ state }: { state: FormState }) {
   if (!state) return null;
   if (state.ok) {
     return (
-      <p className='text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2'>
+      <p id='feedback-nombre' role='status' aria-live='polite' className='text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2'>
         Guardado correctamente.
       </p>
     );
   }
   return (
-    <p className='text-sm text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2'>
+    <p id='feedback-nombre-error' role='alert' aria-live='assertive' className='text-sm text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2'>
       {state.error}
     </p>
   );
@@ -61,7 +61,7 @@ export default function PerfilForm({ nombreInicial }: { nombreInicial: string })
             minLength={2}
             maxLength={80}
             disabled={nombrePending}
-            className='w-full px-3 py-2 border border-kuati-borde rounded-md focus:outline-none focus:ring-2 focus:ring-kuati-lima disabled:bg-gray-50'
+            className='w-full px-3 py-2 border border-kuati-borde rounded-md focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:ring-offset-1 disabled:bg-gray-50'
           />
         </div>
         <Feedback state={nombreState} />
@@ -97,7 +97,7 @@ export default function PerfilForm({ nombreInicial }: { nombreInicial: string })
             required
             autoComplete='current-password'
             disabled={passPending}
-            className='w-full px-3 py-2 border border-kuati-borde rounded-md focus:outline-none focus:ring-2 focus:ring-kuati-lima disabled:bg-gray-50'
+            className='w-full px-3 py-2 border border-kuati-borde rounded-md focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:ring-offset-1 disabled:bg-gray-50'
           />
         </div>
         <div>
@@ -116,7 +116,7 @@ export default function PerfilForm({ nombreInicial }: { nombreInicial: string })
             maxLength={72}
             autoComplete='new-password'
             disabled={passPending}
-            className='w-full px-3 py-2 border border-kuati-borde rounded-md focus:outline-none focus:ring-2 focus:ring-kuati-lima disabled:bg-gray-50'
+            className='w-full px-3 py-2 border border-kuati-borde rounded-md focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:ring-offset-1 disabled:bg-gray-50'
           />
         </div>
         <div>
@@ -135,7 +135,7 @@ export default function PerfilForm({ nombreInicial }: { nombreInicial: string })
             maxLength={72}
             autoComplete='new-password'
             disabled={passPending}
-            className='w-full px-3 py-2 border border-kuati-borde rounded-md focus:outline-none focus:ring-2 focus:ring-kuati-lima disabled:bg-gray-50'
+            className='w-full px-3 py-2 border border-kuati-borde rounded-md focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:ring-offset-1 disabled:bg-gray-50'
           />
         </div>
         <Feedback state={passState} />
