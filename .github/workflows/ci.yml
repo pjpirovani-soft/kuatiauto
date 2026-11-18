@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test
+        env:
+          CI: true
+          NEXT_PUBLIC_SUPABASE_URL: 'https://placeholder.supabase.co'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'placeholder-anon-key-for-ci-only'
+          NEXT_PUBLIC_APP_URL: 'http://localhost:3000'
+          SUPABASE_SERVICE_ROLE_KEY: 'placeholder-service-role-for-ci-only'
+          RATE_LIMIT_FAIL_MODE: 'open'
+
+      - name: Build
+        run: npm run build
+        env:
+          CI: true
+          NEXT_PUBLIC_SUPABASE_URL: 'https://placeholder.supabase.co'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'placeholder-anon-key-for-ci-only'
+          NEXT_PUBLIC_APP_URL: 'http://localhost:3000'
+          SUPABASE_SERVICE_ROLE_KEY: 'placeholder-service-role-for-ci-only'
+          RESEND_API_KEY: ''
+          RESEND_FROM: 'noreply@example.com'
+          SENTRY_DSN: ''
+          RATE_LIMIT_FAIL_MODE: 'open'
