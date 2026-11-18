@@ -7,6 +7,9 @@ import { listarVehiculosEmpresa } from "@/lib/vehiculos-actions";
 import { listarClientes } from "@/lib/clientes-actions";
 import { listarEmpleadosEmpresa } from "@/lib/empleados-actions";
 import { createClient } from "@/lib/supabase/server";
+import { obtenerDatosEtiqueta } from "@/lib/etiqueta-mantenimiento";
+import EtiquetaMantenimiento from "@/components/vehiculos/EtiquetaMantenimiento";
+import CompartirEtiquetaButton from "@/components/vehiculos/CompartirEtiquetaButton";
 
 type OrdenRow = {
   id: string;
@@ -128,6 +131,22 @@ export default async function OrdenDetallePage({
     })),
   };
 
+  // H-DIR-2: datos para etiqueta de mantenimiento (solo si la orden esta completada)
+  let etiquetaData = null;
+  let empresaId: string | null = null;
+  if (orden.estado === 'completada') {
+    const { data: usuario } = await supabase
+      .from('usuario')
+      .select('empresa_id')
+      .eq('id', (await supabase.auth.getUser()).data.user?.id ?? '')
+      .maybeSingle();
+    empresaId = usuario?.empresa_id ?? null;
+    if (empresaId) {
+      etiquetaData = await obtenerDatosEtiqueta(supabase, orden.vehiculo_id, empresaId);
+    }
+  }
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? '';
+
   return (
     <div className="max-w-4xl mx-auto">
       <header className="mb-6">
@@ -157,6 +176,29 @@ export default async function OrdenDetallePage({
           productoOpciones={productoOpciones}
         />
       </div>
+
+      {etiquetaData && etiquetaData.ultimo_mantenimiento && (
+        <div className="mt-6 bg-kuati-blanco rounded-xl border border-kuati-borde p-6">
+          <h2 className="text-lg font-semibold mb-3">Compartir etiqueta de mantenimiento</h2>
+          <p className="text-sm text-kuati-grafito/80 mb-4">
+            Genera una imagen con los datos del vehiculo y el proximo mantenimiento. Incluye QR a la ficha publica.
+          </p>
+          <CompartirEtiquetaButton
+            urlPublica={
+              appUrl && etiquetaData.token_publico
+                ? `${appUrl}/v/${etiquetaData.token_publico}`
+                : null
+            }
+            clienteEmail={etiquetaData.cliente?.email ?? null}
+            clienteNombre={etiquetaData.cliente?.nombre ?? null}
+            empresaNombre={etiquetaData.empresa.nombre}
+            vehiculoDescripcion={`${etiquetaData.vehiculo.marca} ${etiquetaData.vehiculo.modelo}`}
+          />
+          <div style={{ display: 'none' }}>
+            <EtiquetaMantenimiento id="etiqueta-mantenimiento" datos={etiquetaData} appUrl={appUrl} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
