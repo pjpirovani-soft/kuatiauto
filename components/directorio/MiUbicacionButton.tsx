@@ -25,6 +25,9 @@ export default function MiUbicacionButton() {
         current.set('lat', latitude.toString());
         current.set('lng', longitude.toString());
         current.set('radio', '50');
+        // H-DIR-1: borrar 'ciudad' para que la ubicacion real tenga prioridad
+        // sobre el filtro de ciudad (si no, el mapa ignoraria la geolocalizacion).
+        current.delete('ciudad');
         router.push(`/directorio?${current.toString()}`);
         setLoading(false);
       },
