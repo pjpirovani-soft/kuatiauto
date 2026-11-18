@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { auditLog } from '@/lib/audit';
 import { enviarRecordatorioMantenimiento } from "@/lib/notificaciones-actions";
 import { checkRateLimit, buildClave } from '@/lib/rate-limit';
+import type { Json } from '@/lib/supabase/types';
 import {
   crearOrdenSchema,
   editarOrdenSchema,
@@ -116,6 +117,23 @@ async function validarReferencias(
   return null;
 }
 
+function lineasAServiciosJson(servicios: ServicioLinea[] | undefined) {
+  return (servicios ?? []).map((s) => ({
+    servicio_global_id: s.servicio_global_id ?? null,
+    servicio_empresa_id: s.servicio_empresa_id ?? null,
+    precio: s.precio ?? null,
+  }));
+}
+
+function lineasAProductosJson(productos: ProductoLinea[] | undefined) {
+  return (productos ?? []).map((p) => ({
+    producto_global_id: p.producto_global_id ?? null,
+    producto_empresa_id: p.producto_empresa_id ?? null,
+    cantidad: p.cantidad,
+    precio_unitario: p.precio_unitario ?? null,
+  }));
+}
+
 export async function listarOrdenes(input: unknown): Promise<Result<unknown[]>> {
   const parsed = listarOrdenesSchema.safeParse(input ?? {});
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? 'Datos invalidos' };
@@ -186,56 +204,38 @@ export async function crearOrden(input: unknown): Promise<Result<{ id: string }>
   const refErr = await validarReferencias(supabase, ses.empresaId, parsed.data.servicios, parsed.data.productos);
   if (refErr) return { ok: false, error: refErr };
 
-  const { data: orden, error: eOrden } = await supabase
-    .from('orden_trabajo')
-    .insert({
-      empresa_id: ses.empresaId,
-      vehiculo_id: parsed.data.vehiculo_id,
-      fecha: parsed.data.fecha ?? undefined,
-      km_servicio: parsed.data.km_servicio,
-      observaciones: parsed.data.observaciones ?? null,
-      estado: 'borrador',
-      creado_por: ses.userId,
-    })
-    .select('id')
-    .single();
-  if (eOrden || !orden) return { ok: false, error: eOrden?.message ?? 'Error creando orden' };
+  const serviciosJson = lineasAServiciosJson(parsed.data.servicios);
+  const productosJson = lineasAProductosJson(parsed.data.productos);
 
-  if (parsed.data.servicios && parsed.data.servicios.length > 0) {
-    const filas = parsed.data.servicios.map((s) => ({
-      orden_id: orden.id,
-      servicio_global_id: s.servicio_global_id ?? null,
-      servicio_empresa_id: s.servicio_empresa_id ?? null,
-      precio: s.precio ?? null,
-    }));
-    const { error } = await supabase.from('orden_servicio').insert(filas);
-    if (error) return { ok: false, error: 'Error guardando servicios: ' + error.message };
-  }
-
-  if (parsed.data.productos && parsed.data.productos.length > 0) {
-    const filas = parsed.data.productos.map((p) => ({
-      orden_id: orden.id,
-      producto_global_id: p.producto_global_id ?? null,
-      producto_empresa_id: p.producto_empresa_id ?? null,
-      cantidad: p.cantidad,
-      precio_unitario: p.precio_unitario ?? null,
-    }));
-    const { error } = await supabase.from('orden_producto').insert(filas);
-    if (error) return { ok: false, error: 'Error guardando productos: ' + error.message };
-  }
+  const argsCrear = {
+    p_empresa_id: ses.empresaId,
+    p_usuario_id: ses.userId,
+    p_vehiculo_id: parsed.data.vehiculo_id,
+    p_fecha: parsed.data.fecha ?? new Date().toISOString().slice(0, 10),
+    p_km_servicio: parsed.data.km_servicio,
+    p_observaciones: parsed.data.observaciones ?? null,
+    p_proximo_fecha: null,
+    p_proximo_km: null,
+    p_servicios: serviciosJson as unknown as Json,
+    p_productos: productosJson as unknown as Json,
+    p_empleado_id: null,
+    p_metodo_pago: null,
+  } as any;
+  const { data: ordenId, error: eRpc } = await supabase.rpc('crear_orden_transaccional', argsCrear);
+  if (eRpc || !ordenId) return { ok: false, error: eRpc?.message ?? 'Error creando orden' };
 
   await auditLog({
     usuarioId: ses.userId,
     empresaId: ses.empresaId,
     accion: 'crear',
     entidad: 'orden_trabajo',
-    entidadId: orden.id,
+    entidadId: ordenId as string,
     datosNuevos: { vehiculo_id: parsed.data.vehiculo_id, km_servicio: parsed.data.km_servicio },
   });
 
   revalidatePath('/ordenes');
   revalidatePath('/vehiculos/' + parsed.data.vehiculo_id);
-  return { ok: true, data: { id: orden.id } };
+  return { ok: true, data: { id: ordenId as string } };
 }
 
 export async function editarOrden(input: unknown): Promise<Result<{ id: string }>> {
@@ -252,7 +252,7 @@ export async function editarOrden(input: unknown): Promise<Result<{ id: string }
 
   const { data: actual } = await supabase
     .from('orden_trabajo')
-    .select('id, estado, vehiculo_id')
+    .select('id, estado, vehiculo_id, fecha')
     .eq('id', parsed.data.id)
     .eq('empresa_id', ses.empresaId)
     .maybeSingle();
@@ -262,45 +262,22 @@ export async function editarOrden(input: unknown): Promise<Result<{ id: string }
   const refErr = await validarReferencias(supabase, ses.empresaId, parsed.data.servicios, parsed.data.productos);
   if (refErr) return { ok: false, error: refErr };
 
-  const { error: eUpd } = await supabase
-    .from('orden_trabajo')
-    .update({
-      vehiculo_id: parsed.data.vehiculo_id,
-      fecha: parsed.data.fecha ?? undefined,
-      km_servicio: parsed.data.km_servicio,
-      observaciones: parsed.data.observaciones ?? null,
-    })
-    .eq('id', parsed.data.id);
-  if (eUpd) return { ok: false, error: eUpd.message };
+  const serviciosJson = lineasAServiciosJson(parsed.data.servicios);
+  const productosJson = lineasAProductosJson(parsed.data.productos);
 
-  const { error: eDelS } = await supabase.from('orden_servicio').delete().eq('orden_id', parsed.data.id);
-  if (eDelS) return { ok: false, error: 'Error limpiando servicios: ' + eDelS.message };
-
-  const { error: eDelP } = await supabase.from('orden_producto').delete().eq('orden_id', parsed.data.id);
-  if (eDelP) return { ok: false, error: 'Error limpiando productos: ' + eDelP.message };
-
-  if (parsed.data.servicios && parsed.data.servicios.length > 0) {
-    const filas = parsed.data.servicios.map((s) => ({
-      orden_id: parsed.data.id,
-      servicio_global_id: s.servicio_global_id ?? null,
-      servicio_empresa_id: s.servicio_empresa_id ?? null,
-      precio: s.precio ?? null,
-    }));
-    const { error } = await supabase.from('orden_servicio').insert(filas);
-    if (error) return { ok: false, error: 'Error guardando servicios: ' + error.message };
-  }
-
-  if (parsed.data.productos && parsed.data.productos.length > 0) {
-    const filas = parsed.data.productos.map((p) => ({
-      orden_id: parsed.data.id,
-      producto_global_id: p.producto_global_id ?? null,
-      producto_empresa_id: p.producto_empresa_id ?? null,
-      cantidad: p.cantidad,
-      precio_unitario: p.precio_unitario ?? null,
-    }));
-    const { error } = await supabase.from('orden_producto').insert(filas);
-    if (error) return { ok: false, error: 'Error guardando productos: ' + error.message };
-  }
+  const argsEditar = {
+    p_orden_id: parsed.data.id,
+    p_vehiculo_id: parsed.data.vehiculo_id,
+    p_fecha: parsed.data.fecha ?? actual.fecha ?? new Date().toISOString().slice(0, 10),
+    p_km_servicio: parsed.data.km_servicio,
+    p_observaciones: parsed.data.observaciones ?? null,
+    p_proximo_fecha: null,
+    p_proximo_km: null,
+    p_servicios: serviciosJson as unknown as Json,
+    p_productos: productosJson as unknown as Json,
+  } as any;
+  const { error: eRpc } = await supabase.rpc('editar_orden_transaccional', argsEditar);
+  if (eRpc) return { ok: false, error: eRpc.message };
 
   await auditLog({
     usuarioId: ses.userId,
