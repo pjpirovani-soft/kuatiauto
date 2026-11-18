@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { IconArrowLeft, IconHelpCircle } from '@tabler/icons-react';
 import { obtenerPerfil, type Rol } from '@/lib/perfil-actions';
 import PerfilForm from '@/components/perfil/PerfilForm';
+import BotonInstalarApp from '@/components/pwa/BotonInstalarApp';
 
 const ROL_LABEL: Record<Rol, string> = {
   propietario: 'Propietario',
@@ -64,6 +65,10 @@ export default async function PerfilPage() {
             </div>
           </dl>
         </section>
+
+        <div className='mb-6'>
+          <BotonInstalarApp />
+        </div>
 
         <PerfilForm nombreInicial={perfil.nombre} />
       </div>
