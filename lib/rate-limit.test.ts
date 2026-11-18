@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
   mockRpc: vi.fn(),
@@ -35,6 +35,10 @@ describe('checkRateLimit', () => {
     mocks.mockRpc.mockReset();
   });
 
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it('devuelve ok:true cuando RPC responde true', async () => {
     mocks.mockRpc.mockResolvedValue({ data: true, error: null });
     const r = await checkRateLimit({ clave: 'login:x', max: 5, ventanaSegundos: 60 });
@@ -56,17 +60,50 @@ describe('checkRateLimit', () => {
     expect(r.skipped).toBe(false);
   });
 
-  it('fail-open cuando RPC devuelve error', async () => {
+  it('fail-closed por defecto en produccion (RPC error)', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('RATE_LIMIT_FAIL_MODE', '');
+    mocks.mockRpc.mockResolvedValue({ data: null, error: { message: 'boom' } });
+    const r = await checkRateLimit({ clave: 'login:x', max: 5, ventanaSegundos: 60 });
+    expect(r.ok).toBe(false);
+    expect(r.skipped).toBe(false);
+    expect(r.retryAfterSeconds).toBe(60);
+  });
+
+  it('fail-closed por defecto en produccion (excepcion)', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('RATE_LIMIT_FAIL_MODE', '');
+    mocks.mockRpc.mockRejectedValue(new Error('network'));
+    const r = await checkRateLimit({ clave: 'login:x', max: 5, ventanaSegundos: 60 });
+    expect(r.ok).toBe(false);
+    expect(r.skipped).toBe(false);
+    expect(r.retryAfterSeconds).toBe(60);
+  });
+
+  it('fail-open en desarrollo cuando RPC falla (no bloquea al dev)', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('RATE_LIMIT_FAIL_MODE', '');
     mocks.mockRpc.mockResolvedValue({ data: null, error: { message: 'boom' } });
     const r = await checkRateLimit({ clave: 'login:x', max: 5, ventanaSegundos: 60 });
     expect(r.ok).toBe(true);
     expect(r.skipped).toBe(true);
   });
 
-  it('fail-open cuando RPC lanza excepcion', async () => {
-    mocks.mockRpc.mockRejectedValue(new Error('network'));
+  it('RATE_LIMIT_FAIL_MODE=open explicito override el default de prod', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('RATE_LIMIT_FAIL_MODE', 'open');
+    mocks.mockRpc.mockResolvedValue({ data: null, error: { message: 'boom' } });
     const r = await checkRateLimit({ clave: 'login:x', max: 5, ventanaSegundos: 60 });
     expect(r.ok).toBe(true);
     expect(r.skipped).toBe(true);
+  });
+
+  it('RATE_LIMIT_FAIL_MODE=closed explicito override el default de dev', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('RATE_LIMIT_FAIL_MODE', 'closed');
+    mocks.mockRpc.mockResolvedValue({ data: null, error: { message: 'boom' } });
+    const r = await checkRateLimit({ clave: 'login:x', max: 5, ventanaSegundos: 60 });
+    expect(r.ok).toBe(false);
+    expect(r.skipped).toBe(false);
   });
 });
