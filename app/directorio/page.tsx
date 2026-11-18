@@ -31,7 +31,7 @@ export default async function DirectorioPage({ searchParams }: { searchParams: P
   const result = await buscarEstablecimientos({
     lat,
     lng,
-    radio_km: sp.ciudad ? 1000 : radio,
+    radio_km: radio,
     ciudad: sp.ciudad,
     servicio: sp.servicio,
     texto: sp.texto,

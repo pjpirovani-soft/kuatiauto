@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { buscarEstablecimientosSchema, publicarEstablecimientoSchema } from "@/lib/schemas/directorioSchema";
+import { checkRateLimit, buildClave } from "@/lib/rate-limit";
+import { headers } from "next/headers";
 import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 
 export async function buscarEstablecimientos(input: unknown) {
@@ -10,6 +12,19 @@ export async function buscarEstablecimientos(input: unknown) {
   if (!parsed.success) {
     return { error: "Datos invalidos", details: parsed.error.flatten() };
   }
+
+  // DIR-3: rate limiting por IP (100 busquedas/minuto).
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for") ?? "unknown_ip";
+  const rl = await checkRateLimit({
+    clave: buildClave(["directorio:buscar", ip]),
+    max: 100,
+    ventanaSegundos: 60,
+  });
+  if (!rl.ok) {
+    return { error: "Demasiadas busquedas. Reintenta en " + rl.retryAfterSeconds + "s." };
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("buscar_establecimientos", {
     p_lat: parsed.data.lat,
