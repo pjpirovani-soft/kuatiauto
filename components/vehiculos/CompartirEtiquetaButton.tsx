@@ -48,7 +48,7 @@ export default function CompartirEtiquetaButton({
         width: 800,
         height: 1200,
         pixelRatio: 2,
-        backgroundColor: '#1e3a8a',
+        backgroundColor: '#FFFFFF',
       });
       setPng(dataUrl);
       setModalOpen(true);
@@ -108,18 +108,20 @@ export default function CompartirEtiquetaButton({
           onClick={() => setModalOpen(false)}
         >
           <div
-            className="max-h-[90vh] w-full max-w-md overflow-auto rounded-xl bg-white p-4"
+            className="max-h-[90vh] w-full max-w-sm overflow-auto rounded-xl bg-kuati-blanco p-5 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <img src={png} alt="Etiqueta generada" className="mx-auto w-full rounded" />
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <button onClick={descargar} className="rounded bg-gray-800 px-3 py-2 text-sm text-white">
+            <h3 className="text-lg font-bold text-kuati-grafito mb-3">Etiqueta generada</h3>
+            <img src={png} alt="Etiqueta generada" className="mx-auto w-full rounded border border-kuati-borde shadow-sm" />
+            
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <button onClick={descargar} className="flex items-center justify-center gap-1 rounded bg-kuati-petroleo px-3 py-2 text-sm font-semibold text-kuati-blanco hover:bg-kuati-petroleo/90">
                 ⬇️ Descargar
               </button>
-              <button onClick={copiar} className="rounded bg-gray-800 px-3 py-2 text-sm text-white">
+              <button onClick={copiar} className="flex items-center justify-center gap-1 rounded border border-kuati-borde bg-kuati-blanco px-3 py-2 text-sm font-semibold text-kuati-grafito hover:bg-kuati-fondo">
                 📋 Copiar
               </button>
-              <button onClick={whatsapp} className="rounded bg-green-600 px-3 py-2 text-sm text-white">
+              <button onClick={whatsapp} className="flex items-center justify-center gap-1 rounded bg-kuati-lima px-3 py-2 text-sm font-semibold text-kuati-petroleo hover:bg-kuati-lima/90">
                 💬 WhatsApp
               </button>
               {urlPublica && (
@@ -127,20 +129,16 @@ export default function CompartirEtiquetaButton({
                   href={urlPublica}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded bg-blue-600 px-3 py-2 text-center text-sm text-white"
+                  className="flex items-center justify-center gap-1 rounded border border-kuati-petroleo px-3 py-2 text-sm font-semibold text-kuati-petroleo hover:bg-kuati-petroleo/5"
                 >
                   🔗 Ver ficha
                 </a>
               )}
             </div>
-            {clienteEmail && (
-              <p className="mt-3 text-xs text-gray-500">
-                Envio por email a {clienteEmail}: en desarrollo (requiere endpoint).
-              </p>
-            )}
+            
             <button
               onClick={() => setModalOpen(false)}
-              className="mt-3 w-full rounded border px-3 py-2 text-sm text-gray-700"
+              className="mt-4 w-full rounded border border-kuati-borde px-3 py-2 text-sm text-kuati-grafito hover:bg-kuati-fondo"
             >
               Cerrar
             </button>
