@@ -427,3 +427,40 @@ Detectadas durante la lectura de docs para iniciar fase D:
 - Mayor robustez frente a ataques directos a la API de Supabase.
 - Pequeño costo de performance en el middleware al consultar el campo ctivo en cada request a rutas privadas.
 - Se cierra la brecha entre la documentación de seguridad y la implementación real.
+## ADR-017: Quality Gate + reglas de ESLint a warn (2026-11-18)
+
+**Contexto:** una auditoria externa (2026-11-02) detecto que el repo tenia solo 2 workflows de GitHub Actions (`backup-db.yml` semanal y `e2e-smoke.yml` contra prod). **No habia gate de calidad automatico** (lint + tsc + test + build en cada push/PR). Con el ritmo de commits (v0.9.1 → v0.10.0 en pocos dias), el riesgo de regresion silenciosa era real.
+
+**Decision:**
+
+| ID | Decision | Estado |
+|---|---|---|
+| ADR-017 | Agregar `.github/workflows/ci.yml` con Quality Gate (lint + tsc + test + build) en cada push a `main` y en cada PR. | APROBADA |
+| D-CI-1 | Workflow corre en `ubuntu-latest`, Node 22 (lee `.nvmrc`), `timeout-minutes: 20`, `concurrency` con `cancel-in-progress: true`. | APROBADA |
+| D-CI-2 | **No requiere secrets reales.** Los placeholders de `NEXT_PUBLIC_*`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_*` son strings literales en el `.yml` (defensa en profundidad). Verificado localmente: `npm run build` pasa sin `.env.local`. | APROBADA |
+| D-CI-3 | **`@typescript-eslint/no-explicit-any` → `warn`.** Deuda: reemplazar `any` por tipos reales de a uno. 53 warnings visibles, no bloquean. | APROBADA |
+| D-CI-4 | **`@typescript-eslint/no-unused-vars` → `warn`** con `argsIgnorePattern: '^_'` etc. | APROBADA |
+| D-CI-5 | **`react-hooks/set-state-in-effect` → `warn`.** Deuda: refactor de 4 `useEffect` con `setState` sincronico (React 19 lo rechaza). Archivos: `OrdenForm.tsx` (prioritario), `MobileSidebarWrapper.tsx`, `MapaDirectorio.tsx`, `RegistroSW.tsx`. | APROBADA |
+| D-CI-6 | **`lib/rls-cross-tenant.test.ts` skipea en CI** si no hay credenciales reales (detecta `placeholder`/`example` en env). Antes fallaba con `fetch failed` y rompia el archivo entero. Deuda: pgTAP o staging para validar RLS en CI (DEUDA.md P0-1). | APROBADA |
+
+**Alternativas evaluadas:**
+
+| Alternativa | Razon de descarte |
+|---|---|
+| Arreglar los 4 `useEffect` + 53 `any` + 12 `unused-vars` antes de mergear | 4-6 horas. El CI es mas valioso como gate que como "bloqueado por deuda". |
+| `no-explicit-any: 'off'` | Deuda invisible. `warn` mantiene visibilidad. |
+| Workflow con secrets reales | Filtra credenciales en CI. Los placeholders cubren el 100% de los casos actuales. |
+| Solo `pull_request`, sin `push: [main]` | Se perderia el gate en `main`. |
+
+**Consecuencias:**
+
+- **Positivas:** CI verde en cada PR. Regresiones atrapadas temprano. Deuda visible como warnings.
+- **Negativas:** 53 warnings en cada run (ruido). Refactor de los 4 `useEffect` agendado como deuda P1.
+- **Metrica de cierre:** cuando los 4 `useEffect` esten refactorizados, `react-hooks/set-state-in-effect` vuelve a `error`.
+
+**Lecciones:**
+
+- **El CI encontro 2 errores reales** que 300 tests y build local no detectaban (los `setState` en `useEffect` de `PasoOrden.tsx`). El gate paga su costo la primera vez.
+- **`PasoOrden.tsx` refactorizado** con `useMemo` (derivacion pura) en el mismo PR. Los otros 4 quedan para sesion dedicada.
+- **Los tests que requieren servicios externos** (Supabase real) deben skipearse en CI con `describe.skipIf`. El patron es: detectar env real, envolver `beforeAll` y tests en el `skipIf`.
+- **No reescribir archivos >30 lineas** sin verlos completos antes. Me paso 2 veces en esta sesion (`next.config.mjs` y `rls-cross-tenant.test.ts`). La segunda vez rompio los tests.

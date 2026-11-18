@@ -2,8 +2,21 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/lib/supabase/types';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+// El test crea usuarios reales en Supabase. En CI no hay credenciales reales
+// (los env son placeholders), asi que el beforeAll fallaria con "fetch failed"
+// y marcaria el archivo entero como failed aunque los tests esten skipped.
+// Solucion: skipIf(!ENABLED) evita ejecutar el beforeAll en entornos sin
+// credenciales reales. Ver DEUDA.md (P1: pgTAP/staging para validar RLS en CI).
+const ENABLED = !!(
+  SUPABASE_URL &&
+  SERVICE_ROLE_KEY &&
+  !SUPABASE_URL.includes('placeholder') &&
+  !SUPABASE_URL.includes('example') &&
+  !SERVICE_ROLE_KEY.includes('placeholder')
+);
 
 // IDs que vamos a crear en el setup
 let empresaAId: string;
@@ -16,11 +29,13 @@ let vehiculoAId: string;
 let vehiculoBId: string;
 let tokenA: string;
 
-const adminClient = createSupabaseClient<Database>(SUPABASE_URL, SERVICE_ROLE_KEY, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
+const adminClient = ENABLED
+  ? createSupabaseClient<Database>(SUPABASE_URL!, SERVICE_ROLE_KEY!, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+  : (null as unknown as ReturnType<typeof createSupabaseClient<Database>>);
 
-describe('RLS Cross-Tenant Isolation', () => {
+describe.skipIf(!ENABLED)('RLS Cross-Tenant Isolation', () => {
   beforeAll(async () => {
     const suffix = Date.now();
     const emailA = `rls-test-a-${suffix}@example.com`;
@@ -107,6 +122,7 @@ describe('RLS Cross-Tenant Isolation', () => {
   });
 
   afterAll(async () => {
+    if (!ENABLED) return;
     // Limpieza (en orden inverso por FKs)
     if (vehiculoAId) await adminClient.from('vehiculo').delete().eq('id', vehiculoAId);
     if (vehiculoBId) await adminClient.from('vehiculo').delete().eq('id', vehiculoBId);
