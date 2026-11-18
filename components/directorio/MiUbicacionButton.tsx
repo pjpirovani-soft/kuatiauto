@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function MiUbicacionButton() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +20,12 @@ export default function MiUbicacionButton() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        router.push(`/directorio?lat=${latitude}&lng=${longitude}&radio=50`);
+        // DIR-4: preservar los filtros actuales al setear lat/lng/radio.
+        const current = new URLSearchParams(searchParams.toString());
+        current.set('lat', latitude.toString());
+        current.set('lng', longitude.toString());
+        current.set('radio', '50');
+        router.push(`/directorio?${current.toString()}`);
         setLoading(false);
       },
       (err) => {
