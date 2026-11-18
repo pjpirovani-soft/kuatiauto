@@ -1690,3 +1690,43 @@ ext build compiló sin errores (34 rutas).
 - `[System.IO.File]::ReadAllText` con ruta relativa falla silenciosamente (usa CWD de .NET, no de PowerShell). **Siempre `Join-Path (Get-Location).Path`.**
 - Los tipos generados por Supabase con `CREATE OR REPLACE FUNCTION` de firmas distintas generan union. Usar `as any` en args de RPC es aceptable si Zod valida antes.
 - `gh pr merge` sin `--admin` falla si hay un check de E2E rojo pre-existente. Documentar el fallo en el PR y mergear con `--admin`.
+---
+
+## Sesion 2026-11-18 (continuacion) - H-DIR-1 + H-DIR-2 + incidente types.ts
+
+**Objetivo:** Cerrar bugs UX reportados por el propietario y un incidente de CI.
+
+**PRs:**
+- #10 `fix(directorio): mapa sigue al filtro de ciudad (H-DIR-1)`.
+- #11 `docs: agregar H-DIR-1 al CHANGELOG v0.11.1`.
+- #12 `feat(directorio): etiqueta de mantenimiento con QR (H-DIR-2)`.
+- #13 `fix(ci): regenerar types.ts como UTF-8 sin BOM`.
+- #14 `fix(etiqueta): usar paleta KuatiAuto (petroleo + dorado)`.
+
+**Commits:**
+- `32f48bf` H-DIR-1 (#10).
+- `2dd9071` docs H-DIR-1 (#11).
+- `b3370f2` H-DIR-2 (#12).
+- `7ffc77c` fix types.ts binario (#13).
+- `ab23738` H-DIR-2 paleta (#14).
+
+**Hallazgos cerrados:**
+- H-DIR-1: mapa del directorio no seguia al filtro de ciudad.
+- H-DIR-2: etiqueta de mantenimiento con QR para compartir con clientes.
+
+**Incidente:**
+- El commit `b3370f2` (PR #12) dejo `lib/supabase/types.ts` con bytes nulos (UTF-16 LE + BOM) porque se regenero con `npx supabase gen types > types.ts` en PowerShell. ESLint lo detectaba como `File appears to be binary` y el CI de `main` fallo en Lint.
+- Fix en PR #13: reescribir `types.ts` con `WriteAllText` + `UTF8Encoding(false)`.
+
+**Lecciones criticas:**
+- **`CI/Quality Gate` debe estar verde antes de mergear.** `--admin` solo si el unico check rojo es `E2E Smoke` (pre-existente). En el PR #12 se mergeo con `--admin` sin verificar, y dejo `main` en rojo.
+- **Nunca usar `>` en PowerShell para codigo.** Siempre `[System.IO.File]::WriteAllText` + `UTF8Encoding(false)`. El `>` usa UTF-16 con BOM.
+- **`git diff --stat` con `Bin`** es senal de archivo binario. Verificar encoding antes de commitear.
+- **`Start-Sleep` no muestra progreso.** Para chequear CI, usar `gh run view <ID>` directo.
+- **CSS variables en `html-to-image`** funcionan bien: la etiqueta usa `var(--color-kuati-*)` y respeta la paleta.
+- **`react-hooks/set-state-in-effect`** ya esta en `warn` en `eslint.config.mjs`. No fue la causa del fallo de Lint.
+
+**Deuda nueva:**
+- D-P1-3: E2E `directorio-filtros.spec.ts` rojo (fixtures no publicados en prod). Ya existia.
+- D-P3-1: CRLF en archivos Windows. Ya existia.
+- Nuevo: **Nunca usar `>` en PowerShell**. Agregar a la guia de encoding.

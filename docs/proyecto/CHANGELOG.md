@@ -1,4 +1,8 @@
-## [v0.11.1] - 2026-11-18 - Cierre KU-SEC-03 + KU-FUNC-01 + CI
+## [v0.11.1] - 2026-11-18 - Cierre KU-SEC-03 + KU-FUNC-01 + CI + H-DIR-1 + H-DIR-2
+
+### Added
+- **H-DIR-2:** etiqueta de mantenimiento compartible con QR. Boton en `/ordenes/[id]` (si completada) y `/vehiculos/[id]` (si hay orden completada). Genera PNG 800x1200 con datos del vehiculo, ultimo mantenimiento, proximo mantenimiento (destacado en dorado) y QR a la ficha publica (`/v/[token]`). Modal con Descargar / Copiar / WhatsApp / Ver ficha. Usa paleta KuatiAuto (petroleo + dorado + grafito).
+- **H-DIR-2 infra:** migracion 034 (`token_publico` en `vehiculo` + RPC `obtener_vehiculo_publico`). Dependencias nuevas: `html-to-image`, `qrcode`, `@types/qrcode`.
 
 ### Security
 - **KU-SEC-03:** `checkRateLimit` fail-closed por defecto en produccion. Si el RPC falla, bloquea (antes permitia). Override explicito con `RATE_LIMIT_FAIL_MODE`. Solo `NODE_ENV=development` mantiene fail-open.

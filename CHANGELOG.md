@@ -2,6 +2,9 @@
 
 ## [0.11.1] - 2026-11-18
 
+### Added
+- **H-DIR-2**: etiqueta de mantenimiento compartible con QR. Boton en `/ordenes/[id]` (si completada) y `/vehiculos/[id]` (si hay orden completada) que genera un PNG 800x1200 con datos del vehiculo, ultimo mantenimiento, proximo mantenimiento (destacado en dorado) y QR a la ficha publica (`/v/[token]`). Modal con Descargar / Copiar / WhatsApp / Ver ficha. Usa la paleta KuatiAuto (petroleo + dorado + grafito).
+
 ### Security
 - **KU-SEC-03**: `checkRateLimit` ahora es fail-closed por defecto en producción. Si el RPC de rate limit falla, bloquea en vez de permitir. Solo `NODE_ENV=development` mantiene fail-open. Override explícito vía `RATE_LIMIT_FAIL_MODE` sigue funcionando.
 
