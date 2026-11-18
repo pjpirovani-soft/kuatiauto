@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   IconArrowLeft,
@@ -50,8 +50,8 @@ export default function PasoOrden({
   const router = useRouter();
   const [kmServicio, setKmServicio] = useState('');
   const [observaciones, setObservaciones] = useState('');
-  const [proximoFecha, setProximoFecha] = useState('');
-  const [proximoKm, setProximoKm] = useState('');
+  const [proximoFechaManual, setProximoFechaManual] = useState<string | null>(null);
+  const [proximoKmManual, setProximoKmManual] = useState<string | null>(null);
   const [fechaTocada, setFechaTocada] = useState(false);
   const [kmTocado, setKmTocado] = useState(false);
 
@@ -59,27 +59,32 @@ export default function PasoOrden({
   const [lineasServicio, setLineasServicio] = useState<LineaServicio[]>([]);
   const [lineasProducto, setLineasProducto] = useState<LineaProducto[]>([]);
 
-  // Autocompletado (debe estar después de las declaraciones de lineasServicio y lineasProducto)
-  useEffect(() => {
-    if (lineasServicio.length === 0) return;
-    const ultimoServicio = lineasServicio[lineasServicio.length - 1];
-    if (ultimoServicio.servicio.origen !== 'global') return;
+  // Valores derivados (sin setState en effect). React 19 rechaza el patron anterior.
+  const proximoKmDerivado = useMemo(() => {
+    if (kmTocado) return null;
+    if (lineasServicio.length === 0) return null;
+    const ultimo = lineasServicio[lineasServicio.length - 1];
+    if (ultimo.servicio.origen !== 'global') return null;
+    const intervaloKm = ultimo.servicio.intervalo_km_sugerido;
+    if (!intervaloKm) return null;
+    return String(Number(kmServicio || 0) + Number(intervaloKm));
+  }, [lineasServicio, kmServicio, kmTocado]);
 
-    const intervaloKm = ultimoServicio.servicio.intervalo_km_sugerido;
-    const intervaloMeses = ultimoServicio.servicio.intervalo_meses_sugerido;
+  const proximoFechaDerivado = useMemo(() => {
+    if (fechaTocada) return null;
+    if (lineasServicio.length === 0) return null;
+    const ultimo = lineasServicio[lineasServicio.length - 1];
+    if (ultimo.servicio.origen !== 'global') return null;
+    const intervaloMeses = ultimo.servicio.intervalo_meses_sugerido;
+    if (!intervaloMeses) return null;
+    const base = new Date();
+    base.setUTCMonth(base.getUTCMonth() + Number(intervaloMeses));
+    return base.toISOString().slice(0, 10);
+  }, [lineasServicio, fechaTocada]);
 
-    if (intervaloKm && !kmTocado) {
-      const nuevoKm = Number(kmServicio || 0) + Number(intervaloKm);
-      setProximoKm(String(nuevoKm));
-    }
-
-    if (intervaloMeses && !fechaTocada) {
-      const base = new Date(); // Usa fecha actual
-      base.setUTCMonth(base.getUTCMonth() + Number(intervaloMeses));
-      const nuevaFecha = base.toISOString().slice(0, 10);
-      setProximoFecha(nuevaFecha);
-    }
-  }, [lineasServicio, kmServicio, kmTocado, fechaTocada]);
+  // Valor final: manual si el usuario toco, derivado si no.
+  const proximoKm = proximoKmManual ?? proximoKmDerivado ?? '';
+  const proximoFecha = proximoFechaManual ?? proximoFechaDerivado ?? '';
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [ordenCreada, setOrdenCreada] = useState<{ id: string } | null>(null);
@@ -259,8 +264,9 @@ export default function PasoOrden({
               className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
               value={proximoFecha}
               onChange={(e) => {
-                setProximoFecha(e.target.value);
-                setFechaTocada(true);
+                const v = e.target.value;
+                setProximoFechaManual(v === '' ? null : v);
+                setFechaTocada(v !== '');
               }}
             />
           </div>
@@ -274,8 +280,9 @@ export default function PasoOrden({
               className='w-full border border-kuati-borde rounded-lg px-4 py-2.5 text-kuati-grafito focus:outline-none focus:ring-2 focus:ring-kuati-petroleo focus:border-transparent transition-all'
               value={proximoKm}
               onChange={(e) => {
-                setProximoKm(e.target.value);
-                setKmTocado(true);
+                const v = e.target.value;
+                setProximoKmManual(v === '' ? null : v);
+                setKmTocado(v !== '');
               }}
               placeholder='Ej. 15000'
             />
