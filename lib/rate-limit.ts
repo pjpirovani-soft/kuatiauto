@@ -16,13 +16,17 @@ export type RateLimitOptions = {
   ventanaSegundos: number;
 };
 
-// KU-SEC-03: modo de fallo configurable.
-// 'open' (default en dev): si falla el RPC, permite (para no bloquear desarrollo).
-// 'closed' (recomendado en prod): si falla el RPC, bloquea (fail-closed).
+// KU-SEC-03: modo de fallo configurable con DEFAULT SEGURO.
+// 'open': si falla el RPC, permite. Solo para desarrollo explicito.
+// 'closed': si falla el RPC, bloquea (fail-closed). DEFAULT en produccion.
+// Si RATE_LIMIT_FAIL_MODE no esta definido:
+//   - NODE_ENV=development -> 'open' (no bloquear el desarrollo local)
+//   - cualquier otro caso   -> 'closed' (fail-closed por defecto)
 function getFailMode(): 'open' | 'closed' {
   const mode = process.env.RATE_LIMIT_FAIL_MODE;
+  if (mode === 'open') return 'open';
   if (mode === 'closed') return 'closed';
-  return 'open';
+  return process.env.NODE_ENV === 'development' ? 'open' : 'closed';
 }
 
 export async function checkRateLimit(opts: RateLimitOptions): Promise<RateLimitResult> {
