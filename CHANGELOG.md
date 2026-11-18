@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.11.1] - 2026-11-18
+
+### Security
+- **KU-SEC-03**: `checkRateLimit` ahora es fail-closed por defecto en producción. Si el RPC de rate limit falla, bloquea en vez de permitir. Solo `NODE_ENV=development` mantiene fail-open. Override explícito vía `RATE_LIMIT_FAIL_MODE` sigue funcionando.
+
+### Fixed
+- **KU-FUNC-01**: `crearOrden` y `editarOrden` usan las RPCs transaccionales `crear_orden_transaccional` y `editar_orden_transaccional` (migraciones 026 + 030). Elimina el riesgo de órdenes huérfanas por inserts no atómicos.
+
+### Infrastructure
+- **KU-OPS-01**: agregado workflow `.github/workflows/ci.yml` (Quality Gate: lint + tsc + test + build en cada push/PR a main).
+
+### Tests
+- `lib/rate-limit.test.ts`: 11 tests (antes 8) cubren default prod/dev + overrides.
+- `lib/ordenes-actions.test.ts`: 15 tests pasan; agregado `mockRpc` al mock de Supabase.
+
+### Docs
+- Cierre de KU-SEC-03 y KU-FUNC-01 en STATUS/DEUDA.
+- Nueva entrada en BITACORA y DECISIONES.
+
+
 ## [0.11.0] - 2026-11-18
 
 ### Added
