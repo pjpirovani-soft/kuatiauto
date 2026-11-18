@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.11.0] - 2026-11-18
+
+### Added
+- **PWA install button**: boton "Instalar app" en `/perfil` que captura `beforeinstallprompt` (Chromium) y muestra modal de instrucciones para iOS Safari (que no soporta el evento).
+- `lib/pwa.ts`: utilidades `isStandalone`, `isIOS`, `canPromptInstall`, tipo `BeforeInstallPromptEvent`.
+- `components/pwa/BotonInstalarApp.tsx`: componente client con deteccion de plataforma.
+
+### Changed
+- `app/perfil/page.tsx`: integrado `<BotonInstalarApp />` arriba del formulario de perfil.
+
+### Notes
+- En Chrome/Edge (Android + desktop): boton nativo de instalacion.
+- En Safari iOS: modal con 4 pasos (Compartir -> Agregar a pantalla de inicio).
+- En Firefox/Safari desktop o si ya esta instalada: no se renderiza (null).
+
 Todas las versiones notables de KuatiAuto. Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.0/), versionado [SemVer](https://semver.org/lang/es/).
 
 ## [0.4.2] - 2026-11-02
