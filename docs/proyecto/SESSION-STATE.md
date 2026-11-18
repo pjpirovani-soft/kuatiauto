@@ -164,3 +164,43 @@ Pegar el PROMPT DE CONTINUACION del dump actualizado.
 3. Refactor de `OrdenForm.tsx` (useEffect con setState, prioritario).
 
 **Lecciones:** no reescribir archivos >30 lineas sin verlos completos. `git checkout --` es la red de seguridad. `cmd /c "..."` para builds con pipe en PS 5.x.
+---
+
+## 2026-11-18 - PWA install button + release v0.11.0
+
+**Estado:** PWA install button en produccion. Release v0.11.0 taggeado.
+
+**Hecho:**
+- `lib/pwa.ts`: `isStandalone`, `isIOS`, `canPromptInstall`, `BeforeInstallPromptEvent`.
+- `components/pwa/BotonInstalarApp.tsx`: detecta plataforma, escucha `beforeinstallprompt`, modal 4 pasos para iOS.
+- `app/perfil/page.tsx`: integrado `<BotonInstalarApp />`.
+- `package.json`: 0.10.0 -> 0.11.0.
+- `CHANGELOG.md`: seccion [0.11.0].
+- Tag `v0.11.0` en `main` (commit `1929b86`).
+- Branch protection en `main`: requiere `Quality Gate`, `strict: false`, `enforce_admins: false`.
+
+**Verificacion:**
+- CI: `All checks were successful` (4/4).
+- `tsc --noEmit`: 0 errores.
+- `npm run lint`: 0 errors, 54 warnings.
+- `npm run build`: verde.
+- Tag apunta al commit correcto.
+
+**Open loops:**
+- **P0:** KU-FUNC-01 (RPCs transaccionales no usadas en `ordenes-actions.ts`), KU-FUNC-02 (`crearVehiculo` no valida `cliente_id`).
+- **P1:** KU-SEC-06 (rate limit busqueda), 4 `useEffect` con setState, 54 warnings lint.
+- **P2:** `stock_movimiento` sin UI, refactor `admin-actions.ts` (400+ lineas), paginacion admin, `H-025` stock UI.
+- **P3:** H-025-1 (telefono en crear_empresa), BOM `next.config.mjs`, `.gitattributes`, README, Supabase CLI v3.
+- **Nuevo H-039:** warning `no-explicit-any` del cast `BeforeInstallPromptEvent` en `BotonInstalarApp.tsx:18` y `pwa.ts:22`. Deuda menor.
+
+**Proximos 3 pasos:**
+1. PR de docs (este).
+2. Configurar cache de `.next/cache` en CI (~30s menos por run).
+3. Atacar KU-FUNC-01 (usar `crear_orden_transaccional` en `crearOrden`).
+
+**Lecciones:**
+- **`beforeinstallprompt` solo Chromium.** iOS requiere instrucciones manuales.
+- **`--auto` en `gh pr merge` requiere habilitar auto-merge en el repo.** No esta habilitado.
+- **Branch protection con `strict: true` bloquea merges aunque los checks esten verdes** si la branch no esta actualizada con `main`.
+- **El nombre del check requerido tiene que coincidir exacto** con lo que reporta GitHub. `Playwright smoke-prod (pull_request)` no se reconocio como valido.
+- **`--admin` es la salida de emergencia** cuando la branch protection mal configurada bloquea.

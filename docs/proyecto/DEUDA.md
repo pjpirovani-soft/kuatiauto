@@ -38,3 +38,10 @@ Registro consolidado de deuda tecnica. Actualizado 2026-11-18.
 
 - ADR-009 (WARN de Supabase Advisors): 13 WARN aceptados, documentados.
 - `auth_leaked_password_protection`: requiere plan Pro, no disponible en Free.
+## H-039 - Warning no-explicit-any en BotonInstalarApp.tsx
+
+- **Origen:** cast `as BeforeInstallPromptEvent` y `as Navigator & { standalone?: boolean }`.
+- **Severidad:** baja (warning de ESLint, no bloquea).
+- **Impacto:** el contador de warnings sube de 53 a 54. No es deuda funcional.
+- **Fix:** reemplazar casts por type guards o `satisfies`. ~15 min.
+- **Tracking:** deuda P3-5.
