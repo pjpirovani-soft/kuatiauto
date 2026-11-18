@@ -18,6 +18,18 @@ function fmtKm(k: number | null): string {
   return k.toLocaleString('es-PY') + ' km';
 }
 
+// Colores hardcodeados para asegurar que html-to-image los capture bien
+const C = {
+  petroleo: '#123C46',
+  lima: '#A3D900',
+  grafito: '#30363B',
+  blanco: '#FFFFFF',
+  fondo: '#F4F7F6',
+  borde: '#E1E8E6',
+  dorado: '#D4AF37',
+  doradoHover: '#B8962E',
+};
+
 export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: Props) {
   const { vehiculo, empresa, ultimo_mantenimiento, token_publico } = datos;
   const proxFecha = fmtFecha(ultimo_mantenimiento?.proximo_mantenimiento_fecha ?? null);
@@ -30,22 +42,21 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
       style={{
         width: 800,
         height: 1200,
-        background: 'var(--color-kuati-blanco)',
-        color: 'var(--color-kuati-grafito)',
+        backgroundColor: C.blanco,
+        color: C.grafito,
         fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, sans-serif',
-        border: '2px solid var(--color-kuati-borde)',
+        border: `2px solid ${C.borde}`,
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
         overflow: 'hidden',
       }}
     >
-      {/* Header: barra petroleo con empresa */}
+      {/* Header */}
       <div
         style={{
-          background: 'var(--color-kuati-petroleo)',
-          color: 'var(--color-kuati-blanco)',
+          backgroundColor: C.petroleo,
+          color: C.blanco,
           padding: '40px 48px',
         }}
       >
@@ -64,22 +75,22 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
         {/* Vehiculo */}
         <div
           style={{
-            background: 'var(--color-kuati-fondo)',
+            backgroundColor: C.fondo,
             borderRadius: 12,
             padding: 24,
-            border: '1px solid var(--color-kuati-borde)',
+            border: `1px solid ${C.borde}`,
           }}
         >
-          <div style={{ fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--color-kuati-petroleo)', fontWeight: 700 }}>
+          <div style={{ fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', color: C.petroleo, fontWeight: 700 }}>
             Vehiculo
           </div>
-          <div style={{ fontSize: 34, fontWeight: 800, marginTop: 6, color: 'var(--color-kuati-grafito)' }}>
+          <div style={{ fontSize: 34, fontWeight: 800, marginTop: 6, color: C.grafito }}>
             {vehiculo.marca} {vehiculo.modelo}
           </div>
-          <div style={{ display: 'flex', gap: 24, marginTop: 12, fontSize: 20, color: 'var(--color-kuati-grafito)' }}>
+          <div style={{ display: 'flex', gap: 24, marginTop: 12, fontSize: 20, color: C.grafito }}>
             <div>
-              <span style={{ color: 'var(--color-kuati-grafito)', opacity: 0.7 }}>Patente:</span>{' '}
-              <strong style={{ color: 'var(--color-kuati-petroleo)' }}>{vehiculo.patente ?? '—'}</strong>
+              <span style={{ color: C.grafito, opacity: 0.7 }}>Patente:</span>{' '}
+              <strong style={{ color: C.petroleo }}>{vehiculo.patente ?? '—'}</strong>
             </div>
             {vehiculo.anio && (
               <div>
@@ -98,20 +109,20 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
         {ultimo_mantenimiento ? (
           <div
             style={{
-              background: 'var(--color-kuati-blanco)',
+              backgroundColor: C.blanco,
               borderRadius: 12,
               padding: 24,
-              border: '1px solid var(--color-kuati-borde)',
+              border: `1px solid ${C.borde}`,
             }}
           >
-            <div style={{ fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--color-kuati-petroleo)', fontWeight: 700 }}>
+            <div style={{ fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', color: C.petroleo, fontWeight: 700 }}>
               Último mantenimiento
             </div>
-            <div style={{ fontSize: 26, fontWeight: 700, marginTop: 6, color: 'var(--color-kuati-grafito)' }}>
+            <div style={{ fontSize: 26, fontWeight: 700, marginTop: 6, color: C.grafito }}>
               {fmtFecha(ultimo_mantenimiento.fecha)} — {fmtKm(ultimo_mantenimiento.km_servicio)}
             </div>
             {ultimo_mantenimiento.servicios.length > 0 && (
-              <ul style={{ marginTop: 12, paddingLeft: 20, fontSize: 18, lineHeight: 1.5, color: 'var(--color-kuati-grafito)' }}>
+              <ul style={{ marginTop: 12, paddingLeft: 20, fontSize: 18, lineHeight: 1.5, color: C.grafito }}>
                 {ultimo_mantenimiento.servicios.slice(0, 6).map((s, i) => (
                   <li key={i}>{s}</li>
                 ))}
@@ -127,11 +138,11 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
         {/* Proximo mantenimiento (destacado, dorado) */}
         <div
           style={{
-            background: 'var(--color-kuati-dorado)',
-            color: 'var(--color-kuati-petroleo)',
+            backgroundColor: C.dorado,
+            color: C.petroleo,
             borderRadius: 12,
             padding: 24,
-            border: '1px solid var(--color-kuati-dorado-hover)',
+            border: `1px solid ${C.doradoHover}`,
           }}
         >
           <div style={{ fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', fontWeight: 700 }}>
@@ -147,17 +158,17 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
 
         {/* Footer: contacto + QR */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'auto' }}>
-          <div style={{ fontSize: 14, color: 'var(--color-kuati-grafito)', opacity: 0.8, maxWidth: 500 }}>
+          <div style={{ fontSize: 14, color: C.grafito, opacity: 0.8, maxWidth: 500 }}>
             {empresa.direccion && <div>{empresa.direccion}</div>}
             {urlPublica && <div style={{ marginTop: 4, fontSize: 12 }}>{urlPublica}</div>}
           </div>
           {qrDataUrl && (
             <div
               style={{
-                background: 'var(--color-kuati-blanco)',
+                backgroundColor: C.blanco,
                 padding: 8,
                 borderRadius: 8,
-                border: '1px solid var(--color-kuati-borde)',
+                border: `1px solid ${C.borde}`,
               }}
             >
               <img src={qrDataUrl} alt="QR ficha publica" width={150} height={150} />
