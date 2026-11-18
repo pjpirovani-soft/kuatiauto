@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   mockFrom: vi.fn(),
   mockAuditLog: vi.fn(async () => true),
   mockCheckRateLimit: vi.fn(async () => ({ ok: true, retryAfterSeconds: 0, skipped: false })),
+  mockRpc: vi.fn(),
 }));
 
 function makeChain() {
@@ -37,6 +38,7 @@ vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(async () => ({
     auth: { getUser: mocks.mockGetUser },
     from: mocks.mockFrom,
+    rpc: mocks.mockRpc,
   })),
 }));
 
