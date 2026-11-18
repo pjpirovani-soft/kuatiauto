@@ -7,6 +7,7 @@
 
 ### Fixed
 - **KU-FUNC-01**: `crearOrden` y `editarOrden` usan las RPCs transaccionales `crear_orden_transaccional` y `editar_orden_transaccional` (migraciones 026 + 030). Elimina el riesgo de órdenes huérfanas por inserts no atómicos.
+- **H-DIR-1**: el mapa del directorio ahora se centra en la ciudad seleccionada (`?ciudad=Asunción` → mapa en Asunción). Antes solo filtraba la lista, no el mapa. Fix en `app/directorio/page.tsx` (`CIUDADES_COORDS`) + `MiUbicacionButton.tsx` (borra `ciudad` al geolocalizar).
 
 ### Infrastructure
 - **KU-OPS-01**: agregado workflow `.github/workflows/ci.yml` (Quality Gate: lint + tsc + test + build en cada push/PR a main).
