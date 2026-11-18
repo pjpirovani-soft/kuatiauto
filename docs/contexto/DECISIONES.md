@@ -464,3 +464,41 @@ Detectadas durante la lectura de docs para iniciar fase D:
 - **`PasoOrden.tsx` refactorizado** con `useMemo` (derivacion pura) en el mismo PR. Los otros 4 quedan para sesion dedicada.
 - **Los tests que requieren servicios externos** (Supabase real) deben skipearse en CI con `describe.skipIf`. El patron es: detectar env real, envolver `beforeAll` y tests en el `skipIf`.
 - **No reescribir archivos >30 lineas** sin verlos completos antes. Me paso 2 veces en esta sesion (`next.config.mjs` y `rls-cross-tenant.test.ts`). La segunda vez rompio los tests.
+## ADR-018: PWA install button con instrucciones iOS (2026-11-18)
+
+**Contexto:** KuatiAuto ya era PWA (manifest.json, sw.js, iconos, RegistroSW). Pero no habia forma explicita de instalarla desde la UI. Los usuarios solo podian instalarla via el menu del navegador ("Instalar app" en Android, "Agregar a inicio" en iOS). El pedido del dueno fue: "un boton para instalar la app en local".
+
+**Decision:**
+
+| ID | Decision | Estado |
+|---|---|---|
+| ADR-018 | Agregar boton de instalacion PWA en `/perfil` con deteccion de plataforma. | APROBADA |
+| D-PWA-1 | **`lib/pwa.ts`** con utilidades `isStandalone`, `isIOS`, `canPromptInstall`, tipo `BeforeInstallPromptEvent`. Detecta plataforma sin dependencias externas. | APROBADA |
+| D-PWA-2 | **`components/pwa/BotonInstalarApp.tsx`** escucha `beforeinstallprompt` (Chromium). En iOS muestra modal con 4 pasos (Safari no soporta el evento). En Firefox/Safari desktop retorna `null`. | APROBADA |
+| D-PWA-3 | **Integracion en `/perfil`** (arriba del `PerfilForm`). Visible para todos los roles logueados. | APROBADA |
+| D-PWA-4 | **No banner automatico** en `/dashboard`. Solo boton en `/perfil`. Menos intrusivo. | APROBADA |
+| D-PWA-5 | **Service Worker existente** (`public/sw.js`, estrategia "nueva version disponible") **no se toca**. Solo se agrega el boton. | APROBADA |
+| D-PWA-6 | **Versionado semver**: `0.10.0` -> `0.11.0` (feature nueva). | APROBADA |
+
+**Alternativas evaluadas:**
+
+| Alternativa | Razon de descarte |
+|---|---|
+| Solo documentar en `/ayuda` sin boton | No cumple el pedido del dueno. |
+| Banner automatico en cada visita | Intrusivo, molesta. |
+| Libreria externa (`pwa-install`, `beforeinstallprompt` polyfill) | Dependencia extra sin justificacion. 80 lineas de codigo propio es suficiente. |
+| Auto-instalar al primer login | Imposible: el navegador requiere accion del usuario. |
+
+**Consecuencias:**
+
+- **Positivas:** usuarios tienen un punto claro para instalar. Instrucciones iOS resuelven el caso mas confuso.
+- **Negativas:** el warning de ESLint `no-explicit-any` sube de 53 a 54 (por el cast de `BeforeInstallPromptEvent`). Deuda menor.
+- **Metrica de exito:** medir cuantos usuarios tocan "Instalar app" en `/perfil` (Vercel Analytics custom event, futura iteracion).
+
+**Lecciones:**
+
+- **`beforeinstallprompt` solo existe en Chromium.** Safari iOS no lo emite. Hay que detectar plataforma y mostrar instrucciones manuales.
+- **El evento se pierde si no se captura en el primer `useEffect`.** Hay que hacer `e.preventDefault()` y guardarlo en estado.
+- **Timeout de 2s** es util para detectar "no soportado" cuando Chromium no emite el evento (porque la PWA aun no es instalable).
+- **La app ya instalada** (standalone) hace que el componente retorne `null`. Importante para no mostrar el boton a quien ya la tiene.
+- **No forzar recarga del SW** es la decision correcta (ADR-008).
