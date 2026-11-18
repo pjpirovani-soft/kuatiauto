@@ -6,9 +6,12 @@ on:
   pull_request:
     branches: [main]
 
+# Solo cancelar runs de PRs (que se reemplazan). No cancelar pushes a main
+# (que son definitivos). Ver incidente 2026-11-18: push a main cancelado
+# por concurrencia con el run del PR.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   quality:
