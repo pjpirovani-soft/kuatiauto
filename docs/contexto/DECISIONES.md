@@ -502,3 +502,38 @@ Detectadas durante la lectura de docs para iniciar fase D:
 - **Timeout de 2s** es util para detectar "no soportado" cuando Chromium no emite el evento (porque la PWA aun no es instalable).
 - **La app ya instalada** (standalone) hace que el componente retorne `null`. Importante para no mostrar el boton a quien ya la tiene.
 - **No forzar recarga del SW** es la decision correcta (ADR-008).
+---
+
+## ADR-019: Rate limit fail-closed por defecto (2026-11-18)
+
+**Estado:** aceptada.
+**Contexto:** KU-SEC-03 de la auditoria 2026-11-02. `getFailMode()` devolvia `'open'` si `RATE_LIMIT_FAIL_MODE` no estaba definida. En produccion, un fallo del RPC dejaba pasar todas las peticiones.
+
+**Decision:** default `'closed'` salvo `NODE_ENV=development`. Override explicito via `RATE_LIMIT_FAIL_MODE` sigue funcionando.
+
+**Alternativas descartadas:**
+- Solo documentar en `.env.example` y confiar en ops: fragil, un deploy sin la var reintroduce el bug.
+- Eliminar la opcion `open`: rompe desarrollo local cuando el RPC no responde.
+
+**Consecuencias:**
+- Positivas: en produccion, si el RPC falla, bloquea. Cierra KU-SEC-03.
+- Negativas: en produccion, si el RPC de rate limit esta caido, los usuarios no pueden operar. Mitigacion: monitoreo de `check_rate_limit` (Sentry).
+- Metrica: tasa de errores 5xx en login/registro post-deploy.
+
+---
+
+## ADR-020: RPCs transaccionales en crear/editar orden (2026-11-18)
+
+**Estado:** aceptada.
+**Contexto:** KU-FUNC-01. `crearOrden` hacia INSERT cabecera + INSERT lineas por separado. Si fallaba el segundo, quedaba orden huerfana. `editarOrden` hacia UPDATE + DELETE + INSERT, mismo problema. Las RPCs `crear_orden_transaccional` y `editar_orden_transaccional` existen desde migraciones 026/030 pero no se usaban.
+
+**Decision:** `crearOrden` y `editarOrden` llaman a las RPCs. Cast a `any` en args por tipos generados incorrectos (union de firmas).
+
+**Alternativas descartadas:**
+- Agregar transaccion manual con `BEGIN`/`COMMIT` via `rpc('exec_sql')`: no expuesto por Supabase, inseguro.
+- Usar `supabase.rpc` con firma especifica de la 030: TypeScript elige la union, no compila. `as any` es pragmatico.
+
+**Consecuencias:**
+- Positivas: operaciones atomicas. Si falla una linea, rollback completo. Cierra KU-FUNC-01.
+- Negativas: `as any` en 2 lugares. Se quita al regenerar tipos.
+- Metrica: tasa de ordenes huerfanas (deberia ser 0 post-deploy).

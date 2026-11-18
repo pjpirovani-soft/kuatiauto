@@ -45,3 +45,10 @@ Registro consolidado de deuda tecnica. Actualizado 2026-11-18.
 - **Impacto:** el contador de warnings sube de 53 a 54. No es deuda funcional.
 - **Fix:** reemplazar casts por type guards o `satisfies`. ~15 min.
 - **Tracking:** deuda P3-5.
+## Nuevas (post-sesion 2026-11-18)
+
+| ID | Deuda | Detalle | Esfuerzo |
+|---|---|---|---|
+| D-P1-3 | E2E `directorio-filtros` rojo en prod | `e2e/smoke/directorio-filtros.spec.ts` espera fixtures ("Import Japan", "B-Test-E4a") que no estan publicados en prod. Fallo pre-existente desde commit `2ea2b92`. Fix: reescribir test resiliente o publicar fixtures. | Bajo (1 hora) |
+| D-P2-1 | `as any` en args de RPC | `lib/ordenes-actions.ts` usa `as any` para `crear_orden_transaccional` y `editar_orden_transaccional` porque `types.ts` tiene union de firmas (026 sin empleado/metodo_pago, 030 con). Se quita al regenerar tipos con `supabase gen types`. | Bajo (30 min) |
+| D-P3-1 | CRLF en `lib/ordenes-actions*.ts` | `git checkout --` en Windows restaura con CRLF. No rompe nada (Next/TS toleran). Normalizar con `.gitattributes` (`* text=auto eol=lf`). | Bajo (15 min) |

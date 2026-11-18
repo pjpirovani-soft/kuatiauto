@@ -1,6 +1,8 @@
 # STATUS — KuatiAuto (provisional)
 
-**Actualizado:** 2026-11-02
+**Actualizado:** 2026-11-18
+
+**Sesion 2026-11-18:** cerrados KU-SEC-03 (rate limit fail-closed), KU-FUNC-01 (RPC transaccional) y KU-OPS-01 (CI). `main` en `3028b43`, 303 tests passing.
 **Propósito:** tablero macro de módulos. `SESSION-STATE.md` sigue siendo el handoff operativo entre sesiones. No se duplican (D-F14-5).
 **Regla:** un módulo se marca `completo` solo tras pasar el gate de seguridad de 10 puntos (`ARCHITECTURE.md` §Gate de seguridad por módulo). Sin gate, se commitea como `wip` con nota acá.
 

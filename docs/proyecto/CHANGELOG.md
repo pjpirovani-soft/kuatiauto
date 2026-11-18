@@ -1,3 +1,19 @@
+## [v0.11.1] - 2026-11-18 - Cierre KU-SEC-03 + KU-FUNC-01 + CI
+
+### Security
+- **KU-SEC-03:** `checkRateLimit` fail-closed por defecto en produccion. Si el RPC falla, bloquea (antes permitia). Override explicito con `RATE_LIMIT_FAIL_MODE`. Solo `NODE_ENV=development` mantiene fail-open.
+
+### Fixed
+- **KU-FUNC-01:** `crearOrden` y `editarOrden` usan las RPCs transaccionales `crear_orden_transaccional` y `editar_orden_transaccional` (migraciones 026 + 030). Elimina el riesgo de ordenes huerfanas por inserts no atomicos.
+
+### Infrastructure
+- **KU-OPS-01:** workflow `.github/workflows/ci.yml` (Quality Gate: lint + tsc + test + build en push/PR a main).
+
+### Tests
+- `lib/rate-limit.test.ts`: 11 tests (antes 8).
+- `lib/ordenes-actions.test.ts`: 15 tests; agregado `mockRpc`.
+- `npm test`: 303 passed (incluye RLS Cross-Tenant).
+
 
 ## [v0.10.0] - 2026-11-11 - Swipe gestures en tarjetas de órdenes
 
