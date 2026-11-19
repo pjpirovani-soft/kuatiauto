@@ -179,9 +179,9 @@ export default async function OrdenDetallePage({
 
       {etiquetaData && etiquetaData.ultimo_mantenimiento && (
         <div className="mt-6 bg-kuati-blanco rounded-xl border border-kuati-borde p-6">
-          <h2 className="text-lg font-semibold mb-3">Compartir etiqueta de mantenimiento</h2>
+          <h2 className="text-lg font-semibold mb-3">Compartir resumen visual con el cliente</h2>
           <p className="text-sm text-kuati-grafito/80 mb-4">
-            Genera una imagen con los datos del vehiculo y el proximo mantenimiento. Incluye QR a la ficha publica.
+            Genera una imagen PNG con los datos del vehículo, último mantenimiento y próximo servicio. Ideal para enviar por WhatsApp o imprimir.
           </p>
           <CompartirEtiquetaButton
             urlPublica={

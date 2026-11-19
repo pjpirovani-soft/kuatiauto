@@ -64,31 +64,43 @@ export default async function VehiculoDetallePage({
       </div>
 
       <div className="bg-kuati-blanco rounded-xl border border-kuati-borde p-6 mt-6">
-        <ProponerHistorialForm vehiculoId={vehiculo.id} />
-      </div>
-
-      {etiquetaData && etiquetaData.ultimo_mantenimiento && (
-        <div className="bg-kuati-blanco rounded-xl border border-kuati-borde p-6 mt-6">
-          <h2 className="text-lg font-semibold mb-3">Compartir etiqueta de mantenimiento</h2>
-          <p className="text-sm text-kuati-grafito/80 mb-4">
-            Genera una imagen con los datos del vehiculo y el proximo mantenimiento. Incluye QR a la ficha publica.
-          </p>
-          <CompartirEtiquetaButton
-            urlPublica={
-              appUrl && etiquetaData.token_publico
-                ? `${appUrl}/v/${etiquetaData.token_publico}`
-                : null
-            }
-            clienteEmail={etiquetaData.cliente?.email ?? null}
-            clienteNombre={etiquetaData.cliente?.nombre ?? null}
-            empresaNombre={etiquetaData.empresa.nombre}
-            vehiculoDescripcion={`${etiquetaData.vehiculo.marca} ${etiquetaData.vehiculo.modelo}`}
-          />
-          <div style={{ display: 'none' }}>
-            <EtiquetaMantenimiento id="etiqueta-mantenimiento" datos={etiquetaData} appUrl={appUrl} />
+        <h2 className="text-lg font-semibold mb-4">Compartir con el cliente / conductor</h2>
+        
+        <div className="grid gap-6">
+          {/* Opcion 1: Link de historial */}
+          <div>
+            <h3 className="text-sm font-medium text-kuati-petroleo mb-2">1. Enviar link de historial completo</h3>
+            <p className="text-sm text-kuati-grafito/80 mb-3">
+              Genera un link web para que el conductor vea todo el historial de mantenimiento y pueda reclamar el vehículo.
+            </p>
+            <ProponerHistorialForm vehiculoId={vehiculo.id} />
           </div>
+
+          {/* Opcion 2: Etiqueta visual (solo si hay mantenimiento) */}
+          {etiquetaData && etiquetaData.ultimo_mantenimiento && (
+            <div className="pt-4 border-t border-kuati-borde">
+              <h3 className="text-sm font-medium text-kuati-petroleo mb-2">2. Compartir resumen visual (Etiqueta)</h3>
+              <p className="text-sm text-kuati-grafito/80 mb-3">
+                Genera una imagen PNG con los datos del vehículo, último mantenimiento y próximo servicio. Ideal para enviar por WhatsApp o imprimir.
+              </p>
+              <CompartirEtiquetaButton
+                urlPublica={
+                  appUrl && etiquetaData.token_publico
+                    ? `${appUrl}/v/${etiquetaData.token_publico}`
+                    : null
+                }
+                clienteEmail={etiquetaData.cliente?.email ?? null}
+                clienteNombre={etiquetaData.cliente?.nombre ?? null}
+                empresaNombre={etiquetaData.empresa.nombre}
+                vehiculoDescripcion={`${etiquetaData.vehiculo.marca} ${etiquetaData.vehiculo.modelo}`}
+              />
+              <div style={{ display: 'none' }}>
+                <EtiquetaMantenimiento id="etiqueta-mantenimiento" datos={etiquetaData} appUrl={appUrl} />
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
