@@ -58,6 +58,8 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
           backgroundColor: C.petroleo,
           color: C.blanco,
           padding: '40px 48px',
+          position: 'relative',
+          zIndex: 2,
         }}
       >
         <div style={{ fontSize: 13, letterSpacing: 3, textTransform: 'uppercase', opacity: 0.85 }}>
@@ -69,8 +71,24 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
         )}
       </div>
 
-      {/* Body con padding */}
-      <div style={{ padding: '32px 48px', flex: 1, display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* Body con padding y marca de agua */}
+      <div style={{ padding: '32px 48px', flex: 1, display: 'flex', flexDirection: 'column', gap: 20, position: 'relative', zIndex: 1 }}>
+        
+        {/* Marca de agua del logo */}
+        <img 
+          src="/icons/icon-512.png" 
+          alt="" 
+          style={{ 
+            position: 'absolute', 
+            top: '50%', 
+            left: '50%', 
+            transform: 'translate(-50%, -50%)', 
+            width: '500px', 
+            opacity: 0.04, 
+            zIndex: 0,
+            pointerEvents: 'none'
+          }} 
+        />
 
         {/* Vehiculo */}
         <div
@@ -157,7 +175,7 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
         </div>
 
         {/* Footer: contacto + QR */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'auto', position: 'relative', zIndex: 2 }}>
           <div style={{ fontSize: 14, color: C.grafito, opacity: 0.8, maxWidth: 500 }}>
             {empresa.direccion && <div>{empresa.direccion}</div>}
             {urlPublica && <div style={{ marginTop: 4, fontSize: 12 }}>{urlPublica}</div>}
