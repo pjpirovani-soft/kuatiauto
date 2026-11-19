@@ -1,3 +1,5 @@
+'use client';
+
 import type { DatosEtiqueta } from '@/lib/etiqueta-mantenimiento';
 
 type Props = {
@@ -18,7 +20,6 @@ function fmtKm(k: number | null): string {
   return k.toLocaleString('es-PY') + ' km';
 }
 
-// Colores hardcodeados para asegurar que html-to-image los capture bien
 const C = {
   petroleo: '#123C46',
   lima: '#A3D900',
@@ -50,8 +51,25 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        position: 'relative',
       }}
     >
+      {/* Marca de agua (Logo) - Fondo */}
+      <img 
+        src="/icons/icon-512.png" 
+        alt="" 
+        style={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          width: '500px', 
+          opacity: 0.04, 
+          zIndex: 0,
+          pointerEvents: 'none'
+        }} 
+      />
+
       {/* Header */}
       <div
         style={{
@@ -71,25 +89,9 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
         )}
       </div>
 
-      {/* Body con padding y marca de agua */}
+      {/* Body con padding */}
       <div style={{ padding: '32px 48px', flex: 1, display: 'flex', flexDirection: 'column', gap: 20, position: 'relative', zIndex: 1 }}>
         
-        {/* Marca de agua del logo */}
-        <img 
-          src="/icons/icon-512.png" 
-          alt="" 
-          style={{ 
-            position: 'absolute', 
-            top: '50%', 
-            left: '50%', 
-            transform: 'translate(-50%, -50%)', 
-            width: '500px', 
-            opacity: 0.04, 
-            zIndex: 0,
-            pointerEvents: 'none'
-          }} 
-        />
-
         {/* Vehiculo */}
         <div
           style={{
@@ -97,6 +99,8 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
             borderRadius: 12,
             padding: 24,
             border: `1px solid ${C.borde}`,
+            position: 'relative',
+            zIndex: 2,
           }}
         >
           <div style={{ fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', color: C.petroleo, fontWeight: 700 }}>
@@ -131,6 +135,8 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
               borderRadius: 12,
               padding: 24,
               border: `1px solid ${C.borde}`,
+              position: 'relative',
+              zIndex: 2,
             }}
           >
             <div style={{ fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', color: C.petroleo, fontWeight: 700 }}>
@@ -148,7 +154,7 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
             )}
           </div>
         ) : (
-          <div style={{ fontSize: 20, opacity: 0.7, textAlign: 'center', padding: 24 }}>
+          <div style={{ fontSize: 20, opacity: 0.7, textAlign: 'center', padding: 24, position: 'relative', zIndex: 2 }}>
             Sin mantenimientos registrados.
           </div>
         )}
@@ -161,6 +167,8 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
             borderRadius: 12,
             padding: 24,
             border: `1px solid ${C.doradoHover}`,
+            position: 'relative',
+            zIndex: 2,
           }}
         >
           <div style={{ fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', fontWeight: 700 }}>
@@ -180,18 +188,24 @@ export default function EtiquetaMantenimiento({ id, datos, qrDataUrl, appUrl }: 
             {empresa.direccion && <div>{empresa.direccion}</div>}
             {urlPublica && <div style={{ marginTop: 4, fontSize: 12 }}>{urlPublica}</div>}
           </div>
-          {qrDataUrl && (
-            <div
-              style={{
-                backgroundColor: C.blanco,
-                padding: 8,
-                borderRadius: 8,
-                border: `1px solid ${C.borde}`,
-              }}
-            >
-              <img src={qrDataUrl} alt="QR ficha publica" width={150} height={150} />
-            </div>
-          )}
+          
+          {/* El QR se inyecta desde el botón antes de capturar */}
+          <div
+            id="qr-container"
+            style={{
+              backgroundColor: C.blanco,
+              padding: 8,
+              borderRadius: 8,
+              border: `1px solid ${C.borde}`,
+              minWidth: 150,
+              minHeight: 150,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {qrDataUrl && <img src={qrDataUrl} alt="QR ficha publica" width={150} height={150} />}
+          </div>
         </div>
       </div>
     </div>

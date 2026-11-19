@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { toPng } from 'html-to-image';
 import QRCode from 'qrcode';
 
+
 type Props = {
   etiquetaId?: string;
   urlPublica: string | null;
@@ -33,17 +34,19 @@ export default function CompartirEtiquetaButton({
       const node = document.getElementById(etiquetaId);
       if (!node) throw new Error('No se encontro la etiqueta en el DOM');
 
-      // Generar QR si hay URL publica
-      let qrUrl: string | null = null;
+      // 1. Si hay URL publica, generamos el QR y lo inyectamos en el div #qr-container
       if (urlPublica) {
-        qrUrl = await QRCode.toDataURL(urlPublica, { width: 320, margin: 1 });
-        // Reemplazar/inyectar QR en el DOM antes de capturar
-        const qrTarget = node.querySelector('[data-qr-target]') as HTMLElement | null;
-        if (qrTarget) {
-          qrTarget.innerHTML = `<img src="${qrUrl}" alt="QR" width="160" height="160" />`;
+        const qrUrl = await QRCode.toDataURL(urlPublica, { width: 300, margin: 1 });
+        const qrContainer = document.getElementById('qr-container');
+        if (qrContainer) {
+          qrContainer.innerHTML = `<img src="${qrUrl}" alt="QR" width="150" height="150" style="border-radius: 8px;" />`;
         }
       }
 
+      // 2. Esperar un poco a que la imagen del QR cargue
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 3. Capturar
       const dataUrl = await toPng(node, {
         width: 800,
         height: 1200,
@@ -95,7 +98,7 @@ export default function CompartirEtiquetaButton({
         type="button"
         onClick={generar}
         disabled={loading}
-        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-lg bg-kuati-petroleo px-4 py-2 text-sm font-semibold text-kuati-blanco hover:bg-kuati-petroleo/90 disabled:opacity-50"
       >
         {loading ? 'Generando...' : '📋 Compartir etiqueta de mantenimiento'}
       </button>
